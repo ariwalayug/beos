@@ -23,6 +23,7 @@ const DonorDashboard = lazy(() => import('./pages/DonorDashboard'));
 const HospitalDashboard = lazy(() => import('./pages/HospitalDashboard'));
 const BloodBankDashboard = lazy(() => import('./pages/BloodBankDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const AdminDonors = lazy(() => import('./pages/AdminDonors'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
@@ -82,6 +83,14 @@ function App() {
                                                 element={
                                                     <ProtectedRoute roles={['admin']}>
                                                         <AdminDashboard />
+                                                    </ProtectedRoute>
+                                                }
+                                            />
+                                            <Route
+                                                path="/admin/donors"
+                                                element={
+                                                    <ProtectedRoute roles={['admin']}>
+                                                        <AdminDonors />
                                                     </ProtectedRoute>
                                                 }
                                             />

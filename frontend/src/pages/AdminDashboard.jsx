@@ -97,6 +97,19 @@ function AdminDashboard() {
                     </div>
                 )}
 
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="glass-card p-6 flex flex-col justify-between hover:bg-white/5 transition-colors cursor-pointer" onClick={() => window.location.href = '/admin/donors'}>
+                        <div>
+                            <div className="text-red-500 text-3xl mb-4">🩸</div>
+                            <h3 className="text-xl font-bold text-white mb-2">Manage Donors</h3>
+                            <p className="text-gray-400">View detailed list of all registered donors, check availability and history.</p>
+                        </div>
+                        <div className="mt-4 text-red-400 flex items-center">
+                            View Donors <span className="ml-2">→</span>
+                        </div>
+                    </div>
+                </div>
+
                 <h3 className="text-xl font-bold mb-4">User Management ({users.length})</h3>
                 <UserTable users={users} onDelete={handleDeleteUser} />
             </div>
