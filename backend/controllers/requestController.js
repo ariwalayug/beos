@@ -71,9 +71,9 @@ export const getById = async (req, res) => {
     }
 };
 
-export const createRequest = async (req, res) => {
+createRequest = async (req, res) => {
     try {
-        const { patient_name, blood_type, units, urgency, contact_phone, notes } = req.body;
+        const { patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, contact_phone, notes } = req.body;
         const hospital_id = req.user.role === 'hospital' ? req.user.hospital_id : null; // Assumes attach logic elsewhere for hospital_id or derived from user
 
         if (!blood_type) {
@@ -84,7 +84,7 @@ export const createRequest = async (req, res) => {
         }
 
         const request = BloodRequest.create({
-            hospital_id, patient_name, blood_type, units, urgency, contact_phone, notes
+            hospital_id, patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, contact_phone, notes
         });
 
         // Emit socket event for real-time updates

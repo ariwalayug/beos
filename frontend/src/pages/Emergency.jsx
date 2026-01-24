@@ -23,9 +23,13 @@ function Emergency() {
     const [formData, setFormData] = useState({
         hospital_id: '',
         patient_name: '',
+        age: '',
+        hemoglobin: '',
+        platelets: '',
         blood_type: '',
         units: 1,
         urgency: 'normal',
+        past_reaction: '',
         contact_phone: '',
         notes: ''
     });
@@ -60,9 +64,13 @@ function Emergency() {
             setFormData({
                 hospital_id: '',
                 patient_name: '',
+                age: '',
+                hemoglobin: '',
+                platelets: '',
                 blood_type: '',
                 units: 1,
                 urgency: 'normal',
+                past_reaction: '',
                 contact_phone: '',
                 notes: ''
             });
@@ -212,6 +220,24 @@ function Emergency() {
                                     </div>
                                 </div>
 
+                                <div className="form-group-pro">
+                                    <label>Patient Name</label>
+                                    <input type="text" value={formData.patient_name} onChange={(e) => setFormData({ ...formData, patient_name: e.target.value })} required />
+                                </div>
+                                <div className="form-grid">
+                                    <div className="form-group-pro">
+                                        <label>Age</label>
+                                        <input type="number" min="1" max="120" value={formData.age} onChange={(e) => setFormData({ ...formData, age: e.target.value })} required placeholder="Yrs" />
+                                    </div>
+                                    <div className="form-group-pro">
+                                        <label>Hb Level</label>
+                                        <input type="number" step="0.1" value={formData.hemoglobin} onChange={(e) => setFormData({ ...formData, hemoglobin: e.target.value })} required placeholder="g/dL" />
+                                    </div>
+                                    <div className="form-group-pro">
+                                        <label>Platelets</label>
+                                        <input type="number" value={formData.platelets} onChange={(e) => setFormData({ ...formData, platelets: e.target.value })} required placeholder="Count" />
+                                    </div>
+                                </div>
                                 <div className="form-grid">
                                     <div className="form-group-pro">
                                         <label>Blood Type</label>
@@ -224,6 +250,16 @@ function Emergency() {
                                         <label>Units</label>
                                         <input type="number" min="1" max="20" value={formData.units} onChange={(e) => setFormData({ ...formData, units: parseInt(e.target.value) })} required />
                                     </div>
+                                </div>
+
+                                <div className="form-group-pro">
+                                    <label>Past Blood Reaction (Optional)</label>
+                                    <textarea
+                                        rows="2"
+                                        placeholder="Details of any previous adverse reactions..."
+                                        value={formData.past_reaction}
+                                        onChange={(e) => setFormData({ ...formData, past_reaction: e.target.value })}
+                                    />
                                 </div>
 
                                 <div className="form-group-pro">

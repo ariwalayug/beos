@@ -85,9 +85,13 @@ CREATE TABLE IF NOT EXISTS blood_requests (
     hospital_id INTEGER,
     donor_id INTEGER, -- Link to donor who fulfilled it
     patient_name TEXT,
+    age INTEGER,
+    hemoglobin REAL,
+    platelets INTEGER,
     blood_type TEXT NOT NULL CHECK(blood_type IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')),
     units INTEGER NOT NULL DEFAULT 1,
     urgency TEXT DEFAULT 'normal' CHECK(urgency IN ('normal', 'urgent', 'critical')),
+    past_reaction TEXT, -- Optional field for past blood injecting reaction
     status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'fulfilled', 'cancelled')),
     contact_phone TEXT,
     notes TEXT,

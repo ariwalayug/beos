@@ -78,16 +78,20 @@ class BloodRequest {
 
     static create(request) {
         const stmt = db.prepare(`
-            INSERT INTO blood_requests (hospital_id, patient_name, blood_type, units, urgency, status, contact_phone, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO blood_requests (hospital_id, patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, status, contact_phone, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         const result = stmt.run(
             request.hospital_id || null,
             request.patient_name || null,
+            request.age || null,
+            request.hemoglobin || null,
+            request.platelets || null,
             request.blood_type,
             request.units || 1,
             request.urgency || 'normal',
+            request.past_reaction || null,
             request.status || 'pending',
             request.contact_phone || null,
             request.notes || null
@@ -102,9 +106,13 @@ class BloodRequest {
 
         if (request.hospital_id !== undefined) { fields.push('hospital_id = ?'); params.push(request.hospital_id); }
         if (request.patient_name !== undefined) { fields.push('patient_name = ?'); params.push(request.patient_name); }
+        if (request.age !== undefined) { fields.push('age = ?'); params.push(request.age); }
+        if (request.hemoglobin !== undefined) { fields.push('hemoglobin = ?'); params.push(request.hemoglobin); }
+        if (request.platelets !== undefined) { fields.push('platelets = ?'); params.push(request.platelets); }
         if (request.blood_type) { fields.push('blood_type = ?'); params.push(request.blood_type); }
         if (request.units) { fields.push('units = ?'); params.push(request.units); }
         if (request.urgency) { fields.push('urgency = ?'); params.push(request.urgency); }
+        if (request.past_reaction !== undefined) { fields.push('past_reaction = ?'); params.push(request.past_reaction); }
         if (request.status) {
             fields.push('status = ?');
             params.push(request.status);
