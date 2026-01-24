@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -188,40 +189,12 @@ function seedData() {
             [3, 'Patient C', 'B+', 3, 'normal', 'fulfilled', '+91 96666 66666', 'Regular transfusion'],
         ];
 
-
         requests.forEach(request => insertRequest.run(...request));
 
         console.log('Initial data seeded successfully!');
     }
-
-    // Seed Admin User (Always check and create if missing)
-    try {
-        const adminEmail = 'admin@beos.com';
-        const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get(adminEmail);
-
-        if (!existingAdmin) {
-            console.log('Seeding admin user...');
-            // Hash: adminpassword123
-            const adminPassHash = '$2b$10$YourGeneratedHashHereOrUseBcrypt';
-            // Better to compute it or use a pre-computed hash to avoid importing bcrypt here if not needed
-            // For simplicity and correctness, let's use the one from create_admin.js logic or similar.
-            // Since we can't easily async/await bcrypt here without top-level await or wrapping,
-            // we will use a pre-calculated hash for 'adminpassword123'
-            const preComputedHash = '$2a$10$wI5.k.aa.w.s.q.r.e.t.u.r.n.s.a.l.t.h.a.s.h.v.a.l.u.e'; // Placeholder, let's use a real one or import bcrypt
-
-            // Actually, let's just do it properly with bcrypt if possible or just use a known hash.
-            // 'adminpassword123' -> $2a$10$X7... (example)
-            // To be safe, I'll stick to the create_admin.js approach but integrated here.
-            // However, db.js looks synchronous. Using bcryptjs.hashSync is better here.
-        }
-    } catch (err) {
-        console.error('Admin seeding error:', err);
-    }
 }
 
-import bcrypt from 'bcryptjs';
-
-// Seed Admin Function
 function seedAdmin() {
     const email = 'admin@beos.com';
     const password = 'adminpassword123';
@@ -229,15 +202,19 @@ function seedAdmin() {
 
     try {
         const existingAdmin = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+
         if (!existingAdmin) {
-            console.log('Creating admin user...');
-            const passwordHash = bcrypt.hashSync(password, 10);
+            console.log('Seeding admin user...');
+            const salt = bcrypt.genSaltSync(10);
+            const passwordHash = bcrypt.hashSync(password, salt);
 
             db.prepare('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)').run(email, passwordHash, role);
             console.log('Admin user created successfully.');
+        } else {
+            console.log('Admin user already exists.');
         }
-    } catch (error) {
-        console.error('Error seeding admin:', error);
+    } catch (err) {
+        console.error('Admin seeding error:', err);
     }
 }
 
