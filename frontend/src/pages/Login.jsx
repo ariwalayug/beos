@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './Register.css'; // Reusing Register CSS for simplicity
+import './Auth.css';
 
 function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -15,51 +16,156 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
+        setError('');
         try {
             const success = await login(formData.email, formData.password);
-            if (!success) setSubmitting(false);
+            if (!success) {
+                setError('Invalid email or password');
+                setSubmitting(false);
+            }
         } catch (err) {
+            setError(err.message || 'Login failed');
             setSubmitting(false);
         }
     };
 
     return (
-        <div className="register-page">
-            <div className="container">
-                <div className="register-grid" style={{ gridTemplateColumns: '1fr', maxWidth: '500px', margin: '0 auto' }}>
-                    <div className="register-form-card glass-card">
-                        <h2 style={{ textAlign: 'center' }}>Welcome Back</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label className="form-label">Email</label>
+        <div className="auth-page">
+            {/* Animated Background */}
+            <div className="auth-background">
+                <div className="gradient-orb orb-1"></div>
+                <div className="gradient-orb orb-2"></div>
+                <div className="gradient-orb orb-3"></div>
+                <div className="floating-shapes">
+                    <div className="shape shape-1">🩸</div>
+                    <div className="shape shape-2">❤️</div>
+                    <div className="shape shape-3">💉</div>
+                </div>
+            </div>
+
+            <div className="auth-container">
+                {/* Left Side - Branding */}
+                <div className="auth-branding animate-slide-left">
+                    <div className="branding-content">
+                        <div className="brand-logo">
+                            <span className="logo-icon">🩸</span>
+                            <span className="logo-text">BEOS</span>
+                        </div>
+                        <h1 className="brand-tagline">
+                            Welcome Back,
+                            <span className="text-gradient-animated"> Hero</span>
+                        </h1>
+                        <p className="brand-description">
+                            Sign in to continue saving lives. Your next mission awaits.
+                        </p>
+
+                        <div className="brand-stats">
+                            <div className="brand-stat">
+                                <span className="stat-value">10K+</span>
+                                <span className="stat-label">Lives Saved</span>
+                            </div>
+                            <div className="brand-stat">
+                                <span className="stat-value">500+</span>
+                                <span className="stat-label">Active Heroes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Side - Login Form */}
+                <div className="auth-form-section animate-slide-right">
+                    <div className="auth-card glass-card">
+                        <div className="auth-header">
+                            <h2>Sign In</h2>
+                            <p>Enter your credentials to access your account</p>
+                        </div>
+
+                        {error && (
+                            <div className="auth-error animate-shake">
+                                <span className="error-icon">⚠️</span>
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="auth-form">
+                            <div className="form-group floating-label">
                                 <input
                                     type="email"
+                                    id="email"
                                     className="form-input"
-                                    placeholder="your@email.com"
+                                    placeholder=" "
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     required
                                 />
+                                <label htmlFor="email">Email Address</label>
+                                <span className="input-icon">📧</span>
                             </div>
 
-                            <div className="form-group">
-                                <label className="form-label">Password</label>
+                            <div className="form-group floating-label">
                                 <input
                                     type="password"
+                                    id="password"
                                     className="form-input"
-                                    placeholder="Enter your password"
+                                    placeholder=" "
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     required
                                 />
+                                <label htmlFor="password">Password</label>
+                                <span className="input-icon">🔒</span>
                             </div>
 
-                            <button type="submit" className="btn btn-primary btn-lg full-width" disabled={submitting}>
-                                {submitting ? 'Logging in...' : 'Login'}
+                            <div className="form-options">
+                                <label className="checkbox-label">
+                                    <input type="checkbox" />
+                                    <span className="checkmark"></span>
+                                    Remember me
+                                </label>
+                                <a href="#" className="forgot-link">Forgot Password?</a>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="btn-auth-primary"
+                                disabled={submitting}
+                            >
+                                <span className="btn-glow"></span>
+                                <span className="btn-text">
+                                    {submitting ? (
+                                        <>
+                                            <span className="spinner-small"></span>
+                                            Signing In...
+                                        </>
+                                    ) : (
+                                        'Sign In'
+                                    )}
+                                </span>
                             </button>
                         </form>
-                        <div style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                            <p>Don't have an account? <Link to="/register" style={{ color: 'var(--primary-color)' }}>Register here</Link></p>
+
+                        <div className="auth-divider">
+                            <span>or continue with</span>
+                        </div>
+
+                        <div className="social-login">
+                            <button className="social-btn google">
+                                <span className="social-icon">G</span>
+                                Google
+                            </button>
+                            <button className="social-btn github">
+                                <span className="social-icon">⌘</span>
+                                GitHub
+                            </button>
+                        </div>
+
+                        <div className="auth-footer">
+                            <p>
+                                Don't have an account?{' '}
+                                <Link to="/register" className="auth-link">
+                                    Join the Heroes →
+                                </Link>
+                            </p>
                         </div>
                     </div>
                 </div>

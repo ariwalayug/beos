@@ -1,36 +1,42 @@
 import { Link } from 'react-router-dom';
+import './NotFound.css';
 
 function NotFound() {
     return (
-        <div className="not-found-page" style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '60vh',
-            padding: '2rem',
-            textAlign: 'center'
-        }}>
-            <h1 style={{
-                fontSize: '6rem',
-                fontWeight: '700',
-                color: 'var(--primary, #dc3545)',
-                marginBottom: '0.5rem',
-                lineHeight: '1'
-            }}>
-                404
-            </h1>
-            <h2 style={{ marginBottom: '1rem' }}>Page Not Found</h2>
-            <p style={{
-                marginBottom: '1.5rem',
-                color: 'var(--text-muted, #6c757d)',
-                maxWidth: '400px'
-            }}>
-                The page you're looking for doesn't exist or has been moved.
-            </p>
-            <Link to="/" className="btn btn-primary">
-                Go to Home
-            </Link>
+        <div className="not-found-page masterpiece">
+            <div className="bg-animation">
+                {[...Array(20)].map((_, i) => (
+                    <div key={i} className="floating-cell"></div>
+                ))}
+            </div>
+
+            <div className="not-found-content glass-card animate-pop-in">
+                <div className="error-code">
+                    <span>4</span>
+                    <div className="blood-drop-wrapper">
+                        <span className="blood-drop">🩸</span>
+                        <div className="ripple"></div>
+                    </div>
+                    <span>4</span>
+                </div>
+
+                <h2>Page Not Found</h2>
+                <p>
+                    Oops! Looks like this vein has collapsed.
+                    The page you're dealing with doesn't exist in our system.
+                </p>
+
+                <div className="action-buttons">
+                    <Link to="/" className="btn btn-primary btn-lg">
+                        <span className="btn-icon">🏠</span>
+                        Return to Base
+                    </Link>
+                    <Link to="/emergency" className="btn btn-outline btn-lg">
+                        <span className="btn-icon">🚨</span>
+                        Report Emergency
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 }

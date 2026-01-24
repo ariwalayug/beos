@@ -1,127 +1,285 @@
-.blood-banks-page {
-    padding: var(--space-8) 0;
-    min-height: calc(100vh - 200px);
+/* ================================
+   BLOOD BANKS PAGE - PREMIUM STYLES
+   ================================ */
+
+.bloodbanks-page.masterpiece {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
-.blood-banks-list {
+/* Background Effects */
+.page-background .orb-1 {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, transparent 70%);
+    /* Blue for logistics/cold */
+}
+
+/* Controls Bar */
+.controls-bar {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.last-updated {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-success);
+    font-weight: var(--font-weight-bold);
+}
+
+.view-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+    padding: var(--space-1);
+}
+
+.toggle-btn {
+    padding: var(--space-2) var(--space-4);
+    background: transparent;
+    border: none;
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.toggle-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Blood Banks Grid */
+.bloodbanks-grid {
+    display: grid;
     gap: var(--space-6);
 }
 
-.blood-bank-card {
-    padding: var(--space-6);
+.bloodbanks-grid.grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
 }
 
+.bloodbanks-grid.list {
+    grid-template-columns: 1fr;
+}
+
+.bloodbank-card {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fade-slide-up 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.bloodbank-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
+    /* Blue hinge glow */
+}
+
+/* Card Header */
 .bank-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-4);
-    margin-bottom: var(--space-6);
 }
 
-.bank-icon {
-    font-size: var(--font-size-3xl);
+.bank-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-lg);
+    font-size: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-.bank-info {
+.bank-details {
     flex: 1;
 }
 
-.bank-info h3 {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
+.bank-details h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
     color: var(--color-white);
-    margin-bottom: var(--space-2);
-}
-
-.bank-address {
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-400);
     margin-bottom: var(--space-1);
 }
 
-.bank-hours {
+.bank-location {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-500);
+    color: var(--color-gray-400);
 }
 
-.bank-inventory h4 {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-300);
-    margin-bottom: var(--space-4);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: var(--space-3);
-}
-
-.inventory-item {
+.btn-call {
+    width: 40px;
+    height: 40px;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    color: var(--color-white);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-call:hover {
+    background: var(--color-success);
+    transform: scale(1.1);
+}
+
+/* Inventory Heatmap */
+.inventory-heatmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+}
+
+.heatmap-cell {
+    position: relative;
     padding: var(--space-3);
-    background: var(--bg-glass);
-    border-radius: var(--radius-lg);
-    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    text-align: center;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: default;
 }
 
-.inventory-item.critical {
-    border-color: rgba(220, 38, 38, 0.5);
-    background: rgba(220, 38, 38, 0.1);
+.heatmap-cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
 }
 
-.inventory-item.low {
-    border-color: rgba(245, 158, 11, 0.5);
-    background: rgba(245, 158, 11, 0.1);
+.heatmap-cell .blood-type {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: var(--space-1);
 }
 
-.inventory-item.good {
-    border-color: rgba(16, 185, 129, 0.3);
-}
-
-.inventory-type {
-    font-size: var(--font-size-sm);
+.heatmap-cell .blood-units {
+    display: block;
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);
     color: var(--color-white);
 }
 
-.inventory-units {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-white);
+/* Heatmap Colors */
+.heatmap-cell.good {
+    background: rgba(16, 185, 129, 0.15);
+    /* Green */
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.inventory-item.critical .inventory-units {
-    color: var(--color-primary-light);
+.heatmap-cell.good .cell-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(16, 185, 129, 0.2), transparent 70%);
 }
 
-.inventory-item.low .inventory-units {
-    color: var(--color-warning);
+.heatmap-cell.low {
+    background: rgba(245, 158, 11, 0.15);
+    /* Orange */
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.inventory-label {
+.heatmap-cell.critical {
+    background: rgba(239, 68, 68, 0.2);
+    /* Red */
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* Bank Footer */
+.bank-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: var(--font-size-xs);
     color: var(--color-gray-500);
 }
 
-@media (max-width: 1024px) {
-    .inventory-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+.status-legend {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.legend-item .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.dot.good {
+    background: #10b981;
+}
+
+.dot.low {
+    background: #f59e0b;
+}
+
+.dot.critical {
+    background: #ef4444;
+}
+
+/* Skeleton */
+.bank-skeleton .skeleton-header {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.bank-skeleton .skeleton-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.bank-skeleton .skeleton-grid {
+    height: 120px;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 @media (max-width: 640px) {
-    .bank-header {
-        flex-direction: column;
-    }
-
-    .inventory-grid {
-        grid-template-columns: repeat(4, 1fr);
+    .bloodbanks-grid.grid {
+        grid-template-columns: 1fr;
     }
 }

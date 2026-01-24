@@ -53,96 +53,185 @@ function Donors() {
     };
 
     const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+    const hasActiveFilters = filters.blood_type || filters.city || filters.available;
 
     return (
-        <div className="donors-page">
-            <div className="container">
-                <header className="page-header">
-                    <h1>Find Blood Donors</h1>
-                    <p>Search for available donors by blood type and location</p>
+        <div className="donors-page masterpiece">
+            {/* Background Effects */}
+            <div className="page-background">
+                <div className="gradient-orb orb-1"></div>
+                <div className="gradient-orb orb-2"></div>
+            </div>
+
+            <div className="container section">
+                {/* Hero Header */}
+                <header className="page-header animate-slide-up">
+                    <div className="header-badge">
+                        <span className="badge-icon">🦸</span>
+                        <span>First Responder Network</span>
+                    </div>
+                    <h1 className="page-title">
+                        Find Blood
+                        <span className="text-gradient-animated"> Heroes</span>
+                    </h1>
+                    <p className="page-subtitle">
+                        Connect with available donors in your area. Every hero counts.
+                    </p>
                 </header>
 
-                <div className="filters-bar glass-card">
-                    <div className="filter-group">
-                        <label className="form-label">Blood Type</label>
-                        <select
-                            className="form-select"
-                            value={filters.blood_type}
-                            onChange={(e) => handleFilterChange('blood_type', e.target.value)}
-                        >
-                            <option value="">All Types</option>
-                            {bloodTypes.map(type => (
-                                <option key={type} value={type}>{type}</option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Advanced Filter Bar */}
+                <div className="filters-section glass-card animate-slide-up delay-1">
+                    <div className="filters-grid">
+                        {/* Blood Type Pills */}
+                        <div className="filter-group blood-type-filter">
+                            <label className="filter-label">Blood Type</label>
+                            <div className="blood-pills">
+                                <button
+                                    className={`blood-pill ${!filters.blood_type ? 'active' : ''}`}
+                                    onClick={() => handleFilterChange('blood_type', '')}
+                                >
+                                    All
+                                </button>
+                                {bloodTypes.map(type => (
+                                    <button
+                                        key={type}
+                                        className={`blood-pill ${filters.blood_type === type ? 'active' : ''}`}
+                                        onClick={() => handleFilterChange('blood_type', type)}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
-                    <div className="filter-group">
-                        <label className="form-label">City</label>
-                        <input
-                            type="text"
-                            className="form-input"
-                            placeholder="Enter city..."
-                            value={filters.city}
-                            onChange={(e) => handleFilterChange('city', e.target.value)}
-                        />
-                    </div>
+                        {/* Location & Availability */}
+                        <div className="filter-row">
+                            <div className="filter-group">
+                                <label className="filter-label">Location</label>
+                                <div className="input-with-icon">
+                                    <span className="input-icon">📍</span>
+                                    <input
+                                        type="text"
+                                        className="filter-input"
+                                        placeholder="Search city..."
+                                        value={filters.city}
+                                        onChange={(e) => handleFilterChange('city', e.target.value)}
+                                    />
+                                </div>
+                            </div>
 
-                    <div className="filter-group">
-                        <label className="form-label">Availability</label>
-                        <select
-                            className="form-select"
-                            value={filters.available}
-                            onChange={(e) => handleFilterChange('available', e.target.value)}
-                        >
-                            <option value="">All</option>
-                            <option value="true">Available Only</option>
-                            <option value="false">Unavailable</option>
-                        </select>
-                    </div>
+                            <div className="filter-group">
+                                <label className="filter-label">Status</label>
+                                <div className="status-pills">
+                                    <button
+                                        className={`status-pill ${!filters.available ? 'active' : ''}`}
+                                        onClick={() => handleFilterChange('available', '')}
+                                    >
+                                        All
+                                    </button>
+                                    <button
+                                        className={`status-pill available ${filters.available === 'true' ? 'active' : ''}`}
+                                        onClick={() => handleFilterChange('available', 'true')}
+                                    >
+                                        <span className="status-dot"></span>
+                                        Available
+                                    </button>
+                                </div>
+                            </div>
 
-                    <button className="btn btn-secondary" onClick={clearFilters}>
-                        Clear Filters
-                    </button>
+                            {hasActiveFilters && (
+                                <button className="clear-filters-btn" onClick={clearFilters}>
+                                    ✕ Clear All
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
-                {loading ? (
-                    <div className="loading-container">
-                        <div className="spinner"></div>
-                        <p>Loading donors...</p>
-                    </div>
-                ) : error ? (
-                    <div className="error-container">
-                        <p>Error: {error}</p>
-                        <button className="btn btn-primary" onClick={fetchDonors}>Retry</button>
-                    </div>
-                ) : donors.length === 0 ? (
-                    <div className="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <h3>No donors found</h3>
-                        <p>Try adjusting your filters or check back later</p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="results-info">
-                            <p>Found <strong>{donors.length}</strong> donor{donors.length !== 1 ? 's' : ''}</p>
+                {/* Results Section */}
+                <div className="results-section animate-fade-in delay-2">
+                    {loading ? (
+                        <div className="loading-state">
+                            <div className="loading-grid">
+                                {[...Array(6)].map((_, i) => (
+                                    <div key={i} className="skeleton-card">
+                                        <div className="skeleton-avatar"></div>
+                                        <div className="skeleton-lines">
+                                            <div className="skeleton-line long"></div>
+                                            <div className="skeleton-line short"></div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="donors-grid">
-                            {donors.map(donor => (
-                                <DonorCard
-                                    key={donor.id}
-                                    donor={donor}
-                                    onContact={(d) => window.open(`tel:${d.phone}`)}
-                                />
-                            ))}
+                    ) : error ? (
+                        <div className="error-state glass-card">
+                            <span className="error-icon">⚠️</span>
+                            <h3>Something went wrong</h3>
+                            <p>{error}</p>
+                            <button className="btn btn-primary" onClick={fetchDonors}>
+                                Try Again
+                            </button>
                         </div>
-                    </>
-                )}
+                    ) : donors.length === 0 ? (
+                        <div className="empty-state glass-card">
+                            <span className="empty-icon">🔍</span>
+                            <h3>No heroes found</h3>
+                            <p>Try adjusting your filters or check back later</p>
+                            {hasActiveFilters && (
+                                <button className="btn btn-outline" onClick={clearFilters}>
+                                    Clear Filters
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        <>
+                            <div className="results-header">
+                                <div className="results-count">
+                                    <span className="count-number">{donors.length}</span>
+                                    <span className="count-label">Heroes Found</span>
+                                </div>
+                                {hasActiveFilters && (
+                                    <div className="active-filters">
+                                        {filters.blood_type && (
+                                            <span className="filter-tag">
+                                                🩸 {filters.blood_type}
+                                                <button onClick={() => handleFilterChange('blood_type', '')}>×</button>
+                                            </span>
+                                        )}
+                                        {filters.city && (
+                                            <span className="filter-tag">
+                                                📍 {filters.city}
+                                                <button onClick={() => handleFilterChange('city', '')}>×</button>
+                                            </span>
+                                        )}
+                                        {filters.available && (
+                                            <span className="filter-tag">
+                                                ✓ Available
+                                                <button onClick={() => handleFilterChange('available', '')}>×</button>
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="donors-grid">
+                                {donors.map((donor, index) => (
+                                    <div
+                                        key={donor.id}
+                                        className="donor-card-wrapper"
+                                        style={{ animationDelay: `${index * 50}ms` }}
+                                    >
+                                        <DonorCard
+                                            donor={donor}
+                                            onContact={(d) => window.open(`tel:${d.phone}`)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

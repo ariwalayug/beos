@@ -8,13 +8,14 @@ import {
 } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
-import { ProfileEditor, AvailabilityToggle, RequestCard } from '../components/DashboardComponents';
+import { ProfileEditor, RequestCard } from '../components/DashboardComponents';
+import { EmergencyMapView, MissionControlHeader } from '../components/EmergencyMapView';
 import './DonorDashboard.css';
 
 function DonorDashboard() {
     const { showToast } = useToast();
     const socket = useSocket();
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState('mission');
     const [profile, setProfile] = useState(null);
     const [requests, setRequests] = useState([]);
     const [history, setHistory] = useState([]);
@@ -38,8 +39,15 @@ function DonorDashboard() {
             setRequests(prev => [newRequest, ...prev]);
         });
 
+        socket.on('crisis-mode', (data) => {
+            if (data.active) {
+                showToast(`🚨 MASS CASUALTY ALERT from ${data.hospital_name}! Check your Emergency Map.`, 'error');
+            }
+        });
+
         return () => {
             socket.off('new-request');
+            socket.off('crisis-mode');
         };
     }, [socket, showToast]);
 
@@ -83,11 +91,10 @@ function DonorDashboard() {
     const handleToggleAvailability = async (newStatus) => {
         try {
             // Optimistic update
-            const oldStatus = profile.available;
             setProfile(prev => ({ ...prev, available: newStatus }));
 
             await updateDonor(profile.id, { available: newStatus });
-            showToast(`You are now ${newStatus ? 'Available' : 'Unavailable'}`, 'success');
+            showToast(`You are now ${newStatus ? 'READY FOR MISSION' : 'Off Duty'}`, 'success');
         } catch (error) {
             setProfile(prev => ({ ...prev, available: !newStatus })); // Revert
             showToast('Failed to update availability', 'error');
@@ -99,12 +106,18 @@ function DonorDashboard() {
 
         try {
             await fulfillRequest(requestId);
-            showToast('Thank you! The hospital has been notified.', 'success');
+            showToast('Thank you! The hospital has been notified. You are a hero! 🦸', 'success');
             // Refresh data
             fetchDashboardData();
         } catch (error) {
             showToast('Failed to fulfill request: ' + error.message, 'error');
         }
+    };
+
+    const handleRespondToEmergency = (request) => {
+        setActiveTab('requests');
+        // Scroll to the specific request or highlight it
+        showToast(`Viewing request #${request.id} - ${request.blood_type}`, 'info');
     };
 
     if (loading) {
@@ -124,62 +137,140 @@ function DonorDashboard() {
         );
     }
 
+    // Calculate stats for Mission Control
+    const stats = {
+        totalDonations: history.length,
+        nearbyEmergencies: requests.length,
+        criticalCount: requests.filter(r => r.urgency === 'critical').length
+    };
+
     return (
-        <div className="donor-dashboard">
+        <div className="donor-dashboard first-responder-theme">
             <div className="container section">
-                <header className="dashboard-header">
-                    <div className="dashboard-welcome">
-                        <h1>Welcome back, {profile.name.split(' ')[0]}! 👋</h1>
-                        <p>Thank you for being a life saver.</p>
-                    </div>
+                {/* Mission Control Header */}
+                <MissionControlHeader
+                    profile={profile}
+                    available={!!profile.available}
+                    onToggle={handleToggleAvailability}
+                    stats={stats}
+                    loading={actionLoading}
+                />
 
-                    <div className="stats-grid">
-                        <div className="stat-card glass-card">
-                            <span className="stat-label">Blood Type</span>
-                            <span className="stat-value text-gradient">{profile.blood_type}</span>
-                        </div>
-                        <div className="stat-card glass-card">
-                            <span className="stat-label">Total Donations</span>
-                            <span className="stat-value">{history.length}</span>
-                        </div>
-                        <div className="stat-card glass-card">
-                            <span className="stat-label">Nearby Emergencies</span>
-                            <span className={`stat-value ${requests.length > 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                {requests.length}
-                            </span>
-                        </div>
-                    </div>
-
-                    <AvailabilityToggle
-                        available={!!profile.available}
-                        onToggle={handleToggleAvailability}
-                        loading={actionLoading}
-                    />
-                </header>
-
+                {/* Tabs */}
                 <div className="dashboard-tabs">
                     <button
-                        className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('overview')}
+                        className={`tab-btn ${activeTab === 'mission' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('mission')}
                     >
-                        Overview & Requests
+                        🎯 Mission Control
+                    </button>
+                    <button
+                        className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('map')}
+                    >
+                        🗺️ Emergency Map
+                    </button>
+                    <button
+                        className={`tab-btn ${activeTab === 'requests' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('requests')}
+                    >
+                        📋 Requests ({requests.length})
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
                         onClick={() => setActiveTab('profile')}
                     >
-                        My Profile
+                        👤 Profile
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
                         onClick={() => setActiveTab('history')}
                     >
-                        Donation History
+                        🏆 History ({history.length})
                     </button>
                 </div>
 
                 <div className="dashboard-content">
-                    {activeTab === 'overview' && (
+                    {activeTab === 'mission' && (
+                        <div className="animate-fade-in">
+                            {/* Quick Actions */}
+                            <div className="quick-actions glass-card">
+                                <h3>Quick Actions</h3>
+                                <div className="action-grid">
+                                    <button
+                                        className="action-btn"
+                                        onClick={() => setActiveTab('map')}
+                                    >
+                                        <span className="action-icon">🗺️</span>
+                                        <span className="action-label">View Map</span>
+                                    </button>
+                                    <button
+                                        className="action-btn critical"
+                                        onClick={() => setActiveTab('requests')}
+                                        disabled={requests.length === 0}
+                                    >
+                                        <span className="action-icon">🚨</span>
+                                        <span className="action-label">
+                                            {stats.criticalCount > 0
+                                                ? `${stats.criticalCount} Critical!`
+                                                : 'No Alerts'}
+                                        </span>
+                                    </button>
+                                    <button
+                                        className="action-btn"
+                                        onClick={() => setActiveTab('history')}
+                                    >
+                                        <span className="action-icon">🏆</span>
+                                        <span className="action-label">{history.length} Saves</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Recent Emergencies Preview */}
+                            {requests.length > 0 && (
+                                <div className="recent-emergencies">
+                                    <h3>⚡ Active Emergencies</h3>
+                                    <div className="emergency-preview">
+                                        {requests.slice(0, 3).map(req => (
+                                            <RequestCard
+                                                key={req.id}
+                                                request={req}
+                                                onFulfill={handleFulfillRequest}
+                                            />
+                                        ))}
+                                    </div>
+                                    {requests.length > 3 && (
+                                        <button
+                                            className="btn btn-outline mt-4"
+                                            onClick={() => setActiveTab('requests')}
+                                        >
+                                            View All {requests.length} Requests
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
+                            {requests.length === 0 && (
+                                <div className="all-clear glass-card">
+                                    <span className="all-clear-icon">✅</span>
+                                    <h3>All Clear!</h3>
+                                    <p>No emergencies in your area. Thank you for being ready to help!</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === 'map' && (
+                        <div className="animate-fade-in">
+                            <EmergencyMapView
+                                requests={requests}
+                                donorCity={profile.city}
+                                onRespond={handleRespondToEmergency}
+                            />
+                        </div>
+                    )}
+
+                    {activeTab === 'requests' && (
                         <div className="animate-fade-in">
                             <h3 className="mb-4 text-xl font-bold">Nearby Emergency Requests ({requests.length})</h3>
                             {requests.length === 0 ? (
@@ -214,7 +305,7 @@ function DonorDashboard() {
 
                     {activeTab === 'history' && (
                         <div className="animate-fade-in">
-                            <h3 className="mb-4 text-xl font-bold">Your Donation History</h3>
+                            <h3 className="mb-4 text-xl font-bold">🏆 Your Donation History</h3>
                             {history.length === 0 ? (
                                 <div className="empty-state glass-card">
                                     <p>You haven't made any donations yet. Your first one will be special! 🩸</p>
@@ -222,16 +313,20 @@ function DonorDashboard() {
                             ) : (
                                 <div className="requests-list">
                                     {history.map(req => (
-                                        <div key={req.id} className="glass-card request-card">
+                                        <div key={req.id} className="glass-card request-card completed">
                                             <div>
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="badge badge-fulfilled">Completed</span>
+                                                    <span className="badge badge-fulfilled">✓ Completed</span>
                                                     <span className="text-sm text-gray-400">
                                                         {new Date(req.fulfilled_at || req.updated_at).toLocaleDateString()}
                                                     </span>
                                                 </div>
                                                 <h4>Donated to {req.patient_name || 'Patient'}</h4>
                                                 <p className="text-sm text-gray-400">Hospital: {req.hospital_name}</p>
+                                            </div>
+                                            <div className="donation-badge">
+                                                <span className="blood-type">{req.blood_type}</span>
+                                                <span className="units">{req.units} unit{req.units > 1 ? 's' : ''}</span>
                                             </div>
                                         </div>
                                     ))}
