@@ -1,0 +1,68 @@
+.hospital-dashboard {
+    padding-bottom: var(--space-20);
+}
+
+.dashboard-header {
+    margin-bottom: var(--space-8);
+}
+
+.dashboard-welcome h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+    margin-bottom: var(--space-2);
+}
+
+.dashboard-tabs {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: var(--space-1);
+}
+
+.request-form-card {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-8);
+}
+
+.request-form h3 {
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-xl);
+}
+
+.radio-group {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.radio-label:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.radio-label input[type="radio"]:checked+span {
+    color: var(--color-white);
+    font-weight: var(--font-weight-bold);
+}
+
+.matched-donors-section {
+    margin-top: var(--space-8);
+}
+
+.donors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-6);
+}

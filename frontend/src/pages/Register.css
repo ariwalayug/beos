@@ -1,0 +1,220 @@
+.register-page {
+    padding: var(--space-12) 0;
+    min-height: calc(100vh - 200px);
+}
+
+.register-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-12);
+    align-items: center;
+}
+
+.register-info h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-white);
+    margin-bottom: var(--space-4);
+}
+
+.register-info>p {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-400);
+    margin-bottom: var(--space-8);
+}
+
+.benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.benefit-item {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.benefit-icon {
+    font-size: var(--font-size-2xl);
+}
+
+.benefit-item h4 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-1);
+}
+
+.benefit-item p {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.register-form-card {
+    padding: var(--space-8);
+}
+
+.register-form-card h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-6);
+}
+
+.blood-type-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+}
+
+.blood-type-option {
+    cursor: pointer;
+}
+
+.blood-type-option input {
+    display: none;
+}
+
+.blood-type-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-300);
+    background: var(--bg-glass);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.blood-type-option:hover span {
+    border-color: var(--color-gray-600);
+}
+
+.blood-type-option.selected span {
+    background: var(--color-primary-gradient);
+    color: var(--color-white);
+    border-color: transparent;
+    box-shadow: var(--shadow-glow);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.availability-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+}
+
+.availability-toggle input {
+    display: none;
+}
+
+.toggle-slider {
+    position: relative;
+    width: 48px;
+    height: 24px;
+    background: var(--color-gray-600);
+    border-radius: var(--radius-full);
+    transition: background var(--transition-fast);
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: var(--color-white);
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.availability-toggle input:checked+.toggle-slider {
+    background: var(--color-success);
+}
+
+.availability-toggle input:checked+.toggle-slider::after {
+    transform: translateX(24px);
+}
+
+.toggle-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-300);
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Success Card */
+.success-card {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: var(--space-12);
+    text-align: center;
+}
+
+.success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    font-size: var(--font-size-4xl);
+    background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+    color: var(--color-white);
+    border-radius: 50%;
+    margin-bottom: var(--space-6);
+}
+
+.success-card h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    margin-bottom: var(--space-4);
+}
+
+.success-card p {
+    color: var(--color-gray-400);
+    margin-bottom: var(--space-2);
+}
+
+.redirect-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 1024px) {
+    .register-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+
+    .register-info {
+        text-align: center;
+    }
+
+    .benefits-list {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .blood-type-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

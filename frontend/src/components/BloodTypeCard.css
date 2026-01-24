@@ -1,0 +1,44 @@
+.blood-type-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    cursor: pointer;
+}
+
+.blood-type-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-primary-gradient);
+    color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow);
+    transition: transform var(--transition-fast);
+}
+
+.blood-type-card:hover .blood-type-badge {
+    transform: scale(1.05);
+}
+
+.blood-type-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.blood-type-count {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.blood-type-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

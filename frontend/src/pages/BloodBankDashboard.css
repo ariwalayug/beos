@@ -1,0 +1,53 @@
+.bb-dashboard {
+    padding-bottom: var(--space-20);
+}
+
+.dashboard-header {
+    margin-bottom: var(--space-8);
+}
+
+.dashboard-welcome h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+    margin-bottom: var(--space-2);
+}
+
+.expiry-alert-row {
+    border-left: 4px solid var(--color-warning);
+}
+
+.expired-row {
+    border-left: 4px solid var(--color-danger);
+    opacity: 0.7;
+}
+
+.add-batch-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+}
+
+.alert-card {
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.alert-card.warning {
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.alert-card.danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}

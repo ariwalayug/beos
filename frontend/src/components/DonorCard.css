@@ -1,0 +1,75 @@
+.donor-card {
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.donor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.donor-blood-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-primary-gradient);
+    color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow);
+}
+
+.donor-status {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+}
+
+.donor-status.available {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--color-success);
+}
+
+.donor-status.unavailable {
+    background: rgba(100, 116, 139, 0.2);
+    color: var(--color-gray-400);
+}
+
+.donor-body {
+    flex: 1;
+}
+
+.donor-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-2);
+}
+
+.donor-location {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.donor-last {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin-top: var(--space-1);
+}
+
+.donor-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.donor-actions .btn {
+    flex: 1;
+}

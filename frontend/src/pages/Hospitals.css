@@ -1,0 +1,66 @@
+.hospitals-page {
+    padding: var(--space-8) 0;
+    min-height: calc(100vh - 200px);
+}
+
+.search-bar {
+    padding: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.search-bar .form-input {
+    background: transparent;
+    border: none;
+    font-size: var(--font-size-lg);
+}
+
+.search-bar .form-input:focus {
+    box-shadow: none;
+}
+
+.hospitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-6);
+}
+
+.hospital-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+}
+
+.hospital-icon {
+    font-size: var(--font-size-3xl);
+}
+
+.hospital-info h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-2);
+}
+
+.hospital-address {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+    margin-bottom: var(--space-1);
+}
+
+.hospital-city {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.hospital-contact {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: auto;
+}
+
+@media (max-width: 640px) {
+    .hospitals-grid {
+        grid-template-columns: 1fr;
+    }
+}

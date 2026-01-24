@@ -1,0 +1,201 @@
+.emergency-page {
+    padding: var(--space-8) 0;
+    min-height: calc(100vh - 200px);
+}
+
+.emergency-page .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.emergency-page .page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.emergency-page .page-header h1 .pulse {
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+    padding: var(--space-1);
+    background: var(--bg-glass);
+    border-radius: var(--radius-lg);
+    width: fit-content;
+}
+
+.filter-tab {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-400);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-tab:hover {
+    color: var(--color-white);
+}
+
+.filter-tab.active {
+    color: var(--color-white);
+    background: var(--bg-glass-strong);
+}
+
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--space-6);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--space-4);
+    animation: fade-in 0.2s ease;
+}
+
+.modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: var(--space-6);
+    animation: scale-in 0.2s ease;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+}
+
+.modal-header h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    color: var(--color-gray-400);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+}
+
+.modal-close:hover {
+    color: var(--color-white);
+    background: var(--bg-glass);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.urgency-options {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.urgency-option {
+    cursor: pointer;
+}
+
+.urgency-option input {
+    display: none;
+}
+
+.urgency-option .urgency-badge {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.urgency-option .badge-normal {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--color-success);
+}
+
+.urgency-option .badge-urgent {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--color-warning);
+}
+
+.urgency-option .badge-critical {
+    background: rgba(220, 38, 38, 0.2);
+    color: var(--color-primary-light);
+}
+
+.urgency-option.selected .urgency-badge {
+    border-color: currentColor;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+@media (max-width: 640px) {
+    .emergency-page .page-header {
+        flex-direction: column;
+    }
+
+    .filter-tabs {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .requests-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .urgency-options {
+        flex-direction: column;
+    }
+}

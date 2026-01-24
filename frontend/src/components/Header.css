@@ -1,0 +1,126 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-4);
+    gap: var(--space-8);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.logo-icon svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.4));
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logo-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.logo-subtitle {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.nav-link {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-300);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+    color: var(--color-white);
+    background: var(--bg-glass);
+}
+
+.nav-link.active {
+    color: var(--color-white);
+    background: var(--bg-glass-strong);
+}
+
+.nav-emergency {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-primary-light);
+}
+
+.nav-emergency:hover,
+.nav-emergency.active {
+    color: var(--color-primary);
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.emergency-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    animation: pulse-critical 2s infinite;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+    .nav {
+        display: none;
+    }
+
+    .logo-text {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .header-actions .btn {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--font-size-xs);
+    }
+}

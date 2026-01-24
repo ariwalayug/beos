@@ -1,0 +1,46 @@
+.emergency-banner {
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.15) 0%, rgba(153, 27, 27, 0.2) 100%);
+    border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+    animation: pulse-critical 3s infinite;
+}
+
+.emergency-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+}
+
+.emergency-pulse {
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    animation: pulse-critical 1s infinite;
+    box-shadow: 0 0 10px var(--color-primary);
+}
+
+.emergency-text {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-100);
+}
+
+.emergency-text strong {
+    color: var(--color-primary-light);
+}
+
+@media (max-width: 640px) {
+    .emergency-banner-content {
+        flex-direction: column;
+        gap: var(--space-2);
+        text-align: center;
+    }
+
+    .emergency-pulse {
+        display: none;
+    }
+}

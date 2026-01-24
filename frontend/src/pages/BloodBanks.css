@@ -1,0 +1,127 @@
+.blood-banks-page {
+    padding: var(--space-8) 0;
+    min-height: calc(100vh - 200px);
+}
+
+.blood-banks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.blood-bank-card {
+    padding: var(--space-6);
+}
+
+.bank-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.bank-icon {
+    font-size: var(--font-size-3xl);
+}
+
+.bank-info {
+    flex: 1;
+}
+
+.bank-info h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-2);
+}
+
+.bank-address {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+    margin-bottom: var(--space-1);
+}
+
+.bank-hours {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.bank-inventory h4 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-300);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: var(--space-3);
+}
+
+.inventory-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-3);
+    background: var(--bg-glass);
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+}
+
+.inventory-item.critical {
+    border-color: rgba(220, 38, 38, 0.5);
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.inventory-item.low {
+    border-color: rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.inventory-item.good {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.inventory-type {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.inventory-units {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.inventory-item.critical .inventory-units {
+    color: var(--color-primary-light);
+}
+
+.inventory-item.low .inventory-units {
+    color: var(--color-warning);
+}
+
+.inventory-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 1024px) {
+    .inventory-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .bank-header {
+        flex-direction: column;
+    }
+
+    .inventory-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

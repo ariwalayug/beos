@@ -1,0 +1,96 @@
+.request-card {
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.request-card.critical {
+    border-color: rgba(220, 38, 38, 0.3);
+    background: rgba(220, 38, 38, 0.05);
+}
+
+.request-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.request-blood-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-primary-gradient);
+    color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow);
+}
+
+.request-badges {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.request-body {
+    flex: 1;
+}
+
+.request-units {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.units-number {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+}
+
+.units-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.request-hospital {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-300);
+    margin-bottom: var(--space-1);
+}
+
+.request-patient {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.request-notes {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+    font-style: italic;
+    margin-top: var(--space-2);
+    padding: var(--space-2);
+    background: var(--bg-glass);
+    border-radius: var(--radius-md);
+}
+
+.request-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin-top: var(--space-2);
+}
+
+.request-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.request-actions .btn {
+    flex: 1;
+    min-width: 80px;
+}

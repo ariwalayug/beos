@@ -1,0 +1,5 @@
+/* Basic styling if needed, mainly relying on utility classes */
+.leaflet-container {
+    background: #1a1a1a !important;
+    /* Dark mode map background until tiles load */
+}
