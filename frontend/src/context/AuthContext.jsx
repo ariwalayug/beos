@@ -35,11 +35,14 @@ export const AuthProvider = ({ children }) => {
             setUser(data.user);
 
             // Redirect based on role
+            // Redirect based on role
             switch (data.user.role) {
-                case 'hospital': navigate('/hospitals'); break;
-                case 'blood_bank': navigate('/blood-banks'); break;
-                case 'admin': navigate('/'); break;
-                default: navigate('/donors'); // Default for users/donors
+                case 'hospital': navigate('/hospital-dashboard'); break;
+                case 'blood_bank': navigate('/blood-bank-dashboard'); break;
+                case 'admin': navigate('/admin-dashboard'); break;
+                case 'user': // Fallthrough for 'user' which is donor
+                case 'donor': navigate('/donor-dashboard'); break;
+                default: navigate('/');
             }
 
             showToast('Logged in successfully', 'success');
@@ -55,7 +58,8 @@ export const AuthProvider = ({ children }) => {
             const { data } = await api.register(userData);
             localStorage.setItem('token', data.token);
             setUser(data.user);
-            navigate('/donors'); // Or step 2 of profiling
+            setUser(data.user);
+            // navigate('/donors'); // Component handles redirect
             showToast('Registration successful', 'success');
             return true;
         } catch (error) {

@@ -53,7 +53,14 @@ function Register() {
 
             await register(registrationData);
             setSuccess(true);
-            setTimeout(() => navigate('/donors'), 2000);
+            await register(registrationData);
+            setSuccess(true);
+            setTimeout(() => {
+                if (registrationData.role === 'admin') navigate('/admin-dashboard');
+                else if (registrationData.role === 'hospital') navigate('/hospital-dashboard');
+                else if (registrationData.role === 'blood_bank') navigate('/blood-bank-dashboard');
+                else navigate('/donor-dashboard');
+            }, 2000);
         } catch (err) {
             // Error handled in AuthContext
             setSubmitting(false);
