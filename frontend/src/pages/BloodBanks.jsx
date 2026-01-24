@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { getBloodBanks } from '../services/api';
+import { Archive, MapPin, Phone, LayoutGrid, List, Activity, AlertCircle } from 'lucide-react';
+import PageTransition from '../components/animations/PageTransition';
+import FadeIn from '../components/animations/FadeIn';
+import { motion } from 'framer-motion';
 import './BloodBanks.css';
 
 function BloodBanks() {
     const [bloodBanks, setBloodBanks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+    const [viewMode, setViewMode] = useState('grid');
 
     useEffect(() => {
         fetchBloodBanks();
@@ -31,134 +35,102 @@ function BloodBanks() {
     };
 
     return (
-        <div className="bloodbanks-page masterpiece">
-            {/* Background Effects */}
-            <div className="page-background">
-                <div className="gradient-orb orb-1"></div>
-                <div className="gradient-orb orb-2"></div>
-                <div className="grid-overlay"></div>
-            </div>
-
+        <PageTransition className="bloodbanks-page professional">
             <div className="container section">
-                <header className="page-header animate-slide-up">
+                <FadeIn className="page-header-pro">
                     <div className="header-badge">
-                        <span className="badge-icon">🏦</span>
-                        <span>Inventory Network</span>
+                        <Archive size={16} />
+                        <span>Inventory Logistics</span>
                     </div>
-                    <h1 className="page-title">
-                        Blood Bank
-                        <span className="text-gradient-animated"> Logistics</span>
-                    </h1>
-                    <p className="page-subtitle">
-                        Real-time inventory levels across the entire donation network.
-                    </p>
-                </header>
+                    <h1>Blood Network Supply</h1>
+                    <p>Real-time inventory levels across the entire donation network.</p>
+                </FadeIn>
 
-                {/* Controls */}
-                <div className="controls-bar glass-card animate-slide-up delay-1">
-                    <div className="refresh-control">
-                        <span className="last-updated">
-                            <span className="pulse-dot online"></span>
-                            Live Inventory
-                        </span>
+                <div className="controls-bar-pro">
+                    <div className="live-indicator">
+                        <span className="pulse-dot-mini"></span>
+                        Live Updates
                     </div>
-                    <div className="view-toggle">
+                    <div className="view-toggle-pro">
                         <button
                             className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
                             onClick={() => setViewMode('grid')}
                         >
-                            📊 Heatmap
+                            <LayoutGrid size={16} /> Heatmap
                         </button>
                         <button
                             className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
                             onClick={() => setViewMode('list')}
                         >
-                            📋 List
+                            <List size={16} /> List
                         </button>
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="results-section animate-fade-in delay-2">
+                <div className="results-container">
                     {loading ? (
                         <div className="loading-grid">
-                            {[...Array(3)].map((_, i) => (
-                                <div key={i} className="skeleton-card bank-skeleton">
-                                    <div className="skeleton-header">
-                                        <div className="skeleton-avatar"></div>
-                                        <div className="skeleton-lines">
-                                            <div className="skeleton-line long"></div>
-                                            <div className="skeleton-line short"></div>
-                                        </div>
-                                    </div>
-                                    <div className="skeleton-grid"></div>
-                                </div>
-                            ))}
+                            {[1, 2, 3].map(i => <div key={i} className="skeleton-card-pro h-64"></div>)}
                         </div>
                     ) : error ? (
-                        <div className="error-state glass-card">
-                            <span className="error-icon">⚠️</span>
+                        <div className="error-state">
+                            <AlertCircle size={32} />
                             <h3>Unable to load inventory data</h3>
-                            <button className="btn btn-primary" onClick={fetchBloodBanks}>Retry</button>
+                            <button onClick={fetchBloodBanks} className="btn-retry">Retry</button>
                         </div>
                     ) : bloodBanks.length === 0 ? (
-                        <div className="empty-state glass-card">
-                            <span className="empty-icon">🏦</span>
+                        <div className="empty-state-pro">
+                            <Archive size={48} className="text-muted" />
                             <h3>No blood banks found</h3>
                         </div>
                     ) : (
-                        <div className={`bloodbanks-grid ${viewMode}`}>
-                            {bloodBanks.map((bank, index) => (
-                                <div
+                        <div className={`bloodbanks-grid-pro ${viewMode}`}>
+                            {bloodBanks.map((bank, i) => (
+                                <motion.div
                                     key={bank.id}
-                                    className="bloodbank-card glass-card"
-                                    style={{ animationDelay: `${index * 100}ms` }}
+                                    className="bloodbank-card-pro"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: i * 0.05 }}
+                                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
                                 >
                                     <div className="bank-header">
-                                        <div className="bank-icon-wrapper">
-                                            <span className="bank-icon">🏦</span>
+                                        <div className="bank-icon-box">
+                                            <Archive size={20} />
                                         </div>
-                                        <div className="bank-details">
+                                        <div className="bank-info-main">
                                             <h3>{bank.name}</h3>
-                                            <p className="bank-location">📍 {bank.city}</p>
+                                            <div className="bank-meta">
+                                                <span className="meta-item"><MapPin size={14} /> {bank.city}</span>
+                                                <span className="meta-item"><Activity size={14} /> Updated 2m ago</span>
+                                            </div>
                                         </div>
-                                        <a href={`tel:${bank.phone}`} className="btn-call">
-                                            📞
+                                        <a href={`tel:${bank.phone}`} className="btn-icon">
+                                            <Phone size={18} />
                                         </a>
                                     </div>
 
-                                    <div className="inventory-heatmap">
+                                    <div className="inventory-heatmap-pro">
                                         {bank.inventory && bank.inventory.map(item => {
                                             const status = getInventoryStatus(item.units);
                                             return (
                                                 <div
                                                     key={item.blood_type}
-                                                    className={`heatmap-cell ${status.class}`}
-                                                    title={`${item.blood_type}: ${item.units} units (${status.label})`}
+                                                    className={`heatmap-cell-pro ${status.class}`}
                                                 >
-                                                    <span className="blood-type">{item.blood_type}</span>
-                                                    <span className="blood-units">{item.units}</span>
-                                                    <div className="cell-glow"></div>
+                                                    <span className="cell-type">{item.blood_type}</span>
+                                                    <span className="cell-units">{item.units}</span>
                                                 </div>
                                             );
                                         })}
                                     </div>
-
-                                    <div className="bank-footer">
-                                        <div className="status-legend">
-                                            <div className="legend-item"><span className="dot good"></span>Healthy</div>
-                                            <div className="legend-item"><span className="dot low"></span>Low</div>
-                                            <div className="legend-item"><span className="dot critical"></span>Critical</div>
-                                        </div>
-                                        <span className="update-time">Updated 2m ago</span>
-                                    </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     )}
                 </div>
             </div>
-        </div>
+        </PageTransition>
     );
 }
 

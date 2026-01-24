@@ -1,4 +1,5 @@
 import './EmergencyBanner.css';
+import { AlertCircle, ArrowRight } from 'lucide-react';
 
 function EmergencyBanner({ requests = [] }) {
     const criticalCount = requests.filter(r => r.urgency === 'critical' && r.status === 'pending').length;
@@ -10,11 +11,12 @@ function EmergencyBanner({ requests = [] }) {
             <div className="container emergency-banner-content">
                 <div className="emergency-pulse"></div>
                 <div className="emergency-text">
-                    <strong>⚠️ CRITICAL ALERT:</strong>
+                    <AlertCircle size={18} className="banner-icon" />
+                    <span className="banner-label">CRITICAL ALERT:</span>
                     <span>{criticalCount} urgent blood request{criticalCount > 1 ? 's' : ''} need immediate attention!</span>
                 </div>
-                <a href="/emergency" className="btn btn-sm btn-danger">
-                    View Requests
+                <a href="/emergency" className="btn-view-requests">
+                    View Requests <ArrowRight size={16} />
                 </a>
             </div>
         </div>

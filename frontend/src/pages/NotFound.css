@@ -1,150 +1,82 @@
 /* ================================
-   NOT FOUND PAGE - CREATIVE 404
+   PROFESSIONAL NOT FOUND CSS
    ================================ */
 
-.not-found-page.masterpiece {
-    min-height: 80vh;
+.not-found-page.professional {
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: var(--color-bg);
     position: relative;
     overflow: hidden;
-    padding: var(--space-4);
 }
 
-/* Background */
-.bg-animation {
+.bg-grid {
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.5;
     z-index: 0;
 }
 
-.floating-cell {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: rgba(220, 38, 38, 0.1);
-    border-radius: 50%;
-    animation: float-up var(--duration, 10s) linear infinite;
-    bottom: -50px;
-    left: var(--pos, 50%);
-}
-
-.floating-cell:nth-child(even) {
-    background: rgba(255, 255, 255, 0.05);
-    width: 10px;
-    height: 10px;
-}
-
-/* Content */
-.not-found-content {
-    text-align: center;
-    padding: var(--space-10);
-    max-width: 600px;
+.not-found-content-pro {
     position: relative;
     z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    max-width: 500px;
+    padding: 2rem;
 }
 
-.error-code {
+.error-code-pro {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2);
     font-size: 8rem;
     font-weight: 900;
-    color: var(--color-gray-800);
+    color: var(--color-border);
     line-height: 1;
-    margin-bottom: var(--space-6);
-    position: relative;
+    margin-bottom: 2rem;
+    font-family: monospace;
 }
 
-.error-code span {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.01));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.1);
+.icon-wrapper {
+    color: var(--color-primary);
+    filter: drop-shadow(0 0 20px rgba(225, 29, 72, 0.3));
 }
 
-.blood-drop-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 100px;
+.not-found-content-pro h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--color-text-main);
 }
 
-.blood-drop {
-    font-size: 6rem;
-    animation: bounce 2s infinite ease-in-out;
-    filter: drop-shadow(0 10px 20px rgba(220, 38, 38, 0.4));
-}
-
-@keyframes bounce {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-.ripple {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
-    border: 2px solid rgba(220, 38, 38, 0.3);
-    border-radius: 50%;
-    animation: ripple 2s infinite;
-}
-
-@keyframes ripple {
-    0% {
-        transform: translate(-50%, -50%) scale(0.5);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0;
-    }
-}
-
-.not-found-content h2 {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-white);
-    margin-bottom: var(--space-4);
-}
-
-.not-found-content p {
-    color: var(--color-gray-400);
-    font-size: var(--font-size-lg);
-    margin-bottom: var(--space-8);
+.not-found-content-pro p {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
     line-height: 1.6;
+    margin-bottom: 3rem;
 }
 
 .action-buttons {
     display: flex;
     justify-content: center;
-    gap: var(--space-4);
+    gap: 1rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
 }
 
 @media (max-width: 640px) {
-    .error-code {
+    .error-code-pro {
         font-size: 5rem;
-    }
-
-    .blood-drop {
-        font-size: 4rem;
     }
 
     .action-buttons {

@@ -3,6 +3,10 @@ import { useToast } from '../context/ToastContext';
 import { getRequests, createRequest, fulfillRequest, cancelRequest, getHospitals } from '../services/api';
 import { useRealTimeRequests } from '../hooks/useSocket';
 import RequestCard from '../components/RequestCard';
+import { AlertCircle, AlertTriangle, Activity, X, Plus, Info, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import PageTransition from '../components/animations/PageTransition';
+import FadeIn from '../components/animations/FadeIn';
 import './Emergency.css';
 
 function Emergency() {
@@ -70,6 +74,7 @@ function Emergency() {
         }
     };
 
+    // ... handlers same as before ...
     const handleFulfill = async (id) => {
         try {
             const response = await fulfillRequest(id);
@@ -94,170 +99,153 @@ function Emergency() {
     const filteredRequests = requests.filter(r => filter === 'all' ? true : r.status === filter);
 
     return (
-        <div className="emergency-page masterpiece">
-            {/* Background Effects */}
-            <div className="page-background">
-                <div className="gradient-orb orb-critical"></div>
-                <div className="grid-overlay"></div>
-            </div>
-
+        <PageTransition className="emergency-page professional">
             <div className="container section">
-                <header className="page-header animate-slide-up">
-                    <div className="header-badge critical-badge">
-                        <span className="pulse-dot critical"></span>
-                        <span>Live Emergency Feed</span>
+                <FadeIn className="page-header-pro">
+                    <div className="header-badge critical">
+                        <AlertCircle size={16} />
+                        <span>Live Response Feed</span>
                     </div>
-                    <h1 className="page-title">
-                        Critical
-                        <span className="text-gradient-critical"> Requests</span>
-                    </h1>
-                    <p className="page-subtitle">
-                        Every second counts. Respond to urgent blood requests in real-time.
-                    </p>
-                    <button className="btn btn-hero-primary glow-effect animate-pop-in delay-1" onClick={() => setShowForm(true)}>
-                        <span className="btn-icon">🚨</span>
-                        Broadcast Emergency
-                    </button>
-                </header>
+                    <h1>Critical Requests</h1>
+                    <p>Urgent blood requirements requiring immediate attention.</p>
+                </FadeIn>
 
-                {/* Filter Tabs */}
-                <div className="filter-bar glass-card animate-slide-up delay-1">
-                    {['pending', 'fulfilled', 'cancelled', 'all'].map(tab => (
-                        <button
-                            key={tab}
-                            className={`filter-btn ${filter === tab ? 'active' : ''}`}
-                            onClick={() => setFilter(tab)}
-                        >
-                            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            {tab === 'pending' && <span className="count-badge">{requests.filter(r => r.status === 'pending').length}</span>}
-                        </button>
-                    ))}
+                <div className="emergency-controls">
+                    <div className="filter-tabs-pro">
+                        {['pending', 'fulfilled', 'cancelled', 'all'].map(tab => (
+                            <button
+                                key={tab}
+                                className={`tab-btn ${filter === tab ? 'active' : ''}`}
+                                onClick={() => setFilter(tab)}
+                            >
+                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                {tab === 'pending' && <span className="tab-badge">{requests.filter(r => r.status === 'pending').length}</span>}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button className="btn btn-danger" onClick={() => setShowForm(true)}>
+                        <Plus size={18} /> New Request
+                    </button>
                 </div>
 
-                {/* Content */}
-                <div className="requests-container animate-fade-in delay-2">
+                <div className="results-container">
                     {loading ? (
                         <div className="loading-grid">
-                            {[...Array(4)].map((_, i) => (
-                                <div key={i} className="skeleton-card request-skeleton"></div>
-                            ))}
-                        </div>
-                    ) : error ? (
-                        <div className="error-state glass-card">
-                            <h3>Connection Error</h3>
-                            <button className="btn btn-primary" onClick={fetchData}>Retry</button>
+                            {[1, 2, 3].map(i => <div key={i} className="skeleton-card-pro h-48"></div>)}
                         </div>
                     ) : filteredRequests.length === 0 ? (
-                        <div className="empty-state glass-card">
-                            <span className="empty-icon">✅</span>
-                            <h3>All Clear</h3>
-                            <p>No {filter} emergency requests at the moment.</p>
+                        <div className="empty-state-pro">
+                            <Activity size={48} className="text-muted" />
+                            <h3>No {filter !== 'all' ? filter : ''} requests</h3>
+                            <p>All clear at the moment.</p>
                         </div>
                     ) : (
-                        <div className="requests-grid">
-                            {filteredRequests.map((request, index) => (
-                                <div
-                                    key={request.id}
-                                    className="request-wrapper"
-                                    style={{ animationDelay: `${index * 50}ms` }}
-                                >
-                                    <RequestCard
-                                        request={request}
-                                        onFulfill={handleFulfill}
-                                        onCancel={handleCancel}
-                                    />
-                                </div>
-                            ))}
-                        </div>
+                        <motion.div
+                            layout
+                            className="requests-grid-pro"
+                        >
+                            <AnimatePresence>
+                                {filteredRequests.map(request => (
+                                    <motion.div
+                                        key={request.id}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <RequestCard
+                                            request={request}
+                                            onFulfill={handleFulfill}
+                                            onCancel={handleCancel}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
                     )}
                 </div>
             </div>
 
-            {/* Modal Form */}
-            {showForm && (
-                <div className="modal-overlay animate-fade-in" onClick={() => setShowForm(false)}>
-                    <div className="modal-card glass-card animate-scale-up" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <div className="header-icon">🚨</div>
-                            <h2>Broadcast Emergency</h2>
-                            <button className="close-btn" onClick={() => setShowForm(false)}>×</button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="emergency-form">
-                            <div className="form-group floating-label">
-                                <label className="field-label">Urgency Level</label>
-                                <div className="urgency-selector">
-                                    {['normal', 'urgent', 'critical'].map(level => (
-                                        <label key={level} className={`urgency-option ${formData.urgency === level ? 'selected' : ''} ${level}`}>
-                                            <input
-                                                type="radio"
-                                                name="urgency"
-                                                value={level}
-                                                checked={formData.urgency === level}
-                                                onChange={(e) => setFormData({ ...formData, urgency: e.target.value })}
-                                            />
-                                            <span className="urgency-icon">
-                                                {level === 'critical' ? '⚡' : level === 'urgent' ? '🔥' : '⚠️'}
-                                            </span>
-                                            <span className="urgency-text">{level}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label className="field-label">Blood Type</label>
-                                    <select
-                                        className="form-select"
-                                        value={formData.blood_type}
-                                        onChange={(e) => setFormData({ ...formData, blood_type: e.target.value })}
-                                        required
-                                    >
-                                        <option value="">Select...</option>
-                                        {bloodTypes.map(type => (
-                                            <option key={type} value={type}>{type}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label className="field-label">Units</label>
-                                    <input
-                                        type="number"
-                                        className="form-input"
-                                        min="1" max="20"
-                                        value={formData.units}
-                                        onChange={(e) => setFormData({ ...formData, units: parseInt(e.target.value) })}
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="field-label">Hospital (Optional)</label>
-                                <select
-                                    className="form-select"
-                                    value={formData.hospital_id}
-                                    onChange={(e) => setFormData({ ...formData, hospital_id: e.target.value })}
-                                >
-                                    <option value="">Select hospital...</option>
-                                    {hospitals.map(h => (
-                                        <option key={h.id} value={h.id}>{h.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="form-actions">
-                                <button type="button" className="btn-text" onClick={() => setShowForm(false)}>Cancel</button>
-                                <button type="submit" className="btn-broadcast" disabled={submitting}>
-                                    {submitting ? 'Broadcasting...' : '🔴 Broadcast Alert'}
+            {/* Modal Form with AnimatePresence */}
+            <AnimatePresence>
+                {showForm && (
+                    <motion.div
+                        className="modal-overlay-pro"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="modal-card-pro"
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 50, opacity: 0 }}
+                        >
+                            <div className="modal-header">
+                                <h2>Broadcast Emergency</h2>
+                                <button className="close-btn" onClick={() => setShowForm(false)}>
+                                    <X size={20} />
                                 </button>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
+
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-section">
+                                    <label className="label-heading">Urgency Level</label>
+                                    <div className="urgency-grid">
+                                        <label className={`urgency-card normal ${formData.urgency === 'normal' ? 'selected' : ''}`}>
+                                            <input type="radio" name="urgency" value="normal" checked={formData.urgency === 'normal'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
+                                            <Info size={24} />
+                                            <span>Normal</span>
+                                        </label>
+                                        <label className={`urgency-card urgent ${formData.urgency === 'urgent' ? 'selected' : ''}`}>
+                                            <input type="radio" name="urgency" value="urgent" checked={formData.urgency === 'urgent'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
+                                            <AlertTriangle size={24} />
+                                            <span>Urgent</span>
+                                        </label>
+                                        <label className={`urgency-card critical ${formData.urgency === 'critical' ? 'selected' : ''}`}>
+                                            <input type="radio" name="urgency" value="critical" checked={formData.urgency === 'critical'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
+                                            <Zap size={24} />
+                                            <span>Critical</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div className="form-grid">
+                                    <div className="form-group-pro">
+                                        <label>Blood Type</label>
+                                        <select value={formData.blood_type} onChange={(e) => setFormData({ ...formData, blood_type: e.target.value })} required >
+                                            <option value="">Select...</option>
+                                            {bloodTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="form-group-pro">
+                                        <label>Units</label>
+                                        <input type="number" min="1" max="20" value={formData.units} onChange={(e) => setFormData({ ...formData, units: parseInt(e.target.value) })} required />
+                                    </div>
+                                </div>
+
+                                <div className="form-group-pro">
+                                    <label>Hospital (Optional)</label>
+                                    <select value={formData.hospital_id} onChange={(e) => setFormData({ ...formData, hospital_id: e.target.value })} >
+                                        <option value="">Select hospital...</option>
+                                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
+                                    </select>
+                                </div>
+
+                                <div className="modal-actions">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
+                                    <button type="submit" className="btn btn-danger" disabled={submitting}>
+                                        {submitting ? 'Broadcasting...' : 'Broadcast Alert'}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </PageTransition>
     );
 }
 

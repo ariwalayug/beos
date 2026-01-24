@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Mail, Lock, AlertCircle, ArrowRight, Shield } from 'lucide-react';
+import PageTransition from '../components/animations/PageTransition';
+import { motion } from 'framer-motion';
 import './Auth.css';
 
 function Login() {
@@ -30,147 +33,126 @@ function Login() {
     };
 
     return (
-        <div className="auth-page">
-            {/* Animated Background */}
-            <div className="auth-background">
-                <div className="gradient-orb orb-1"></div>
-                <div className="gradient-orb orb-2"></div>
-                <div className="gradient-orb orb-3"></div>
-                <div className="floating-shapes">
-                    <div className="shape shape-1">🩸</div>
-                    <div className="shape shape-2">❤️</div>
-                    <div className="shape shape-3">💉</div>
-                </div>
-            </div>
+        <PageTransition className="auth-page professional">
+            <div className="auth-background-pro"></div>
 
             <div className="auth-container">
-                {/* Left Side - Branding */}
-                <div className="auth-branding animate-slide-left">
-                    <div className="branding-content">
-                        <div className="brand-logo">
-                            <span className="logo-icon">🩸</span>
-                            <span className="logo-text">BEOS</span>
-                        </div>
-                        <h1 className="brand-tagline">
-                            Welcome Back,
-                            <span className="text-gradient-animated"> Hero</span>
-                        </h1>
-                        <p className="brand-description">
-                            Sign in to continue saving lives. Your next mission awaits.
-                        </p>
+                <motion.div
+                    className="auth-branding"
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <div className="brand-logo">
+                        <motion.div
+                            className="logo-icon-wrapper"
+                            whileHover={{ scale: 1.1, rotate: 10 }}
+                        >
+                            <Shield size={32} />
+                        </motion.div>
+                        <span className="logo-text">BEOS</span>
+                    </div>
+                    <h1>
+                        Welcome Back, <br />
+                        <span className="text-primary">First Responder</span>
+                    </h1>
+                    <p className="brand-desc">
+                        Secure access for authorized personnel and registered donors.
+                        Your contribution saves lives.
+                    </p>
 
-                        <div className="brand-stats">
-                            <div className="brand-stat">
-                                <span className="stat-value">10K+</span>
-                                <span className="stat-label">Lives Saved</span>
-                            </div>
-                            <div className="brand-stat">
-                                <span className="stat-value">500+</span>
-                                <span className="stat-label">Active Heroes</span>
-                            </div>
+                    <div className="brand-stats-grid">
+                        <div className="stat-item">
+                            <span className="stat-num">10K+</span>
+                            <span className="stat-label">Lives Impacted</span>
+                        </div>
+                        <div className="stat-item">
+                            <span className="stat-num">500+</span>
+                            <span className="stat-label">Active Units</span>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
-                {/* Right Side - Login Form */}
-                <div className="auth-form-section animate-slide-right">
-                    <div className="auth-card glass-card">
+                <div className="auth-card-wrapper">
+                    <motion.div
+                        className="auth-card"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                    >
                         <div className="auth-header">
                             <h2>Sign In</h2>
-                            <p>Enter your credentials to access your account</p>
+                            <p>Access your dashboard</p>
                         </div>
 
                         {error && (
-                            <div className="auth-error animate-shake">
-                                <span className="error-icon">⚠️</span>
-                                {error}
-                            </div>
+                            <motion.div
+                                className="auth-error"
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                            >
+                                <AlertCircle size={18} />
+                                <span>{error}</span>
+                            </motion.div>
                         )}
 
                         <form onSubmit={handleSubmit} className="auth-form">
-                            <div className="form-group floating-label">
-                                <input
-                                    type="email"
-                                    id="email"
-                                    className="form-input"
-                                    placeholder=" "
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    required
-                                />
-                                <label htmlFor="email">Email Address</label>
-                                <span className="input-icon">📧</span>
+                            <div className="form-group-pro">
+                                <label htmlFor="email">Email</label>
+                                <div className="input-wrapper">
+                                    <Mail size={18} className="input-icon" />
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        placeholder="name@organization.com"
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            <div className="form-group floating-label">
-                                <input
-                                    type="password"
-                                    id="password"
-                                    className="form-input"
-                                    placeholder=" "
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    required
-                                />
+                            <div className="form-group-pro">
                                 <label htmlFor="password">Password</label>
-                                <span className="input-icon">🔒</span>
+                                <div className="input-wrapper">
+                                    <Lock size={18} className="input-icon" />
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                </div>
                             </div>
 
                             <div className="form-options">
-                                <label className="checkbox-label">
+                                <label className="checkbox-wrapper">
                                     <input type="checkbox" />
-                                    <span className="checkmark"></span>
-                                    Remember me
+                                    <span>Remember for 30 days</span>
                                 </label>
-                                <a href="#" className="forgot-link">Forgot Password?</a>
+                                <a href="#" className="link-muted">Forgot password?</a>
                             </div>
 
-                            <button
+                            <motion.button
                                 type="submit"
-                                className="btn-auth-primary"
+                                className="btn btn-primary btn-full"
                                 disabled={submitting}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
                             >
-                                <span className="btn-glow"></span>
-                                <span className="btn-text">
-                                    {submitting ? (
-                                        <>
-                                            <span className="spinner-small"></span>
-                                            Signing In...
-                                        </>
-                                    ) : (
-                                        'Sign In'
-                                    )}
-                                </span>
-                            </button>
+                                {submitting ? 'Authenticating...' : 'Sign In'} <ArrowRight size={18} />
+                            </motion.button>
                         </form>
 
-                        <div className="auth-divider">
-                            <span>or continue with</span>
-                        </div>
-
-                        <div className="social-login">
-                            <button className="social-btn google">
-                                <span className="social-icon">G</span>
-                                Google
-                            </button>
-                            <button className="social-btn github">
-                                <span className="social-icon">⌘</span>
-                                GitHub
-                            </button>
-                        </div>
-
                         <div className="auth-footer">
-                            <p>
-                                Don't have an account?{' '}
-                                <Link to="/register" className="auth-link">
-                                    Join the Heroes →
-                                </Link>
-                            </p>
+                            <p>New to the network? <Link to="/register" className="link-primary">Apply for access</Link></p>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
-        </div>
+        </PageTransition>
     );
 }
 

@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getHospitals } from '../services/api';
+import { Building2, MapPin, Phone, Search, AlertTriangle } from 'lucide-react';
+import PageTransition from '../components/animations/PageTransition';
+import FadeIn from '../components/animations/FadeIn';
+import { motion } from 'framer-motion';
 import './Hospitals.css';
 
 function Hospitals() {
@@ -30,127 +34,81 @@ function Hospitals() {
     );
 
     return (
-        <div className="hospitals-page masterpiece">
-            {/* Background Effects */}
-            <div className="page-background">
-                <div className="gradient-orb orb-1"></div>
-                <div className="gradient-orb orb-2"></div>
-                <div className="grid-overlay"></div>
-            </div>
-
+        <PageTransition className="hospitals-page professional">
             <div className="container section">
-                <header className="page-header animate-slide-up">
+                <FadeIn className="page-header-pro">
                     <div className="header-badge">
-                        <span className="badge-icon">🏥</span>
-                        <span>Emergency Network Partners</span>
+                        <Building2 size={16} />
+                        <span>Partner Network</span>
                     </div>
-                    <h1 className="page-title">
-                        Partner
-                        <span className="text-gradient-animated"> Hospitals</span>
-                    </h1>
-                    <p className="page-subtitle">
-                        Trusted medical centers equipped for blood emergencies.
-                    </p>
-                </header>
+                    <h1>Partner Hospitals</h1>
+                    <p>Medical centers equipped for blood emergencies.</p>
+                </FadeIn>
 
-                {/* Search Bar */}
-                <div className="search-section glass-card animate-slide-up delay-1">
-                    <div className="search-wrapper">
-                        <span className="search-icon">🔍</span>
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Find a hospital by name or city..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        {search && (
-                            <button className="clear-btn" onClick={() => setSearch('')}>×</button>
-                        )}
-                    </div>
+                <div className="search-bar-pro">
+                    <Search size={20} className="search-icon" />
+                    <input
+                        type="text"
+                        placeholder="Search hospitals by name or location..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </div>
 
-                {/* Content */}
-                <div className="results-section animate-fade-in delay-2">
+                <div className="results-container">
                     {loading ? (
                         <div className="loading-grid">
-                            {[...Array(6)].map((_, i) => (
-                                <div key={i} className="skeleton-card hospital-skeleton">
-                                    <div className="skeleton-image"></div>
-                                    <div className="skeleton-lines">
-                                        <div className="skeleton-line long"></div>
-                                        <div className="skeleton-line short"></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : error ? (
-                        <div className="error-state glass-card">
-                            <span className="error-icon">⚠️</span>
-                            <h3>Unable to load hospitals</h3>
-                            <p>{error}</p>
-                            <button className="btn btn-primary" onClick={fetchHospitals}>Retry</button>
+                            {[1, 2, 3].map(i => <div key={i} className="skeleton-card-pro"></div>)}
                         </div>
                     ) : filteredHospitals.length === 0 ? (
-                        <div className="empty-state glass-card">
-                            <span className="empty-icon">🏥</span>
+                        <div className="empty-state-pro">
+                            <Building2 size={48} className="text-muted" />
                             <h3>No hospitals found</h3>
-                            <p>We couldn't find any hospitals matching "{search}"</p>
                         </div>
                     ) : (
-                        <>
-                            <div className="results-count">
-                                Showing <strong>{filteredHospitals.length}</strong> partner hospital{filteredHospitals.length !== 1 ? 's' : ''}
-                            </div>
-                            <div className="hospitals-grid">
-                                {filteredHospitals.map((hospital, index) => (
-                                    <div
-                                        key={hospital.id}
-                                        className="hospital-card glass-card"
-                                        style={{ animationDelay: `${index * 50}ms` }}
-                                    >
-                                        <div className="hospital-card-header">
-                                            <div className="hospital-icon-wrapper">
-                                                <span className="hospital-icon">🏥</span>
-                                            </div>
-                                            <div className="hospital-status">
-                                                <span className="status-dot online"></span>
-                                                Active
-                                            </div>
+                        <div className="hospitals-grid-pro">
+                            {filteredHospitals.map((hospital, i) => (
+                                <motion.div
+                                    key={hospital.id}
+                                    className="hospital-card-pro"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.05 }}
+                                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                                >
+                                    <div className="card-header">
+                                        <div className="hospital-icon-box">
+                                            <Building2 size={24} />
                                         </div>
-
-                                        <div className="hospital-info">
-                                            <h3>{hospital.name}</h3>
-                                            <div className="info-row">
-                                                <span className="info-icon">📍</span>
-                                                <span className="info-text">{hospital.city}</span>
-                                            </div>
-                                            <div className="info-row">
-                                                <span className="info-icon">🏢</span>
-                                                <span className="info-text property-address">{hospital.address}</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="hospital-actions">
-                                            <a href={`tel:${hospital.phone}`} className="btn-action primary">
-                                                <span className="btn-icon">📞</span>
-                                                Call Now
-                                            </a>
-                                            {hospital.emergency_contact && (
-                                                <a href={`tel:${hospital.emergency_contact}`} className="btn-action emergency">
-                                                    <span className="btn-icon">🚨</span>
-                                                    Emergency
-                                                </a>
-                                            )}
-                                        </div>
+                                        <span className="status-badge success">Active</span>
                                     </div>
-                                ))}
-                            </div>
-                        </>
+
+                                    <div className="card-body">
+                                        <h3>{hospital.name}</h3>
+                                        <div className="info-row">
+                                            <MapPin size={16} className="text-muted" />
+                                            <span>{hospital.city}</span>
+                                        </div>
+                                        <p className="address">{hospital.address}</p>
+                                    </div>
+
+                                    <div className="card-actions">
+                                        <a href={`tel:${hospital.phone}`} className="btn btn-secondary btn-sm">
+                                            <Phone size={16} /> Call
+                                        </a>
+                                        {hospital.emergency_contact && (
+                                            <a href={`tel:${hospital.emergency_contact}`} className="btn btn-danger-outline btn-sm">
+                                                <AlertTriangle size={16} /> Emergency
+                                            </a>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>
-        </div>
+        </PageTransition>
     );
 }
 

@@ -1,46 +1,96 @@
+/* ================================
+   EMERGENCY BANNER STYLES
+   ================================ */
+
 .emergency-banner {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.15) 0%, rgba(153, 27, 27, 0.2) 100%);
-    border-bottom: 1px solid rgba(220, 38, 38, 0.3);
-    animation: pulse-critical 3s infinite;
+    background: #7f1d1d;
+    /* Red 900 */
+    border-top: 1px solid #ef4444;
+    border-bottom: 1px solid #ef4444;
+    color: white;
+    position: relative;
+    overflow: hidden;
 }
 
 .emergency-banner-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-4);
-    padding: var(--space-3) var(--space-4);
+    padding: 0.75rem 1rem;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
 }
 
 .emergency-pulse {
-    width: 12px;
-    height: 12px;
-    background: var(--color-primary);
-    border-radius: 50%;
-    animation: pulse-critical 1s infinite;
-    box-shadow: 0 0 10px var(--color-primary);
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg,
+            rgba(239, 68, 68, 0.1),
+            rgba(239, 68, 68, 0.1) 10px,
+            rgba(239, 68, 68, 0.2) 10px,
+            rgba(239, 68, 68, 0.2) 20px);
+    opacity: 0.5;
+    animation: slide-bg 20s linear infinite;
+}
+
+@keyframes slide-bg {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 100% 0;
+    }
 }
 
 .emergency-text {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-100);
+    gap: 0.5rem;
+    font-size: 0.9rem;
 }
 
-.emergency-text strong {
-    color: var(--color-primary-light);
+.banner-icon {
+    color: #fca5a5;
+    animation: pulse-icon 1.5s infinite;
 }
 
-@media (max-width: 640px) {
-    .emergency-banner-content {
-        flex-direction: column;
-        gap: var(--space-2);
-        text-align: center;
+@keyframes pulse-icon {
+    0% {
+        opacity: 0.6;
     }
 
-    .emergency-pulse {
-        display: none;
+    50% {
+        opacity: 1;
     }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.banner-label {
+    font-weight: 800;
+    color: #fca5a5;
+    letter-spacing: 0.05em;
+}
+
+.btn-view-requests {
+    background: white;
+    color: #b91c1c;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+}
+
+.btn-view-requests:hover {
+    background: #fee2e2;
+    transform: translateY(-1px);
 }

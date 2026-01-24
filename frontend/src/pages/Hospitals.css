@@ -1,266 +1,138 @@
 /* ================================
-   HOSPITALS PAGE - PREMIUM STYLES
+   PROFESSIONAL HOSPITALS STYLES
    ================================ */
 
-.hospitals-page.masterpiece {
+.hospitals-page.professional {
+    background-color: var(--color-bg);
     min-height: 100vh;
+}
+
+.search-bar-pro {
     position: relative;
-    overflow-x: hidden;
-}
-
-/* Background Effects - Using shared styles where possible, but customized here */
-.page-background {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.page-background .gradient-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.3;
-}
-
-.page-background .orb-1 {
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
-    /* Greenish for hospitals */
-    top: -150px;
-    left: -150px;
-    animation: float-orb 30s infinite ease-in-out;
-}
-
-.page-background .orb-2 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-    bottom: -100px;
-    right: -100px;
-    animation: float-orb 25s infinite ease-in-out reverse;
-}
-
-/* Search Section */
-.search-section {
     max-width: 600px;
-    margin: 0 auto 3rem auto;
-    padding: var(--space-2);
-    border-radius: var(--radius-full);
+    margin: 0 auto 3rem;
 }
 
-.search-wrapper {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-full);
-    padding: var(--space-3) var(--space-6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s;
+.search-bar-pro .search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
 }
 
-.search-wrapper:focus-within {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.15);
+.search-bar-pro input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3.5rem;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    color: var(--color-text-main);
+    font-size: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
 }
 
-.search-icon {
-    font-size: 1.2rem;
-    margin-right: var(--space-3);
-    opacity: 0.6;
-}
-
-.search-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--color-white);
-    font-size: var(--font-size-lg);
-    font-family: var(--font-family);
-}
-
-.search-input:focus {
+.search-bar-pro input:focus {
     outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
 }
 
-.clear-btn {
-    background: none;
-    border: none;
-    color: var(--color-gray-400);
-    font-size: 1.5rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 var(--space-2);
-}
-
-.clear-btn:hover {
-    color: var(--color-white);
-}
-
-/* Results Info */
-.results-count {
-    color: var(--color-gray-400);
-    margin-bottom: var(--space-4);
-    font-size: var(--font-size-sm);
-}
-
-/* Hospitals Grid */
-.hospitals-grid {
+.hospitals-grid-pro {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: var(--space-6);
+    gap: 1.5rem;
 }
 
-.hospital-card {
-    padding: var(--space-6);
+.hospital-card-pro {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: all 0.2s;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    animation: fade-slide-up 0.5s ease-out forwards;
-    opacity: 0;
-    transform: translateY(20px);
 }
 
-@keyframes fade-slide-up {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.hospital-card-pro:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
-.hospital-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
-.hospital-card-header {
+.card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 1.5rem;
 }
 
-.hospital-icon-wrapper {
-    width: 60px;
-    height: 60px;
+.hospital-icon-box {
+    width: 48px;
+    height: 48px;
+    background: rgba(225, 29, 72, 0.1);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-xl);
-    font-size: 2rem;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
-.hospital-status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-xs);
-    color: var(--color-success);
-    font-weight: var(--font-weight-bold);
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.status-badge.success {
     background: rgba(34, 197, 94, 0.1);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-full);
+    color: #22c55e;
 }
 
-.status-dot.online {
-    background: var(--color-success);
-    box-shadow: 0 0 8px var(--color-success);
-}
-
-.hospital-info h3 {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-white);
-    margin-bottom: var(--space-3);
+.card-body h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
 .info-row {
     display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
-    margin-bottom: var(--space-2);
-    color: var(--color-gray-400);
-    font-size: var(--font-size-sm);
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
 }
 
-.info-icon {
-    font-size: 1rem;
-    opacity: 0.7;
-}
-
-.property-address {
+.address {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
     line-height: 1.5;
 }
 
-.hospital-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
+.card-actions {
     margin-top: auto;
-    padding-top: var(--space-4);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.btn-action {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    padding: var(--space-3);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    text-decoration: none;
-    transition: all 0.2s;
+    gap: 0.75rem;
 }
 
-.btn-action.primary {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--color-white);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
 }
 
-.btn-action.primary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+.btn-danger-outline {
+    background: transparent;
+    border: 1px solid #dc2626;
+    color: #ef4444;
 }
 
-.btn-action.emergency {
-    background: rgba(220, 38, 38, 0.15);
-    color: #fca5a5;
-    /* Light red */
-    border: 1px solid rgba(220, 38, 38, 0.3);
-}
-
-.btn-action.emergency:hover {
-    background: rgba(220, 38, 38, 0.25);
+.btn-danger-outline:hover {
+    background: #dc2626;
     color: white;
-    border-color: rgba(220, 38, 38, 0.5);
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
-}
-
-/* Skeleton Loading Specifics can borrow from Donors or use shared classes */
-.hospital-skeleton .skeleton-image {
-    width: 60px;
-    height: 60px;
-    border-radius: var(--radius-xl);
-    background: rgba(255, 255, 255, 0.05);
-    animation: shimmer 1.5s infinite;
-    margin-bottom: var(--space-4);
-}
-
-@media (max-width: 640px) {
-    .hospitals-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hospital-actions {
-        grid-template-columns: 1fr;
-    }
 }

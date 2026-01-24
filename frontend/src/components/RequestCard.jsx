@@ -1,16 +1,14 @@
+import { AlertTriangle, Clock, Building2, Phone, Check, X, User } from 'lucide-react';
 import './RequestCard.css';
 
 function RequestCard({ request, onFulfill, onCancel }) {
-    // Safe default: return null if request is missing
-    if (!request) {
-        return null;
-    }
+    if (!request) return null;
 
-    const getUrgencyClass = (urgency) => {
+    const getUrgencyConfig = (urgency) => {
         switch (urgency) {
-            case 'critical': return 'badge-critical';
-            case 'urgent': return 'badge-urgent';
-            default: return 'badge-normal';
+            case 'critical': return { class: 'badge-critical', icon: AlertTriangle };
+            case 'urgent': return { class: 'badge-urgent', icon: AlertTriangle };
+            default: return { class: 'badge-normal', icon: Check };
         }
     };
 
@@ -30,13 +28,16 @@ function RequestCard({ request, onFulfill, onCancel }) {
         return `${Math.floor(seconds / 86400)}d ago`;
     };
 
+    const urgencyConfig = getUrgencyConfig(request.urgency);
+    const UrgencyIcon = urgencyConfig.icon;
+
     return (
-        <div className={`request-card glass-card ${request.urgency === 'critical' ? 'critical' : ''}`}>
+        <div className={`request-card-pro ${request.urgency === 'critical' ? 'critical' : ''}`}>
             <div className="request-header">
-                <div className="request-blood-type">{request.blood_type}</div>
-                <div className="request-badges">
-                    <span className={`badge ${getUrgencyClass(request.urgency)}`}>
-                        {request.urgency}
+                <div className="blood-type-badge">{request.blood_type}</div>
+                <div className="request-meta-badges">
+                    <span className={`badge ${urgencyConfig.class}`}>
+                        <UrgencyIcon size={12} /> {request.urgency}
                     </span>
                     <span className={`badge ${getStatusClass(request.status)}`}>
                         {request.status}
@@ -45,43 +46,46 @@ function RequestCard({ request, onFulfill, onCancel }) {
             </div>
 
             <div className="request-body">
-                <div className="request-units">
-                    <span className="units-number">{request.units}</span>
-                    <span className="units-label">units needed</span>
+                <div className="units-display">
+                    <span className="units-val">{request.units}</span>
+                    <span className="units-lbl">units needed</span>
                 </div>
 
                 {request.hospital_name && (
-                    <p className="request-hospital">🏥 {request.hospital_name}</p>
+                    <div className="info-row">
+                        <Building2 size={16} className="text-muted" />
+                        <span>{request.hospital_name}</span>
+                    </div>
                 )}
 
                 {request.patient_name && (
-                    <p className="request-patient">Patient: {request.patient_name}</p>
+                    <div className="info-row">
+                        <User size={16} className="text-muted" />
+                        <span>Patient: {request.patient_name}</span>
+                    </div>
                 )}
 
                 {request.notes && (
                     <p className="request-notes">{request.notes}</p>
                 )}
 
-                <p className="request-time">{timeAgo(request.created_at)}</p>
+                <div className="info-row time">
+                    <Clock size={14} />
+                    <span>{timeAgo(request.created_at)}</span>
+                </div>
             </div>
 
             {request.status === 'pending' && (
                 <div className="request-actions">
-                    <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => onFulfill?.(request.id)}
-                    >
-                        ✓ Fulfill
+                    <button className="btn btn-success btn-sm" onClick={() => onFulfill?.(request.id)}>
+                        <Check size={16} /> Fulfill
                     </button>
-                    <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => onCancel?.(request.id)}
-                    >
-                        Cancel
+                    <button className="btn btn-secondary btn-sm" onClick={() => onCancel?.(request.id)}>
+                        <X size={16} /> Cancel
                     </button>
                     {request.contact_phone && (
                         <a href={`tel:${request.contact_phone}`} className="btn btn-outline btn-sm">
-                            📞 Call
+                            <Phone size={16} /> Call
                         </a>
                     )}
                 </div>
