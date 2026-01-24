@@ -71,7 +71,7 @@ export const getById = async (req, res) => {
     }
 };
 
-createRequest = async (req, res) => {
+export const createRequest = async (req, res) => {
     try {
         const { patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, contact_phone, notes } = req.body;
         const hospital_id = req.user.role === 'hospital' ? req.user.hospital_id : null; // Assumes attach logic elsewhere for hospital_id or derived from user

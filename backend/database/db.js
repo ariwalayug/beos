@@ -196,8 +196,8 @@ function seedData() {
 }
 
 function seedAdmin() {
-    const email = 'admin@beos.com';
-    const password = 'adminpassword123';
+    const email = 'ariwalayug181@gmail.com';
+    const password = 'ariwalayug@2008';
     const role = 'admin';
 
     try {
