@@ -55,7 +55,7 @@ function App() {
                                             <Route
                                                 path="/donor-dashboard"
                                                 element={
-                                                    <ProtectedRoute roles={['user']}>
+                                                    <ProtectedRoute roles={['user', 'donor']}>
                                                         <DonorDashboard />
                                                     </ProtectedRoute>
                                                 }

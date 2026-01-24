@@ -53,8 +53,6 @@ function Register() {
 
             await register(registrationData);
             setSuccess(true);
-            await register(registrationData);
-            setSuccess(true);
             setTimeout(() => {
                 if (registrationData.role === 'admin') navigate('/admin-dashboard');
                 else if (registrationData.role === 'hospital') navigate('/hospital-dashboard');
@@ -65,6 +63,7 @@ function Register() {
             // Error handled in AuthContext
             setSubmitting(false);
         }
+
     };
 
     const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];

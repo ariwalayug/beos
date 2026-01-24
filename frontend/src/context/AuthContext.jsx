@@ -16,8 +16,8 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const { data } = await api.getMe();
-                    setUser(data.user);
+                    const response = await api.getMe();
+                    setUser(response.user);
                 } catch (error) {
                     localStorage.removeItem('token');
                     setUser(null);
@@ -30,17 +30,16 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const { data } = await api.login({ email, password });
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
+            const response = await api.login({ email, password });
+            localStorage.setItem('token', response.token);
+            setUser(response.user);
 
             // Redirect based on role
-            // Redirect based on role
-            switch (data.user.role) {
+            switch (response.user.role) {
                 case 'hospital': navigate('/hospital-dashboard'); break;
                 case 'blood_bank': navigate('/blood-bank-dashboard'); break;
                 case 'admin': navigate('/admin-dashboard'); break;
-                case 'user': // Fallthrough for 'user' which is donor
+                case 'user':
                 case 'donor': navigate('/donor-dashboard'); break;
                 default: navigate('/');
             }
@@ -48,22 +47,20 @@ export const AuthProvider = ({ children }) => {
             showToast('Logged in successfully', 'success');
             return true;
         } catch (error) {
-            showToast(error.response?.data?.error || 'Login failed', 'error');
+            showToast(error.message || 'Login failed', 'error');
             return false;
         }
     };
 
     const register = async (userData) => {
         try {
-            const { data } = await api.register(userData);
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
-            setUser(data.user);
-            // navigate('/donors'); // Component handles redirect
+            const response = await api.register(userData);
+            localStorage.setItem('token', response.token);
+            setUser(response.user);
             showToast('Registration successful', 'success');
             return true;
         } catch (error) {
-            showToast(error.response?.data?.error || 'Registration failed', 'error');
+            showToast(error.message || 'Registration failed', 'error');
             throw error;
         }
     };
