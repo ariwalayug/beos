@@ -186,7 +186,19 @@ function Register() {
                                             <label>Phone</label>
                                             <div className="input-wrapper">
                                                 <Phone size={18} className="input-icon" />
-                                                <input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required />
+                                                <input
+                                                    type="tel"
+                                                    value={formData.phone}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                                        setFormData({ ...formData, phone: value });
+                                                    }}
+                                                    placeholder="10-digit mobile number"
+                                                    pattern="[0-9]{10}"
+                                                    maxLength={10}
+                                                    title="Please enter exactly 10 digits"
+                                                    required
+                                                />
                                             </div>
                                         </div>
                                     </div>
