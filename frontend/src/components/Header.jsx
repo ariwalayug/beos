@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Droplet, Map, Activity, LogOut, User } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 import './Header.css';
 
 function Header() {
@@ -35,6 +36,7 @@ function Header() {
                 </nav>
 
                 <div className="header-actions">
+                    <ThemeToggle className="mini" />
                     {isAuthenticated ? (
                         <div className="user-menu">
                             <div className="user-info">

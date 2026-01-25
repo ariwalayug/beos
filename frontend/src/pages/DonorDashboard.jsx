@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
     getMyDonorProfile,
     updateDonor,
@@ -10,6 +11,7 @@ import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
 import { ProfileEditor, RequestCard } from '../components/DashboardComponents';
 import { EmergencyMapView, MissionControlHeader } from '../components/EmergencyMapView';
+import { Heart, Users, Droplet, Trophy, Award, Star, Clock, Calendar, Shield } from 'lucide-react';
 import './DonorDashboard.css';
 
 function DonorDashboard() {
@@ -223,6 +225,96 @@ function DonorDashboard() {
                                         <span className="action-icon">🏆</span>
                                         <span className="action-label">{history.length} Saves</span>
                                     </button>
+                                </div>
+                            </div>
+
+                            {/* Impact Stats Section */}
+                            <div className="impact-stats-section">
+                                <h3>Your Impact</h3>
+                                <div className="impact-stats-grid">
+                                    <motion.div
+                                        className="impact-stat-card"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        <div className="impact-icon hearts">
+                                            <Heart size={24} fill="currentColor" />
+                                        </div>
+                                        <div className="impact-value">{history.length * 3}</div>
+                                        <div className="impact-label">Lives Touched</div>
+                                    </motion.div>
+                                    <motion.div
+                                        className="impact-stat-card"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        <div className="impact-icon donations">
+                                            <Droplet size={24} />
+                                        </div>
+                                        <div className="impact-value">{history.length}</div>
+                                        <div className="impact-label">Total Donations</div>
+                                    </motion.div>
+                                    <motion.div
+                                        className="impact-stat-card"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3 }}
+                                    >
+                                        <div className="impact-icon streak">
+                                            <Trophy size={24} />
+                                        </div>
+                                        <div className="impact-value">{Math.min(history.length, 5)}</div>
+                                        <div className="impact-label">Donation Streak</div>
+                                    </motion.div>
+                                </div>
+                            </div>
+
+                            {/* Achievement Badges */}
+                            <div className="achievements-section">
+                                <h3>Achievements</h3>
+                                <div className="achievements-grid">
+                                    <motion.div
+                                        className={`achievement-badge ${history.length >= 1 ? 'earned' : 'locked'}`}
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        <div className="badge-icon">
+                                            <Award size={28} />
+                                        </div>
+                                        <span className="badge-name">First Donation</span>
+                                        <span className="badge-desc">Complete your first donation</span>
+                                    </motion.div>
+                                    <motion.div
+                                        className={`achievement-badge ${history.length >= 5 ? 'earned' : 'locked'}`}
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        <div className="badge-icon">
+                                            <Star size={28} />
+                                        </div>
+                                        <span className="badge-name">Rising Hero</span>
+                                        <span className="badge-desc">Donate 5 times</span>
+                                    </motion.div>
+                                    <motion.div
+                                        className={`achievement-badge ${history.length >= 10 ? 'earned' : 'locked'}`}
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        <div className="badge-icon">
+                                            <Shield size={28} />
+                                        </div>
+                                        <span className="badge-name">Life Guardian</span>
+                                        <span className="badge-desc">Donate 10 times</span>
+                                    </motion.div>
+                                    <motion.div
+                                        className={`achievement-badge ${profile?.available ? 'earned' : 'locked'}`}
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        <div className="badge-icon">
+                                            <Clock size={28} />
+                                        </div>
+                                        <span className="badge-name">Always Ready</span>
+                                        <span className="badge-desc">Stay available for emergencies</span>
+                                    </motion.div>
                                 </div>
                             </div>
 

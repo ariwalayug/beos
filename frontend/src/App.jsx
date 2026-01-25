@@ -6,6 +6,7 @@ import { ToastProvider } from './context/ToastContext';
 import { SocketProvider } from './context/SocketContext';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import FloatingAlerts from './components/FloatingAlerts';
 import './index.css';
 
 import { AuthProvider } from './context/AuthContext';
@@ -67,6 +68,7 @@ function App() {
                             </ErrorBoundary>
                         </main>
                         <Footer />
+                        <FloatingAlerts />
                     </div>
                 </AuthProvider>
             </SocketProvider>

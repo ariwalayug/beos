@@ -381,3 +381,141 @@ input:checked+.slider:before {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ================================
+   IMPACT STATS SECTION
+   ================================ */
+.impact-stats-section {
+    margin-bottom: var(--space-8);
+}
+
+.impact-stats-section h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-4);
+    color: var(--color-white);
+}
+
+.impact-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-4);
+}
+
+.impact-stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.impact-stat-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-4px);
+}
+
+.impact-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.impact-icon.hearts {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.impact-icon.donations {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.impact-icon.streak {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.impact-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-white);
+    line-height: 1;
+    margin-bottom: var(--space-1);
+}
+
+.impact-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ================================
+   ACHIEVEMENTS SECTION
+   ================================ */
+.achievements-section {
+    margin-bottom: var(--space-8);
+}
+
+.achievements-section h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-4);
+    color: var(--color-white);
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-4);
+}
+
+.achievement-badge {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.achievement-badge.earned {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.achievement-badge.earned .badge-icon {
+    color: #22c55e;
+}
+
+.achievement-badge.locked {
+    opacity: 0.5;
+}
+
+.achievement-badge.locked .badge-icon {
+    color: var(--color-gray-500);
+}
+
+.badge-icon {
+    margin-bottom: var(--space-2);
+    display: block;
+}
+
+.badge-name {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--space-1);
+}
+
+.badge-desc {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}

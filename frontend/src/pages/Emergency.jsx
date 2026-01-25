@@ -3,6 +3,7 @@ import { useToast } from '../context/ToastContext';
 import { getRequests, createRequest, fulfillRequest, cancelRequest, getHospitals } from '../services/api';
 import { useRealTimeRequests } from '../hooks/useSocket';
 import RequestCard from '../components/RequestCard';
+import EmergencyRequestWizard from '../components/EmergencyRequestWizard';
 import { AlertCircle, AlertTriangle, Activity, X, Plus, Info, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/animations/PageTransition';
@@ -176,109 +177,26 @@ function Emergency() {
                 </div>
             </div>
 
-            {/* Modal Form with AnimatePresence */}
+            {/* Emergency Request Wizard */}
             <AnimatePresence>
                 {showForm && (
-                    <motion.div
-                        className="modal-overlay-pro"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
-                        <motion.div
-                            className="modal-card-pro"
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: 50, opacity: 0 }}
-                        >
-                            <div className="modal-header">
-                                <h2>Broadcast Emergency</h2>
-                                <button className="close-btn" onClick={() => setShowForm(false)}>
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <form onSubmit={handleSubmit}>
-                                <div className="form-section">
-                                    <label className="label-heading">Urgency Level</label>
-                                    <div className="urgency-grid">
-                                        <label className={`urgency-card normal ${formData.urgency === 'normal' ? 'selected' : ''}`}>
-                                            <input type="radio" name="urgency" value="normal" checked={formData.urgency === 'normal'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
-                                            <Info size={24} />
-                                            <span>Normal</span>
-                                        </label>
-                                        <label className={`urgency-card urgent ${formData.urgency === 'urgent' ? 'selected' : ''}`}>
-                                            <input type="radio" name="urgency" value="urgent" checked={formData.urgency === 'urgent'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
-                                            <AlertTriangle size={24} />
-                                            <span>Urgent</span>
-                                        </label>
-                                        <label className={`urgency-card critical ${formData.urgency === 'critical' ? 'selected' : ''}`}>
-                                            <input type="radio" name="urgency" value="critical" checked={formData.urgency === 'critical'} onChange={(e) => setFormData({ ...formData, urgency: e.target.value })} />
-                                            <Zap size={24} />
-                                            <span>Critical</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div className="form-group-pro">
-                                    <label>Patient Name</label>
-                                    <input type="text" value={formData.patient_name} onChange={(e) => setFormData({ ...formData, patient_name: e.target.value })} required />
-                                </div>
-                                <div className="form-grid">
-                                    <div className="form-group-pro">
-                                        <label>Age</label>
-                                        <input type="number" min="1" max="120" value={formData.age} onChange={(e) => setFormData({ ...formData, age: e.target.value })} required placeholder="Yrs" />
-                                    </div>
-                                    <div className="form-group-pro">
-                                        <label>Hb Level</label>
-                                        <input type="number" step="0.1" value={formData.hemoglobin} onChange={(e) => setFormData({ ...formData, hemoglobin: e.target.value })} required placeholder="g/dL" />
-                                    </div>
-                                    <div className="form-group-pro">
-                                        <label>Platelets</label>
-                                        <input type="number" value={formData.platelets} onChange={(e) => setFormData({ ...formData, platelets: e.target.value })} required placeholder="Count" />
-                                    </div>
-                                </div>
-                                <div className="form-grid">
-                                    <div className="form-group-pro">
-                                        <label>Blood Type</label>
-                                        <select value={formData.blood_type} onChange={(e) => setFormData({ ...formData, blood_type: e.target.value })} required >
-                                            <option value="">Select...</option>
-                                            {bloodTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                                        </select>
-                                    </div>
-                                    <div className="form-group-pro">
-                                        <label>Units</label>
-                                        <input type="number" min="1" max="20" value={formData.units} onChange={(e) => setFormData({ ...formData, units: parseInt(e.target.value) })} required />
-                                    </div>
-                                </div>
-
-                                <div className="form-group-pro">
-                                    <label>Past Blood Reaction (Optional)</label>
-                                    <textarea
-                                        rows="2"
-                                        placeholder="Details of any previous adverse reactions..."
-                                        value={formData.past_reaction}
-                                        onChange={(e) => setFormData({ ...formData, past_reaction: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="form-group-pro">
-                                    <label>Hospital (Optional)</label>
-                                    <select value={formData.hospital_id} onChange={(e) => setFormData({ ...formData, hospital_id: e.target.value })} >
-                                        <option value="">Select hospital...</option>
-                                        {hospitals.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
-                                    </select>
-                                </div>
-
-                                <div className="modal-actions">
-                                    <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
-                                    <button type="submit" className="btn btn-danger" disabled={submitting}>
-                                        {submitting ? 'Broadcasting...' : 'Broadcast Alert'}
-                                    </button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    </motion.div>
+                    <EmergencyRequestWizard
+                        onClose={() => setShowForm(false)}
+                        onSubmit={async (data) => {
+                            try {
+                                const response = await createRequest({
+                                    ...data,
+                                    hospital_id: data.hospital_id || undefined
+                                });
+                                setRequests(prev => [response.data, ...prev]);
+                                toast.success('Emergency request broadcasted successfully');
+                                return response;
+                            } catch (err) {
+                                toast.error('Error creating request: ' + err.message);
+                                throw err;
+                            }
+                        }}
+                    />
                 )}
             </AnimatePresence>
         </PageTransition>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getDashboard } from '../services/api';
-import { useSocket, useCriticalAlerts } from '../hooks/useSocket';
+import { useSocket } from '../hooks/useSocket';
 import {
     Activity,
     Heart,
@@ -11,58 +11,133 @@ import {
     Shield,
     AlertTriangle,
     Droplet,
-    CheckCircle
+    CheckCircle,
+    MapPin,
+    Zap,
+    Clock,
+    BadgeCheck,
+    Lock
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import PageTransition from '../components/animations/PageTransition';
 import FadeIn from '../components/animations/FadeIn';
 import StaggerContainer, { StaggerItem } from '../components/animations/StaggerContainer';
 import './Home.css';
 
-// SVG Network Animation Background
-const NetworkBackground = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-20">
-        <svg className="w-full h-full" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+// Animated Counter with smooth transitions
+function AnimatedNumber({ value, duration = 2 }) {
+    const count = useMotionValue(0);
+    const rounded = useTransform(count, latest => Math.round(latest));
+    const [displayValue, setDisplayValue] = useState(0);
+
+    useEffect(() => {
+        const controls = animate(count, value, { duration });
+        const unsubscribe = rounded.on("change", latest => setDisplayValue(latest));
+        return () => {
+            controls.stop();
+            unsubscribe();
+        };
+    }, [value]);
+
+    return <span>{displayValue.toLocaleString()}</span>;
+}
+
+// Heartbeat Wave Background
+const HeartbeatWaveBackground = () => (
+    <div className="heartbeat-wave-container">
+        <svg viewBox="0 0 1200 200" preserveAspectRatio="none" className="heartbeat-wave">
             <motion.path
-                d="M100,400 Q250,300 400,400 T700,400 T900,300"
-                fill="none"
-                stroke="#e11d48"
-                strokeWidth="2"
+                d="M0,100 L200,100 L230,100 L250,20 L270,180 L290,60 L310,140 L330,100 L400,100 L1200,100 L1200,200 L0,200 Z"
+                fill="url(#heartbeatGradient)"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+                transition={{ duration: 2, ease: "easeInOut" }}
             />
-            <motion.path
-                d="M50,200 Q300,500 600,200 T950,500"
-                fill="none"
-                stroke="#be123c"
-                strokeWidth="2"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 4, delay: 0.5, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-            />
-            <motion.circle cx="400" cy="400" r="10" fill="#e11d48"
-                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.circle cx="700" cy="400" r="6" fill="#be123c"
-                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-            />
+            <defs>
+                <linearGradient id="heartbeatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(220, 38, 38, 0)" />
+                    <stop offset="50%" stopColor="rgba(220, 38, 38, 0.3)" />
+                    <stop offset="100%" stopColor="rgba(220, 38, 38, 0)" />
+                </linearGradient>
+            </defs>
         </svg>
+        <motion.div
+            className="pulse-ring"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
     </div>
 );
 
-// Animated Counter
-function AnimatedCounter({ end, duration = 2 }) {
+// Map Pulse Background Effect
+const MapPulseBackground = () => (
+    <div className="map-pulse-container">
+        {[...Array(3)].map((_, i) => (
+            <motion.div
+                key={i}
+                className="map-pulse-ring"
+                initial={{ scale: 0.8, opacity: 0.6 }}
+                animate={{ scale: 2.5, opacity: 0 }}
+                transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: i * 1,
+                    ease: "easeOut"
+                }}
+            />
+        ))}
+        <MapPin className="map-pulse-icon" size={32} />
+    </div>
+);
+
+// Live Stats Counter Component
+function LiveStatsCounter({ activeRequests, donorsOnline, livesSaved }) {
     return (
-        <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-        >
-            {end}
-        </motion.span>
+        <div className="live-stats-banner">
+            <div className="live-indicator">
+                <span className="live-dot" />
+                <span className="live-text">LIVE</span>
+            </div>
+            <div className="live-stats-items">
+                <div className="live-stat">
+                    <Zap size={16} className="stat-icon critical" />
+                    <span className="stat-value"><AnimatedNumber value={activeRequests} /></span>
+                    <span className="stat-label">Active Requests</span>
+                </div>
+                <div className="stat-divider" />
+                <div className="live-stat">
+                    <Users size={16} className="stat-icon success" />
+                    <span className="stat-value"><AnimatedNumber value={donorsOnline} /></span>
+                    <span className="stat-label">Donors Online</span>
+                </div>
+                <div className="stat-divider" />
+                <div className="live-stat">
+                    <Heart size={16} className="stat-icon primary" />
+                    <span className="stat-value"><AnimatedNumber value={livesSaved} /></span>
+                    <span className="stat-label">Lives Saved</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Trust Badges Component
+function TrustBadges() {
+    return (
+        <div className="trust-badges">
+            <div className="trust-badge verified">
+                <BadgeCheck size={14} />
+                <span>Verified Hospitals</span>
+            </div>
+            <div className="trust-badge secure">
+                <Lock size={14} />
+                <span>Secure Data</span>
+            </div>
+            <div className="trust-badge">
+                <Shield size={14} />
+                <span>Medical Partners</span>
+            </div>
+        </div>
     );
 }
 
@@ -132,7 +207,7 @@ function ImpactCard({ icon: Icon, value, label, delay }) {
             </div>
             <div className="impact-info">
                 <div className="text-3xl font-bold mb-1">
-                    <AnimatedCounter end={value} />
+                    <AnimatedNumber value={value} />
                 </div>
                 <span className="text-sm text-gray-400 uppercase tracking-wide">{label}</span>
             </div>
@@ -161,18 +236,23 @@ function Home() {
 
     if (loading) {
         return (
-            <div className="h-screen flex items-center justify-center bg-zinc-950">
+            <div className="loading-screen">
                 <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="loading-heart"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
                 >
-                    <Activity className="text-primary" size={48} />
+                    <Heart className="text-primary" size={48} fill="currentColor" />
                 </motion.div>
+                <p className="loading-message">Connecting to life-saving network...</p>
             </div>
         );
     }
 
     const bloodTypes = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+    const activeRequests = dashboard?.requests?.pending || 0;
+    const donorsOnline = dashboard?.donors?.available || 0;
+    const livesSaved = dashboard?.requests?.fulfilled || 0;
 
     return (
         <PageTransition className="home-professional overflow-hidden">
@@ -181,7 +261,7 @@ function Home() {
                 <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
-                    className="critical-banner bg-red-700 text-white py-3"
+                    className="critical-banner"
                 >
                     <div className="container flex items-center justify-center gap-3">
                         <motion.div
@@ -200,90 +280,110 @@ function Home() {
                 </motion.div>
             )}
 
-            {/* Hero Section */}
-            <section className="hero-section relative min-h-[90vh] flex items-center pt-20">
-                <NetworkBackground />
-                <div className="container relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            {/* Hero Section - Redesigned */}
+            <section className="hero-section-new">
+                <HeartbeatWaveBackground />
+                <div className="hero-pulse-bg" />
+
+                <div className="container hero-container">
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        className="hero-content-center"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="hero-content"
                     >
+                        {/* Status Badge */}
                         <motion.div
-                            className="hero-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-sm text-gray-400 mb-6"
-                            initial={{ width: 0, opacity: 0 }}
-                            animate={{ width: 'auto', opacity: 1 }}
+                            className="hero-status-badge"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`}></span>
-                            System Operational
+                            <span className={`status-indicator ${isConnected ? 'online' : 'offline'}`} />
+                            <span>Emergency Response Network Active</span>
                         </motion.div>
 
-                        <h1 className="hero-title text-5xl md:text-7xl font-black leading-tight mb-6">
-                            Advanced Blood<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-600">
-                                Logistics Network
-                            </span>
+                        {/* Main Headline */}
+                        <h1 className="hero-headline">
+                            Find Blood.<br />
+                            <span className="hero-headline-accent">Save Lives.</span><br />
+                            <span className="hero-headline-urgent">Instantly.</span>
                         </h1>
 
-                        <p className="hero-subtitle text-lg text-gray-400 mb-8 max-w-lg leading-relaxed">
-                            Connecting hospitals, donors, and logistics in real-time.
-                            The next generation of emergency response infrastructure is here.
+                        {/* Subtitle */}
+                        <p className="hero-subtitle-new">
+                            Real-time blood donation platform connecting hospitals, donors, and blood banks
+                            during medical emergencies. Every second counts.
                         </p>
 
+                        {/* CTA Buttons */}
                         <motion.div
-                            className="hero-actions flex gap-4"
-                            whileHover={{ scale: 1.02 }}
+                            className="hero-cta-group"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
                         >
-                            <Link to="/register" className="btn btn-primary btn-lg flex items-center gap-2 group">
-                                Join Network
-                                <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                                    <ArrowRight size={20} />
-                                </motion.span>
+                            <Link to="/emergency" className="btn-request-blood touch-target">
+                                <Zap size={20} />
+                                Request Blood
                             </Link>
-                            <Link to="/emergency" className="btn btn-secondary btn-lg flex items-center gap-2">
-                                <Activity size={20} /> View Activity
+                            <Link to="/register" className="btn-donate-now touch-target">
+                                <Heart size={20} />
+                                Donate Now
                             </Link>
+                        </motion.div>
+
+                        {/* Live Stats */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                        >
+                            <LiveStatsCounter
+                                activeRequests={activeRequests}
+                                donorsOnline={donorsOnline}
+                                livesSaved={livesSaved}
+                            />
+                        </motion.div>
+
+                        {/* Trust Badges */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            <TrustBadges />
                         </motion.div>
                     </motion.div>
 
+                    {/* Side Visual - Map Pulse */}
                     <motion.div
-                        className="hero-stats-grid grid grid-cols-2 gap-4"
-                        initial="hidden"
-                        animate="show"
-                        variants={{
-                            hidden: { opacity: 0 },
-                            show: {
-                                opacity: 1,
-                                transition: { staggerChildren: 0.1 }
-                            }
-                        }}
+                        className="hero-visual hide-mobile"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        <ImpactCard
-                            icon={Users}
-                            value={dashboard?.donors?.total || 0}
-                            label="Active Donors"
-                            delay={0.1}
-                        />
-                        <ImpactCard
-                            icon={Building2}
-                            value={dashboard?.hospitals?.total || 0}
-                            label="Hospitals"
-                            delay={0.2}
-                        />
-                        <ImpactCard
-                            icon={Heart}
-                            value={dashboard?.donors?.available || 0}
-                            label="Available Now"
-                            delay={0.3}
-                        />
-                        <ImpactCard
-                            icon={Shield}
-                            value={dashboard?.requests?.fulfilled || 0}
-                            label="Fulfilled"
-                            delay={0.4}
-                        />
+                        <MapPulseBackground />
+                        <div className="hero-stats-floating">
+                            <ImpactCard
+                                icon={Users}
+                                value={dashboard?.donors?.total || 0}
+                                label="Active Donors"
+                                delay={0.6}
+                            />
+                            <ImpactCard
+                                icon={Building2}
+                                value={dashboard?.hospitals?.total || 0}
+                                label="Hospitals"
+                                delay={0.7}
+                            />
+                            <ImpactCard
+                                icon={Clock}
+                                value={5}
+                                label="Min Response"
+                                delay={0.8}
+                            />
+                        </div>
                     </motion.div>
                 </div>
             </section>
@@ -321,7 +421,7 @@ function Home() {
                 </div>
             </section>
 
-            {/* Workflow */}
+            {/* How It Works - Workflow */}
             <section className="section py-20">
                 <div className="container">
                     <FadeIn className="text-center mb-16">
@@ -358,6 +458,28 @@ function Home() {
                             <p className="text-gray-400 text-sm">Matched donors are notified and deployed.</p>
                         </StaggerItem>
                     </StaggerContainer>
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="section py-16">
+                <div className="container">
+                    <motion.div
+                        className="cta-emergency-box"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <div className="cta-content">
+                            <h3>Ready to Save Lives?</h3>
+                            <p>Join thousands of donors making a difference every day.</p>
+                        </div>
+                        <div className="cta-actions">
+                            <Link to="/register" className="btn btn-primary btn-lg">
+                                Join Network <ArrowRight size={18} />
+                            </Link>
+                        </div>
+                    </motion.div>
                 </div>
             </section>
         </PageTransition>
