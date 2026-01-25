@@ -1,0 +1,212 @@
+/* Mobile Menu Styles */
+.mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+}
+
+.mobile-menu-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    /* Standard drawer width */
+    max-width: 80vw;
+    background: var(--bg-card);
+    border-right: 1px solid var(--color-border);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu-header {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-gray-100);
+    text-decoration: none;
+}
+
+.btn-icon-close {
+    background: transparent;
+    border: none;
+    color: var(--color-gray-400);
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-gray-100);
+}
+
+.mobile-menu-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* User Profile Summary */
+.user-profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow: hidden;
+}
+
+.user-email-mobile {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-gray-100);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role-badge {
+    font-size: 0.7rem;
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Navigation Links */
+.mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--color-gray-300);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    transition: all 0.2s;
+}
+
+.mobile-nav-link:hover {
+    background: var(--bg-secondary);
+    color: var(--color-gray-100);
+    padding-left: 1.25rem;
+    /* Slide effect on hover */
+}
+
+.mobile-nav-link.active {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-primary-light);
+    font-weight: 600;
+}
+
+/* Emergency Link Highlight */
+.mobile-nav-link.emergency-link {
+    color: var(--color-critical);
+}
+
+.mobile-nav-link.emergency-link:hover {
+    background: rgba(220, 38, 38, 0.1);
+}
+
+.mobile-nav-link.emergency-link.active {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), transparent);
+    color: #ef4444;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+/* Footer Section */
+.mobile-menu-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+    color: var(--color-gray-300);
+    font-weight: 500;
+}
+
+.mobile-btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--color-border);
+    color: var(--color-gray-300);
+    padding: 0.875rem;
+}
+
+.mobile-btn-logout:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: #ef4444;
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.mobile-auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    font-size: 0.9rem;
+}
