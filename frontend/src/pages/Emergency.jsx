@@ -37,13 +37,13 @@ function Emergency() {
 
     useEffect(() => {
         fetchData();
-    }, [filter]);
+    }, []); // Only fetch on mount - filtering is done client-side
 
     const fetchData = async () => {
         try {
             setLoading(true);
             const [requestsRes, hospitalsRes] = await Promise.all([
-                getRequests(filter !== 'all' ? { status: filter } : {}),
+                getRequests(), // Always fetch ALL requests
                 getHospitals()
             ]);
             setRequests(requestsRes.data);
