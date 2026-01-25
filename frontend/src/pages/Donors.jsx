@@ -43,12 +43,14 @@ function Donors() {
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
+        // Create a new URLSearchParams to avoid mutation issues
+        const newParams = new URLSearchParams(searchParams);
         if (value) {
-            searchParams.set(key, value);
+            newParams.set(key, value);
         } else {
-            searchParams.delete(key);
+            newParams.delete(key);
         }
-        setSearchParams(searchParams);
+        setSearchParams(newParams);
     };
 
     const clearFilters = () => {
