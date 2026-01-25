@@ -4,6 +4,7 @@ import {
     createRequest,
     getRequests,
     cancelRequest,
+    fulfillRequest,
     getDonors
 } from '../services/api';
 import { useToast } from '../context/ToastContext';
@@ -104,6 +105,20 @@ function HospitalDashboard() {
             fetchDashboardData();
         } catch (error) {
             showToast('Failed to cancel request.', 'error');
+        }
+    };
+
+    const handleFulfillRequest = async (id) => {
+        if (!window.confirm('Mark this request as fulfilled?')) return;
+
+        try {
+            const response = await fulfillRequest(id);
+            setRequests(prev => prev.map(r => r.id === id ? response.data : r));
+            showToast('Request fulfilled successfully!', 'success');
+            // Refresh stats
+            fetchDashboardData();
+        } catch (error) {
+            showToast('Failed to fulfill request: ' + error.message, 'error');
         }
     };
 
@@ -246,6 +261,7 @@ function HospitalDashboard() {
                         <ActiveRequestsList
                             requests={requests}
                             onCancel={handleCancelRequest}
+                            onFulfill={handleFulfillRequest}
                             onMatch={handleFindDonors}
                         />
                     )}

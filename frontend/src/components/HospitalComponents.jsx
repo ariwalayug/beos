@@ -140,7 +140,7 @@ export function RequestForm({ onSubmit, loading }) {
     );
 }
 
-export function ActiveRequestsList({ requests, onCancel, onMatch }) {
+export function ActiveRequestsList({ requests, onCancel, onMatch, onFulfill }) {
     if (requests.length === 0) {
         return (
             <div className="empty-state glass-card">
@@ -163,6 +163,9 @@ export function ActiveRequestsList({ requests, onCancel, onMatch }) {
                         <p className="text-sm text-gray-400">{req.notes}</p>
                     </div>
                     <div className="request-actions flex gap-2">
+                        <button className="btn btn-success btn-sm" onClick={() => onFulfill && onFulfill(req.id)}>
+                            ✅ Fulfill
+                        </button>
                         <button className="btn btn-secondary btn-sm" onClick={() => onMatch(req)}>
                             Find Donors
                         </button>
