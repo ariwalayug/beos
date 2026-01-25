@@ -22,6 +22,7 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import PageTransition from '../components/animations/PageTransition';
 import FadeIn from '../components/animations/FadeIn';
 import StaggerContainer, { StaggerItem } from '../components/animations/StaggerContainer';
+import BloodCampBulletin from '../components/BloodCampBulletin';
 import './Home.css';
 
 // Animated Counter with smooth transitions
@@ -333,17 +334,14 @@ function Home() {
                             </Link>
                         </motion.div>
 
-                        {/* Live Stats */}
+                        {/* Live Bulletin Board (Replaces Live Stats) */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6 }}
+                            className="w-full"
                         >
-                            <LiveStatsCounter
-                                activeRequests={activeRequests}
-                                donorsOnline={donorsOnline}
-                                livesSaved={livesSaved}
-                            />
+                            <BloodCampBulletin />
                         </motion.div>
 
                         {/* Trust Badges */}
@@ -356,35 +354,12 @@ function Home() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Side Visual - Map Pulse */}
-                    <motion.div
-                        className="hero-visual hide-mobile"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                    >
-                        <MapPulseBackground />
-                        <div className="hero-stats-floating">
-                            <ImpactCard
-                                icon={Users}
-                                value={dashboard?.donors?.total || 0}
-                                label="Active Donors"
-                                delay={0.6}
-                            />
-                            <ImpactCard
-                                icon={Building2}
-                                value={dashboard?.hospitals?.total || 0}
-                                label="Hospitals"
-                                delay={0.7}
-                            />
-                            <ImpactCard
-                                icon={Clock}
-                                value={5}
-                                label="Min Response"
-                                delay={0.8}
-                            />
+                    {/* Side Visual - Map Pulse (Removed as requested, or we can keep MapPulse background only) */}
+                    <div className="hero-visual hide-mobile">
+                        <div className="relative w-full h-full flex items-center justify-center opacity-50">
+                            <MapPulseBackground />
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -482,7 +457,7 @@ function Home() {
                     </motion.div>
                 </div>
             </section>
-        </PageTransition>
+        </PageTransition >
     );
 }
 
