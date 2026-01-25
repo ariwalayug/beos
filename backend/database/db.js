@@ -107,6 +107,30 @@ try {
     console.error('Donations table creation error:', error);
 }
 
+// Migration: Add missing columns to blood_requests for Phase 13 Emergency Wizard
+try {
+    const tableInfo = db.pragma('table_info(blood_requests)');
+    const existingColumns = tableInfo.map(col => col.name);
+
+    const columnsToAdd = [
+        { name: 'gender', type: 'TEXT' },
+        { name: 'component_type', type: 'TEXT DEFAULT "Whole Blood"' },
+        { name: 'is_critical', type: 'INTEGER DEFAULT 0' },
+        { name: 'diagnosis', type: 'TEXT' },
+        { name: 'allergies', type: 'TEXT' },
+        { name: 'doctor_name', type: 'TEXT' }
+    ];
+
+    columnsToAdd.forEach(({ name, type }) => {
+        if (!existingColumns.includes(name)) {
+            console.log(`Migrating: Adding ${name} column to blood_requests table...`);
+            db.prepare(`ALTER TABLE blood_requests ADD COLUMN ${name} ${type}`).run();
+        }
+    });
+} catch (error) {
+    console.error('Blood requests column migration error:', error);
+}
+
 // Seed initial data if tables are empty
 function seedData() {
     const donorCount = db.prepare('SELECT COUNT(*) as count FROM donors').get();
