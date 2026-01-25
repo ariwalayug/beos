@@ -4,15 +4,36 @@ import { getDonors, getHospitals, getBloodBanks, getRequests } from '../services
 import './EmergencyMap.css';
 
 function EmergencyMap() {
-    const [markers, setMarkers] = useState([]);
-    const [activeFilter, setActiveFilter] = useState('all');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showHeatmap, setShowHeatmap] = useState(false);
+    const [userLocation, setUserLocation] = useState(null);
+    const [mapCenter, setMapCenter] = useState(null);
 
     useEffect(() => {
         fetchAllData();
     }, []);
+
+    const handleLocateUser = () => {
+        if (navigator.geolocation) {
+            setLoading(true);
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const loc = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    setUserLocation(loc);
+                    setMapCenter([loc.lat, loc.lng]); // Center map on user
+                    setLoading(false);
+                },
+                (error) => {
+                    console.error("Error getting location", error);
+                    setError("Could not retrieve your location. Please check permissions.");
+                    setLoading(false);
+                }
+            );
+        } else {
+            setError("Geolocation is not supported by this browser.");
+        }
+    };
 
     const fetchAllData = async () => {
         try {
@@ -29,29 +50,33 @@ function EmergencyMap() {
                     lat: d.latitude,
                     lng: d.longitude,
                     type: 'donor',
-                    title: `Latent Donor: ${d.name}`,
+                    title: d.name,
                     info: `Blood Type: ${d.blood_type}`,
+                    phone: d.phone
                 })),
                 ...hospitalsRes.data.map(h => ({
                     lat: h.latitude,
                     lng: h.longitude,
                     type: 'hospital',
                     title: h.name,
-                    info: `Hospital`,
+                    info: h.city,
+                    phone: h.phone
                 })),
                 ...banksRes.data.map(b => ({
                     lat: b.latitude,
                     lng: b.longitude,
                     type: 'bloodBank',
                     title: b.name,
-                    info: `Blood Bank`,
+                    info: `Blood Bank - ${b.city}`,
+                    phone: b.phone
                 })),
                 ...requestsRes.data.map(r => ({
-                    lat: r.hospital?.latitude || 21.1702, // Fallback if join issue
+                    lat: r.hospital?.latitude || 21.1702,
                     lng: r.hospital?.longitude || 72.8311,
                     type: 'request',
-                    title: `Emergency: ${r.blood_type}`,
+                    title: `URGENT: ${r.blood_type}`,
                     info: `Required at ${r.hospital_name || 'Unknown'}`,
+                    contact: r.hospital?.phone
                 }))
             ];
 
@@ -76,7 +101,15 @@ function EmergencyMap() {
                     <p className="text-gray-400">Real-time view of donors, hospitals, and blood banks.</p>
                 </div>
 
-                <div className="flex gap-2 items-center flex-wrap">
+                <div className="flex gap-2 items-center flex-wrap controls-bar">
+                    <button
+                        className="btn btn-sm btn-secondary"
+                        onClick={handleLocateUser}
+                        title="Use My Location"
+                    >
+                        📍 My Location
+                    </button>
+
                     <button
                         className={`btn btn-sm ${showHeatmap ? 'btn-danger' : 'btn-outline'}`}
                         onClick={() => setShowHeatmap(!showHeatmap)}
@@ -84,27 +117,35 @@ function EmergencyMap() {
                     >
                         🔥 Heatmap
                     </button>
+
                     <div className="h-6 w-px bg-gray-700 mx-2 hidden md:block"></div>
-                    <button
-                        className={`btn btn-sm ${activeFilter === 'all' ? 'btn-primary' : 'btn-outline'}`}
-                        onClick={() => setActiveFilter('all')}
-                    >All</button>
-                    <button
-                        className={`btn btn-sm ${activeFilter === 'request' ? 'btn-primary' : 'btn-outline'}`}
-                        onClick={() => setActiveFilter('request')}
-                    >Emergencies</button>
-                    <button
-                        className={`btn btn-sm ${activeFilter === 'donor' ? 'btn-primary' : 'btn-outline'}`}
-                        onClick={() => setActiveFilter('donor')}
-                    >Donors</button>
-                    <button
-                        className={`btn btn-sm ${activeFilter === 'hospital' ? 'btn-primary' : 'btn-outline'}`}
-                        onClick={() => setActiveFilter('hospital')}
-                    >Hospitals</button>
+
+                    <div className="flex bg-zinc-800 p-1 rounded-lg">
+                        <button
+                            className={`filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('all')}
+                        >All</button>
+                        <button
+                            className={`filter-tab ${activeFilter === 'request' ? 'active urgent' : ''}`}
+                            onClick={() => setActiveFilter('request')}
+                        >🚨 Emergencies</button>
+                        <button
+                            className={`filter-tab ${activeFilter === 'donor' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('donor')}
+                        >👤 Donors</button>
+                        <button
+                            className={`filter-tab ${activeFilter === 'hospital' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('hospital')}
+                        >🏥 Hospitals</button>
+                        <button
+                            className={`filter-tab ${activeFilter === 'bloodBank' ? 'active' : ''}`}
+                            onClick={() => setActiveFilter('bloodBank')}
+                        >🩸 Banks</button>
+                    </div>
                 </div>
             </header>
 
-            {loading ? (
+            {loading && !markers.length ? (
                 <div className="h-[500px] glass-card flex items-center justify-center">
                     <div className="spinner"></div>
                 </div>
@@ -114,8 +155,21 @@ function EmergencyMap() {
                     <button className="btn btn-primary" onClick={fetchAllData}>Retry</button>
                 </div>
             ) : (
-                <div className="glass-card p-2">
-                    <MapView markers={filteredMarkers} showHeatmap={showHeatmap} />
+                <div className="glass-card p-2 relative">
+                    <MapView
+                        markers={filteredMarkers}
+                        showHeatmap={showHeatmap}
+                        userLocation={userLocation}
+                        center={mapCenter}
+                    />
+
+                    {/* Legend Overlay */}
+                    <div className="map-legend">
+                        <div className="legend-item"><span className="dot request"></span> Emergency</div>
+                        <div className="legend-item"><span className="dot hospital"></span> Hospital</div>
+                        <div className="legend-item"><span className="dot bloodBank"></span> Blood Bank</div>
+                        <div className="legend-item"><span className="dot donor"></span> Donor</div>
+                    </div>
                 </div>
             )}
 
