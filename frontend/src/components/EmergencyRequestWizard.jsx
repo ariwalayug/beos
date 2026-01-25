@@ -266,12 +266,15 @@ function StepClinical({ formData, setFormData, onNext, onBack }) {
                 </div>
 
                 <div className="form-group">
-                    <label className="form-label flex justify-between">
-                        Critical Condition?
-                        <div className={`toggle-switch ${formData.is_critical ? 'active' : ''}`} onClick={() => setFormData({ ...formData, is_critical: !formData.is_critical })}>
+                    <div
+                        className="form-label flex justify-between items-center cursor-pointer"
+                        onClick={() => setFormData({ ...formData, is_critical: !formData.is_critical })}
+                    >
+                        <span>Critical Condition?</span>
+                        <div className={`toggle-switch ${formData.is_critical ? 'active' : ''}`}>
                             <div className="toggle-handle" />
                         </div>
-                    </label>
+                    </div>
                     <p className="text-xs text-gray-400 mt-1">Patient requires immediate attention (within 1 hour).</p>
                 </div>
 
