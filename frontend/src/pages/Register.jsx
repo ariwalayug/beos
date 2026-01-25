@@ -179,7 +179,39 @@ function Register() {
                                             <label>City</label>
                                             <div className="input-wrapper">
                                                 <MapPin size={18} className="input-icon" />
-                                                <input type="text" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} required />
+                                                <select
+                                                    value={formData.city}
+                                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                    required
+                                                    className="select-input"
+                                                >
+                                                    <option value="">Select City</option>
+                                                    <option value="Ahmedabad">Ahmedabad</option>
+                                                    <option value="Surat">Surat</option>
+                                                    <option value="Vadodara">Vadodara</option>
+                                                    <option value="Rajkot">Rajkot</option>
+                                                    <option value="Gandhinagar">Gandhinagar</option>
+                                                    <option value="Bhavnagar">Bhavnagar</option>
+                                                    <option value="Jamnagar">Jamnagar</option>
+                                                    <option value="Junagadh">Junagadh</option>
+                                                    <option value="Anand">Anand</option>
+                                                    <option value="Nadiad">Nadiad</option>
+                                                    <option value="Mehsana">Mehsana</option>
+                                                    <option value="Bhuj">Bhuj</option>
+                                                    <option value="Morbi">Morbi</option>
+                                                    <option value="Valsad">Valsad</option>
+                                                    <option value="Patan">Patan</option>
+                                                    <option value="Navsari">Navsari</option>
+                                                    <option value="Bharuch">Bharuch</option>
+                                                    <option value="Surendranagar">Surendranagar</option>
+                                                    <option value="Porbandar">Porbandar</option>
+                                                    <option value="Godhra">Godhra</option>
+                                                    <option value="Palanpur">Palanpur</option>
+                                                    <option value="Veraval">Veraval</option>
+                                                    <option value="Dahod">Dahod</option>
+                                                    <option value="Botad">Botad</option>
+                                                    <option value="Amreli">Amreli</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div className="form-group-pro">

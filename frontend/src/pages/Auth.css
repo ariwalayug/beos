@@ -153,6 +153,33 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
+.input-wrapper select,
+.select-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-main);
+    font-size: 0.925rem;
+    transition: all 0.2s;
+    appearance: none;
+    cursor: pointer;
+}
+
+.input-wrapper select:focus,
+.select-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.input-wrapper select option {
+    background: var(--color-card);
+    color: var(--color-text-main);
+    padding: 0.5rem;
+}
+
 .password-toggle {
     position: absolute;
     right: 1rem;
