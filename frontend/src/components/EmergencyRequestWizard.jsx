@@ -12,6 +12,7 @@ import {
     Building2,
     Phone
 } from 'lucide-react';
+import hospitalsData from '../data/hospitals.json';
 import './EmergencyRequestWizard.css';
 
 const STEPS = [
@@ -143,10 +144,16 @@ function StepDetails({ formData, setFormData, onNext, onDetectLocation, detectin
                     <input
                         type="text"
                         className="form-input location-input"
-                        placeholder="Hospital or city"
+                        placeholder="Search hospital or city..."
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        list="hospital-suggestions"
                     />
+                    <datalist id="hospital-suggestions">
+                        {hospitalsData.map(h => (
+                            <option key={h.id} value={`${h.name}, ${h.city}`} />
+                        ))}
+                    </datalist>
                     <button
                         type="button"
                         className="detect-location-btn"
