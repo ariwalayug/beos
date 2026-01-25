@@ -149,51 +149,69 @@
     border-top: 1px solid var(--color-border);
 }
 
-/* Toggle Switch */
-.toggle-switch {
+/* Checkbox Filter */
+.checkbox-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md);
+    transition: background-color 0.15s ease;
+}
+
+.checkbox-filter:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.checkbox-filter input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-filter .checkbox-box {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-gray-500);
+    border-radius: 3px;
+    background-color: transparent;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
 }
 
-.toggle-switch input {
-    display: none;
+.checkbox-filter .checkbox-box svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.15s ease;
+    color: var(--color-primary);
 }
 
-.toggle-switch .slider {
-    width: 36px;
-    height: 20px;
-    background: var(--color-border);
-    border-radius: 9999px;
-    position: relative;
-    transition: 0.3s;
+.checkbox-filter input:checked+.checkbox-box {
+    border-color: var(--color-primary);
 }
 
-.toggle-switch .slider::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: white;
-    top: 2px;
-    left: 2px;
-    transition: 0.3s;
+.checkbox-filter input:checked+.checkbox-box svg {
+    opacity: 1;
+    transform: scale(1);
 }
 
-.toggle-switch input:checked+.slider {
-    background: var(--color-primary);
+.checkbox-filter:focus-within .checkbox-box {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
 }
 
-.toggle-switch input:checked+.slider::before {
-    transform: translateX(16px);
-}
-
-.toggle-label {
+.checkbox-label {
     font-size: 0.875rem;
-    font-weight: 600;
-    color: #e5e7eb;
+    font-weight: 500;
+    color: var(--color-gray-200);
+    line-height: 1;
 }
 
 .btn-clear {

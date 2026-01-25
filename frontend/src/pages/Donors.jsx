@@ -110,14 +110,18 @@ function Donors() {
                     </div>
 
                     <div className="filter-actions">
-                        <label className="toggle-switch">
+                        <label className="checkbox-filter">
                             <input
                                 type="checkbox"
                                 checked={filters.available === 'true'}
                                 onChange={(e) => handleFilterChange('available', e.target.checked ? 'true' : '')}
                             />
-                            <span className="slider"></span>
-                            <span className="toggle-label">Available Only</span>
+                            <span className="checkbox-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </span>
+                            <span className="checkbox-label">Available only</span>
                         </label>
 
                         {hasActiveFilters && (
