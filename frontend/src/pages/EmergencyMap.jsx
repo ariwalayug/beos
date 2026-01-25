@@ -6,6 +6,11 @@ import './EmergencyMap.css';
 function EmergencyMap() {
     const [userLocation, setUserLocation] = useState(null);
     const [mapCenter, setMapCenter] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [markers, setMarkers] = useState([]);
+    const [activeFilter, setActiveFilter] = useState('all');
+    const [showHeatmap, setShowHeatmap] = useState(false);
 
     useEffect(() => {
         fetchAllData();
