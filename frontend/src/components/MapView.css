@@ -1,0 +1,75 @@
+/* Map Pulsing Markers */
+.marker-pin {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.marker-pin.donor {
+    background: #10b981;
+}
+
+.marker-pin.request {
+    background: #ef4444;
+    animation: map-pulse-red 2s infinite;
+}
+
+.marker-pin.hospital {
+    background: #3b82f6;
+    border-radius: 5px;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.marker-pin.bloodBank {
+    background: #a855f7;
+    border-radius: 0;
+}
+
+.marker-pulse {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: rgba(16, 185, 129, 0.4);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: map-pulse-green 2s infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.marker-pulse.request {
+    background: rgba(239, 68, 68, 0.4);
+    animation: map-pulse-red 2s infinite;
+}
+
+@keyframes map-pulse-green {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
+    }
+}
+
+@keyframes map-pulse-red {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+    }
+}

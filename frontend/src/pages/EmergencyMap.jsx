@@ -8,6 +8,7 @@ function EmergencyMap() {
     const [activeFilter, setActiveFilter] = useState('all');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showHeatmap, setShowHeatmap] = useState(false);
 
     useEffect(() => {
         fetchAllData();
@@ -75,7 +76,15 @@ function EmergencyMap() {
                     <p className="text-gray-400">Real-time view of donors, hospitals, and blood banks.</p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center flex-wrap">
+                    <button
+                        className={`btn btn-sm ${showHeatmap ? 'btn-danger' : 'btn-outline'}`}
+                        onClick={() => setShowHeatmap(!showHeatmap)}
+                        title="Show high demand zones"
+                    >
+                        🔥 Heatmap
+                    </button>
+                    <div className="h-6 w-px bg-gray-700 mx-2 hidden md:block"></div>
                     <button
                         className={`btn btn-sm ${activeFilter === 'all' ? 'btn-primary' : 'btn-outline'}`}
                         onClick={() => setActiveFilter('all')}
@@ -106,7 +115,7 @@ function EmergencyMap() {
                 </div>
             ) : (
                 <div className="glass-card p-2">
-                    <MapView markers={filteredMarkers} />
+                    <MapView markers={filteredMarkers} showHeatmap={showHeatmap} />
                 </div>
             )}
 
