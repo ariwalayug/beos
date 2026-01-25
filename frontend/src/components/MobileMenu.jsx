@@ -123,9 +123,11 @@ const MobileMenu = ({ isOpen, onClose, isAuthenticated, logout, user }) => {
                                 <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}>
                                     <Home size={20} /> Home
                                 </Link>
-                                <Link to="/donors" className={`mobile-nav-link ${isActive('/donors') ? 'active' : ''}`}>
-                                    <Users size={20} /> Donors
-                                </Link>
+                                {user?.role === 'admin' && (
+                                    <Link to="/donors" className={`mobile-nav-link ${isActive('/donors') ? 'active' : ''}`}>
+                                        <Users size={20} /> Donors
+                                    </Link>
+                                )}
                                 <Link to="/hospitals" className={`mobile-nav-link ${isActive('/hospitals') ? 'active' : ''}`}>
                                     <Building2 size={20} /> Hospitals
                                 </Link>

@@ -38,7 +38,9 @@ function Header() {
 
                     <nav className="nav hide-mobile">
                         <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>Home</Link>
-                        <Link to="/donors" className={`nav-link ${isActive('/donors') ? 'active' : ''}`}>Donors</Link>
+                        {user?.role === 'admin' && (
+                            <Link to="/donors" className={`nav-link ${isActive('/donors') ? 'active' : ''}`}>Donors</Link>
+                        )}
                         <Link to="/hospitals" className={`nav-link ${isActive('/hospitals') ? 'active' : ''}`}>Hospitals</Link>
                         <Link to="/blood-banks" className={`nav-link ${isActive('/blood-banks') ? 'active' : ''}`}>Inventory</Link>
                         <Link to="/map" className={`nav-link ${isActive('/map') ? 'active' : ''}`}>

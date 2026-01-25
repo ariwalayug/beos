@@ -1,9 +1,20 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { useEffect } from 'react';
 
 function ProtectedRoute({ children, roles = [] }) {
     const { user, isAuthenticated, loading } = useAuth();
     const location = useLocation();
+    const { showToast } = useToast();
+
+    const isUnauthorized = roles.length > 0 && (!user || !roles.includes(user.role));
+
+    useEffect(() => {
+        if (isAuthenticated && isUnauthorized) {
+            showToast('Access Denied: You do not have permission to view this page.', 'error');
+        }
+    }, [isAuthenticated, isUnauthorized]);
 
     if (loading) {
         return <div>Loading...</div>; // Or a spinner component
@@ -13,8 +24,8 @@ function ProtectedRoute({ children, roles = [] }) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (roles.length > 0 && (!user || !roles.includes(user.role))) {
-        return <Navigate to="/" replace />; // Or unauthorized page
+    if (isUnauthorized) {
+        return <Navigate to="/" replace />;
     }
 
     return children;

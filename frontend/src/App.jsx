@@ -50,7 +50,11 @@ function App() {
                                             <Route path="/login" element={<Login />} />
                                             <Route path="/register" element={<Register />} />
 
-                                            <Route path="/donors" element={<Donors />} />
+                                            <Route path="/donors" element={
+                                                <ProtectedRoute roles={['admin']}>
+                                                    <Donors />
+                                                </ProtectedRoute>
+                                            } />
                                             <Route path="/hospitals" element={<Hospitals />} />
                                             <Route path="/blood-banks" element={<BloodBanks />} />
                                             <Route path="/emergency" element={<Emergency />} />
