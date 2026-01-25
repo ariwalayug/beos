@@ -1,0 +1,75 @@
+/* Available Only Checkbox - Inline Filter Control */
+.available-only-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+}
+
+.available-only-checkbox:hover {
+    background-color: var(--bg-glass, rgba(0, 0, 0, 0.03));
+}
+
+/* Visually hidden but accessible input */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Custom Checkbox Box */
+.checkbox-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-gray-400, #94a3b8);
+    border-radius: 3px;
+    background-color: transparent;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.checkbox-box.checked {
+    border-color: var(--color-primary, #DC2626);
+    color: var(--color-primary, #DC2626);
+}
+
+.checkbox-box svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* Label Text */
+.checkbox-label {
+    font-family: var(--font-family, 'Inter', sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-gray-100, #1a1a1a);
+    line-height: 1;
+}
+
+/* Focus State for Accessibility */
+.available-only-checkbox:focus-within {
+    outline: 2px solid var(--color-primary, #DC2626);
+    outline-offset: 2px;
+}
+
+/* Light Mode (default, uses CSS variables from index.css) */
+/* Dark Mode handled automatically via --color-gray-100, --color-gray-400 variables */
+
+/* Hover feedback when checked */
+.available-only-checkbox.checked:hover {
+    background-color: rgba(220, 38, 38, 0.05);
+}
