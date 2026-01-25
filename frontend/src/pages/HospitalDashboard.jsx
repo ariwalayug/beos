@@ -8,7 +8,7 @@ import {
 } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
-import { RequestForm, ActiveRequestsList, MatchedDonors } from '../components/HospitalComponents';
+import { RequestForm, ActiveRequestsList, MatchedDonors, BloodInventoryGrid } from '../components/HospitalComponents';
 import { LiveRequestTracker, MassCasualtyTrigger, HospitalStatsGrid } from '../components/LiveRequestTracker';
 import './HospitalDashboard.css';
 
@@ -215,6 +215,12 @@ function HospitalDashboard() {
                     >
                         👥 Match Donors
                     </button>
+                    <button
+                        className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('inventory')}
+                    >
+                        📦 Inventory
+                    </button>
                 </div>
 
                 <div className="dashboard-content animate-fade-in">
@@ -264,6 +270,12 @@ function HospitalDashboard() {
                                     </button>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {activeTab === 'inventory' && (
+                        <div className="glass-card p-6">
+                            <BloodInventoryGrid />
                         </div>
                     )}
                 </div>

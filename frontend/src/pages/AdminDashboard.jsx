@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { getAdminStats, getAllUsers, deleteUser } from '../services/api';
+import { getAdminStats, getAllUsers, deleteUser, getRequests, cancelRequest } from '../services/api';
 import { useToast } from '../context/ToastContext';
-import { StatsCard, UserTable } from '../components/AdminComponents';
+import { StatsCard, UserTable, RequestManagementTable } from '../components/AdminComponents';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
     const { showToast } = useToast();
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
+    const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -19,12 +20,14 @@ function AdminDashboard() {
         try {
             setLoading(true);
             setError(null);
-            const [statsRes, usersRes] = await Promise.all([
+            const [statsRes, usersRes, requestsRes] = await Promise.all([
                 getAdminStats(),
-                getAllUsers()
+                getAllUsers(),
+                getRequests()
             ]);
             setStats(statsRes.data);
             setUsers(usersRes.data);
+            setRequests(requestsRes.data);
         } catch (error) {
             console.error(error);
             setError(error.message);
@@ -43,6 +46,18 @@ function AdminDashboard() {
             setUsers(prev => prev.filter(u => u.id !== userId));
         } catch (error) {
             showToast('Failed to delete user: ' + error.message, 'error');
+        }
+    };
+
+    const handleDeleteRequest = async (requestId) => {
+        if (!window.confirm(`Are you sure you want to delete request #${requestId}?`)) return;
+
+        try {
+            await cancelRequest(requestId);
+            showToast('Request deleted successfully', 'success');
+            setRequests(prev => prev.filter(r => r.id !== requestId));
+        } catch (error) {
+            showToast('Failed to delete request: ' + error.message, 'error');
         }
     };
 
@@ -110,7 +125,9 @@ function AdminDashboard() {
                     </div>
                 </div>
 
-                <h3 className="text-xl font-bold mb-4">User Management ({users.length})</h3>
+                <RequestManagementTable requests={requests} onDelete={handleDeleteRequest} />
+
+                <h3 className="text-xl font-bold mb-4 mt-8">User Management ({users.length})</h3>
                 <UserTable users={users} onDelete={handleDeleteUser} />
             </div>
         </div>

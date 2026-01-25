@@ -189,3 +189,55 @@ export function MatchedDonors({ donors }) {
         </div>
     );
 }
+
+export function BloodInventoryGrid() {
+    // Mock state for visual demo, in real app this would sync with backend
+    const [inventory, setInventory] = useState({
+        'A+': 'High', 'A-': 'Medium',
+        'B+': 'High', 'B-': 'Low',
+        'AB+': 'Medium', 'AB-': 'Critical',
+        'O+': 'High', 'O-': 'Critical'
+    });
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'High': return 'text-green-500 border-green-500/30 bg-green-500/10';
+            case 'Medium': return 'text-yellow-500 border-yellow-500/30 bg-yellow-500/10';
+            case 'Low': return 'text-orange-500 border-orange-500/30 bg-orange-500/10';
+            case 'Critical': return 'text-red-500 border-red-500/30 bg-red-500/10';
+            default: return 'text-gray-500';
+        }
+    };
+
+    const styles = {
+        grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginTop: '1rem' },
+        card: { padding: '1rem', borderRadius: '0.75rem', border: '1px solid', textAlign: 'center', transition: 'all 0.2s' },
+        type: { fontSize: '1.5rem', fontWeight: '800', marginBottom: '0.5rem' },
+        status: { fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 'bold', letterSpacing: '0.05em' },
+        select: { marginTop: '0.5rem', width: '100%', padding: '0.25rem', background: 'rgba(0,0,0,0.3)', border: 'none', color: 'white', borderRadius: '0.25rem', fontSize: '0.8rem', cursor: 'pointer' }
+    };
+
+    return (
+        <div className="inventory-section">
+            <h3 className="text-xl font-bold mb-4">Blood Stock Status</h3>
+            <div style={styles.grid}>
+                {Object.entries(inventory).map(([type, status]) => (
+                    <div key={type} style={styles.card} className={getStatusColor(status)}>
+                        <div style={styles.type}>{type}</div>
+                        <div style={styles.status}>{status}</div>
+                        <select
+                            style={styles.select}
+                            value={status}
+                            onChange={(e) => setInventory(prev => ({ ...prev, [type]: e.target.value }))}
+                        >
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
