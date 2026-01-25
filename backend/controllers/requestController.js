@@ -73,8 +73,14 @@ export const getById = async (req, res) => {
 
 export const createRequest = async (req, res) => {
     try {
-        const { patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, contact_phone, notes } = req.body;
-        const hospital_id = req.user.role === 'hospital' ? req.user.hospital_id : null; // Assumes attach logic elsewhere for hospital_id or derived from user
+        const {
+            patient_name, age, gender, hemoglobin, platelets,
+            blood_type, units, component_type, urgency, is_critical,
+            diagnosis, past_reaction, allergies, doctor_name,
+            contact_phone, notes
+        } = req.body;
+
+        const hospital_id = req.user.role === 'hospital' ? req.user.hospital_id : null;
 
         if (!blood_type) {
             return res.status(400).json({
@@ -84,7 +90,10 @@ export const createRequest = async (req, res) => {
         }
 
         const request = BloodRequest.create({
-            hospital_id, patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, contact_phone, notes
+            hospital_id, patient_name, age, gender, hemoglobin, platelets,
+            blood_type, units, component_type, urgency, is_critical,
+            diagnosis, past_reaction, allergies, doctor_name,
+            contact_phone, notes
         });
 
         // Emit socket event for real-time updates
@@ -112,7 +121,7 @@ export const createRequest = async (req, res) => {
 export const updateRequest = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body;
+        const updates = req.body; // BloodRequest.update model handles field filtering
 
         const request = BloodRequest.update(id, updates);
 
