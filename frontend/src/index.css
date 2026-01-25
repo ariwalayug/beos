@@ -175,6 +175,11 @@
   /* Trust & Verification */
   --color-verified: #22C55E;
   --color-secure: #3B82F6;
+
+  /* Semantic Interface Colors */
+  --color-border: #27272a;
+  --bg-card: #18181b;
+  --bg-input: #18181b;
 }
 
 /* Base Styles */
@@ -643,6 +648,9 @@ a:hover {
   --bg-primary: #0a0a0a;
   --bg-secondary: #141414;
   --bg-tertiary: #1f1f1f;
+  --bg-card: #18181b;
+  --bg-input: #1f1f1f;
+  --color-border: #27272a;
   --color-gray-100: #fafafa;
   --color-gray-200: #e5e5e5;
   --color-gray-300: #d4d4d4;
@@ -653,12 +661,15 @@ a:hover {
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
-  --color-gray-100: #1e293b;
+  --bg-card: #ffffff;
+  --bg-input: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-gray-100: #0f172a;
   --color-gray-200: #334155;
   --color-gray-300: #475569;
   --color-gray-400: #64748b;
-  --bg-glass: rgba(0, 0, 0, 0.03);
-  --bg-glass-strong: rgba(0, 0, 0, 0.06);
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-glass-strong: rgba(255, 255, 255, 0.9);
 }
 
 /* ===================================

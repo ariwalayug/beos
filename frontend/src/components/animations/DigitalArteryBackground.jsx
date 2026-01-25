@@ -144,7 +144,7 @@ const DigitalArteryBackground = () => {
             <div style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'radial-gradient(circle, transparent 40%, #09090b 100%)',
+                background: 'radial-gradient(circle, transparent 40%, var(--bg-primary) 100%)',
                 pointerEvents: 'none'
             }} />
         </div>
