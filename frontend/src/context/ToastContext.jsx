@@ -27,7 +27,9 @@ export function ToastProvider({ children }) {
     const value = {
         success: (msg) => addToast(msg, 'success'),
         error: (msg) => addToast(msg, 'error'),
-        info: (msg) => addToast(msg, 'info')
+        info: (msg) => addToast(msg, 'info'),
+        // Backwards compatible function for components using showToast(message, type)
+        showToast: (msg, type = 'info') => addToast(msg, type)
     };
 
     return (

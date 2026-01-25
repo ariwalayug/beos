@@ -3,14 +3,17 @@ import { io } from 'socket.io-client';
 
 const SocketContext = createContext();
 
+// Use environment variable for production, fallback to localhost for development
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        // Connect to backend
-        const newSocket = io('http://localhost:5000', {
+        // Connect to backend using environment-aware URL
+        const newSocket = io(SOCKET_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling']
         });
