@@ -18,6 +18,25 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
+export const optionalVerifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        req.user = null;
+        return next();
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        // If token is invalid, just treat as guest
+        req.user = null;
+        next();
+    }
+};
+
 export const authorizeRoles = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
