@@ -1,0 +1,90 @@
+/* Critical Condition Component Styles */
+.critical-checkbox-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    max-width: 400px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.critical-checkbox-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    border-color: var(--color-gray-300, #cbd5e1);
+}
+
+.critical-checkbox-card:focus-visible {
+    outline: 2px solid var(--color-primary, #DC2626);
+    outline-offset: 2px;
+}
+
+/* Checkbox Styles */
+.custom-checkbox {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-gray-400, #94a3b8);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+}
+
+.custom-checkbox.checked {
+    background-color: transparent;
+    /* Minimal design requested, typically usually filled, but prompt just said red accent */
+    /* Re-reading prompt: "Red accent for the checkbox checkmark and border when checked" */
+    border-color: var(--color-primary, #DC2626);
+    color: var(--color-primary, #DC2626);
+}
+
+.custom-checkbox svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Typography */
+.critical-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.critical-title {
+    font-family: var(--font-family, sans-serif);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-gray-100, #1a1a1a);
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.critical-subtitle {
+    font-family: var(--font-family, sans-serif);
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--color-gray-400, #64748b);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Dark Mode Overrides (handled via CSS variables usually, but specific tweaks if needed) */
+/* The variables from index.css should handle most of this automatically.
+   e.g. --bg-card becomes #18181b, --color-gray-100 becomes #fafafa
+*/
+
+/* Active State for Card (Optional extra feedback) */
+.critical-checkbox-card.checked {
+    border-color: var(--color-primary, #DC2626);
+    background: linear-gradient(to right, rgba(220, 38, 38, 0.02), transparent);
+}
