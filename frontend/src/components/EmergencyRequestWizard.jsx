@@ -459,10 +459,9 @@ export default function EmergencyRequestWizard({ onClose, onSubmit }) {
         }
     };
 
-    const handleFinalSubmit = () => {
+    const handleFinalSubmit = async () => {
         setIsProcessing(true);
-        // Simulate API call
-        setTimeout(() => {
+        try {
             if (onSubmit) {
                 // Combine reaction history into past_reaction field for backend compatibility
                 const finalData = {
@@ -470,11 +469,17 @@ export default function EmergencyRequestWizard({ onClose, onSubmit }) {
                     past_reaction: formData.has_reaction_history ? formData.reaction_types : 'None',
                     urgency: formData.is_critical ? 'critical' : 'urgent'
                 };
-                onSubmit(finalData);
+                await onSubmit(finalData);
+                // Only proceed to success if onSubmit resolves (doesn't throw)
+                setIsComplete(true);
             }
+        } catch (error) {
+            console.error("Submission error:", error);
+            // Error handling is managed by parent via toast, but we stop processing here
+            // Optionally set an error state here if wizard needs to show inline error
+        } finally {
             setIsProcessing(false);
-            setIsComplete(true);
-        }, 2000);
+        }
     };
 
     return (

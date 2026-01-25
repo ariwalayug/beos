@@ -80,7 +80,7 @@ export const createRequest = async (req, res) => {
             contact_phone, notes
         } = req.body;
 
-        const hospital_id = req.user.role === 'hospital' ? req.user.hospital_id : null;
+        const hospital_id = (req.user && req.user.role === 'hospital') ? req.user.hospital_id : null;
 
         if (!blood_type) {
             return res.status(400).json({

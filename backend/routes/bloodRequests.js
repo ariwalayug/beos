@@ -13,7 +13,7 @@ router.get('/critical', requestController.getCritical);
 router.get('/:id', requestController.getById);
 router.get('/:id/matches', requestController.getMatches);
 
-router.post('/', verifyToken, requestController.createRequest);
+router.post('/', requestController.createRequest);
 router.put('/:id', verifyToken, requestController.updateRequest);
 router.put('/:id/fulfill', verifyToken, requestController.fulfillRequest);
 router.put('/:id/cancel', verifyToken, requestController.cancelRequest);
