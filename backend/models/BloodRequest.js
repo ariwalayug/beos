@@ -78,20 +78,31 @@ class BloodRequest {
 
     static create(request) {
         const stmt = db.prepare(`
-            INSERT INTO blood_requests (hospital_id, patient_name, age, hemoglobin, platelets, blood_type, units, urgency, past_reaction, status, contact_phone, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO blood_requests (
+                hospital_id, patient_name, age, gender, hemoglobin, platelets, 
+                blood_type, units, component_type, urgency, is_critical, 
+                diagnosis, past_reaction, allergies, doctor_name, 
+                status, contact_phone, notes
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
 
         const result = stmt.run(
             request.hospital_id || null,
             request.patient_name || null,
             request.age || null,
+            request.gender || null,
             request.hemoglobin || null,
             request.platelets || null,
             request.blood_type,
             request.units || 1,
+            request.component_type || 'Whole Blood',
             request.urgency || 'normal',
+            request.is_critical ? 1 : 0,
+            request.diagnosis || null,
             request.past_reaction || null,
+            request.allergies || null,
+            request.doctor_name || null,
             request.status || 'pending',
             request.contact_phone || null,
             request.notes || null
@@ -122,6 +133,12 @@ class BloodRequest {
         }
         if (request.contact_phone !== undefined) { fields.push('contact_phone = ?'); params.push(request.contact_phone); }
         if (request.notes !== undefined) { fields.push('notes = ?'); params.push(request.notes); }
+        if (request.gender !== undefined) { fields.push('gender = ?'); params.push(request.gender); }
+        if (request.doctor_name !== undefined) { fields.push('doctor_name = ?'); params.push(request.doctor_name); }
+        if (request.component_type !== undefined) { fields.push('component_type = ?'); params.push(request.component_type); }
+        if (request.diagnosis !== undefined) { fields.push('diagnosis = ?'); params.push(request.diagnosis); }
+        if (request.allergies !== undefined) { fields.push('allergies = ?'); params.push(request.allergies); }
+        if (request.is_critical !== undefined) { fields.push('is_critical = ?'); params.push(request.is_critical ? 1 : 0); }
         if (request.donor_id !== undefined) { fields.push('donor_id = ?'); params.push(request.donor_id); }
 
         if (fields.length === 0) return this.getById(id);
