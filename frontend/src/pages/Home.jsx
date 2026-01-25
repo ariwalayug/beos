@@ -23,6 +23,7 @@ import PageTransition from '../components/animations/PageTransition';
 import FadeIn from '../components/animations/FadeIn';
 import StaggerContainer, { StaggerItem } from '../components/animations/StaggerContainer';
 import BloodCampBulletin from '../components/BloodCampBulletin';
+import DigitalArteryBackground from '../components/animations/DigitalArteryBackground';
 import './Home.css';
 
 // Animated Counter with smooth transitions
@@ -42,33 +43,6 @@ function AnimatedNumber({ value, duration = 2 }) {
 
     return <span>{displayValue.toLocaleString()}</span>;
 }
-
-// Heartbeat Wave Background
-const HeartbeatWaveBackground = () => (
-    <div className="heartbeat-wave-container">
-        <svg viewBox="0 0 1200 200" preserveAspectRatio="none" className="heartbeat-wave">
-            <motion.path
-                d="M0,100 L200,100 L230,100 L250,20 L270,180 L290,60 L310,140 L330,100 L400,100 L1200,100 L1200,200 L0,200 Z"
-                fill="url(#heartbeatGradient)"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 2, ease: "easeInOut" }}
-            />
-            <defs>
-                <linearGradient id="heartbeatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(220, 38, 38, 0)" />
-                    <stop offset="50%" stopColor="rgba(220, 38, 38, 0.3)" />
-                    <stop offset="100%" stopColor="rgba(220, 38, 38, 0)" />
-                </linearGradient>
-            </defs>
-        </svg>
-        <motion.div
-            className="pulse-ring"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-    </div>
-);
 
 // Map Pulse Background Effect
 const MapPulseBackground = () => (
@@ -283,7 +257,7 @@ function Home() {
 
             {/* Hero Section - Redesigned */}
             <section className="hero-section-new">
-                <HeartbeatWaveBackground />
+                <DigitalArteryBackground />
                 <div className="hero-pulse-bg" />
 
                 <div className="container hero-container">
