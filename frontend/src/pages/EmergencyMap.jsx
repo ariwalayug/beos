@@ -167,14 +167,6 @@ function EmergencyMap() {
                         userLocation={userLocation}
                         center={mapCenter}
                     />
-
-                    {/* Legend Overlay */}
-                    <div className="map-legend">
-                        <div className="legend-item"><span className="dot request"></span> Emergency</div>
-                        <div className="legend-item"><span className="dot hospital"></span> Hospital</div>
-                        <div className="legend-item"><span className="dot bloodBank"></span> Blood Bank</div>
-                        <div className="legend-item"><span className="dot donor"></span> Donor</div>
-                    </div>
                 </div>
             )}
 
