@@ -4,6 +4,7 @@ import { getRequests, createRequest, fulfillRequest, cancelRequest, getHospitals
 import { useRealTimeRequests } from '../hooks/useSocket';
 import RequestCard from '../components/RequestCard';
 import EmergencyRequestWizard from '../components/EmergencyRequestWizard';
+import MapBackground from '../components/MapBackground';
 import { AlertCircle, AlertTriangle, Activity, X, Plus, Info, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '../components/animations/PageTransition';
@@ -109,6 +110,7 @@ function Emergency() {
 
     return (
         <PageTransition className="emergency-page professional">
+            <MapBackground />
             <div className="container section">
                 <FadeIn className="page-header-pro">
                     <div className="header-badge critical">

@@ -3,8 +3,14 @@
    ================================ */
 
 .emergency-page.professional {
-    background-color: var(--color-bg);
+    background-color: transparent;
     min-height: 100vh;
+    position: relative;
+}
+
+.emergency-page.professional .container {
+    position: relative;
+    z-index: 1;
 }
 
 .header-badge.critical {
