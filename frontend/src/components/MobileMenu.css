@@ -16,7 +16,7 @@
     /* Standard drawer width */
     max-width: 80vw;
     background: var(--bg-card);
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border-default);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -28,7 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border-default);
 }
 
 .mobile-logo {
@@ -53,8 +53,8 @@
 }
 
 .btn-icon-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--color-gray-100);
+    background: var(--color-surface-hover);
+    color: var(--color-text-main);
 }
 
 .mobile-menu-content {
@@ -74,7 +74,7 @@
     padding: 1rem;
     background: var(--bg-secondary);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border-default);
 }
 
 .avatar-circle {
@@ -166,7 +166,7 @@
     flex-direction: column;
     gap: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-border-default);
 }
 
 .theme-toggle-wrapper {
@@ -185,7 +185,7 @@
     justify-content: center;
     gap: 0.5rem;
     background: var(--bg-secondary);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border-default);
     color: var(--color-gray-300);
     padding: 0.875rem;
 }

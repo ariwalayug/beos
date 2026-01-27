@@ -10,7 +10,7 @@
     display: flex;
     gap: var(--space-4);
     margin-bottom: var(--space-8);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--color-border-default);
     padding-bottom: var(--space-1);
     flex-wrap: wrap;
 }
@@ -60,17 +60,17 @@
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-5);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-glass);
+    border: 1px solid var(--color-border-default);
     border-radius: var(--radius-lg);
     cursor: pointer;
     transition: all var(--transition-fast);
     font-family: var(--font-family);
-    color: var(--color-white);
+    color: var(--color-text-main);
 }
 
 .action-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--bg-glass-strong);
     transform: translateY(-2px);
     border-color: var(--color-primary);
 }
@@ -257,7 +257,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-4);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-glass);
     border-radius: var(--radius-lg);
     margin-bottom: var(--space-6);
 }
@@ -402,8 +402,8 @@ input:checked+.slider:before {
 }
 
 .impact-stat-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-glass);
+    border: 1px solid var(--color-border-default);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
     text-align: center;
@@ -411,7 +411,7 @@ input:checked+.slider:before {
 }
 
 .impact-stat-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--bg-glass-strong);
     transform: translateY(-4px);
 }
 
@@ -475,8 +475,8 @@ input:checked+.slider:before {
 }
 
 .achievement-badge {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-glass);
+    border: 1px solid var(--color-border-default);
     border-radius: var(--radius-lg);
     padding: var(--space-5);
     text-align: center;

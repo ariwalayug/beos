@@ -180,6 +180,14 @@
   --color-border: #27272a;
   --bg-card: #18181b;
   --bg-input: #18181b;
+
+  /* Semantic Theme Variables (Dark Mode Default) */
+  --color-text-main: #fafafa;
+  --color-text-muted: #a1a1aa;
+  --color-bg: #09090b;
+  --color-card: #18181b;
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-border-default: #27272a;
 }
 
 /* Base Styles */
@@ -192,12 +200,13 @@ body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
-  color: var(--color-gray-100);
+  color: var(--color-text-main);
   background: var(--bg-primary);
   background-image:
     radial-gradient(ellipse at top, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
     radial-gradient(ellipse at bottom right, rgba(71, 85, 105, 0.15) 0%, transparent 50%);
   min-height: 100vh;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 a {
@@ -235,7 +244,7 @@ a:hover {
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-xl);
   transition: all var(--transition-base);
 }
@@ -655,6 +664,14 @@ a:hover {
   --color-gray-200: #e5e5e5;
   --color-gray-300: #d4d4d4;
   --color-gray-400: #a3a3a3;
+
+  /* Semantic overrides for Dark Mode */
+  --color-text-main: #fafafa;
+  --color-text-muted: #a1a1aa;
+  --color-bg: #09090b;
+  --color-card: #18181b;
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-border-default: #27272a;
 }
 
 :root[data-theme="light"] {
@@ -668,8 +685,171 @@ a:hover {
   --color-gray-200: #334155;
   --color-gray-300: #475569;
   --color-gray-400: #64748b;
-  --bg-glass: rgba(255, 255, 255, 0.7);
-  --bg-glass-strong: rgba(255, 255, 255, 0.9);
+  --bg-glass: rgba(0, 0, 0, 0.03);
+  --bg-glass-strong: rgba(0, 0, 0, 0.06);
+
+  /* Semantic overrides for Light Mode */
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-bg: #ffffff;
+  --color-card: #ffffff;
+  --color-surface-hover: rgba(0, 0, 0, 0.04);
+  --color-border-default: #e2e8f0;
+}
+
+/* ===================================
+   Theme Utility Classes
+   =================================== */
+
+/* Text utilities - theme aware */
+.text-main {
+  color: var(--color-text-main);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-white {
+  color: var(--color-text-main);
+}
+
+.text-gray-300 {
+  color: var(--color-gray-300);
+}
+
+.text-gray-400 {
+  color: var(--color-text-muted);
+}
+
+.text-gray-500 {
+  color: var(--color-gray-500);
+}
+
+/* Background utilities - theme aware */
+.bg-main {
+  background-color: var(--bg-primary);
+}
+
+.bg-surface {
+  background-color: var(--color-card);
+}
+
+.bg-white\/5 {
+  background-color: var(--color-surface-hover);
+}
+
+.hover\:bg-white\/5:hover {
+  background-color: var(--color-surface-hover);
+}
+
+/* Border utilities */
+.border-gray-700 {
+  border-color: var(--color-border-default);
+}
+
+.border-gray-800 {
+  border-color: var(--color-border-default);
+}
+
+/* Font utilities */
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+/* Size utilities */
+.text-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-lg {
+  font-size: var(--font-size-lg);
+}
+
+.text-xl {
+  font-size: var(--font-size-xl);
+}
+
+.text-2xl {
+  font-size: var(--font-size-2xl);
+}
+
+.text-3xl {
+  font-size: var(--font-size-3xl);
+}
+
+/* Spacing utilities */
+.p-4 {
+  padding: var(--space-4);
+}
+
+.p-6 {
+  padding: var(--space-6);
+}
+
+.p-8 {
+  padding: var(--space-8);
+}
+
+.mb-2 {
+  margin-bottom: var(--space-2);
+}
+
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+
+.mt-4 {
+  margin-bottom: var(--space-4);
+}
+
+.mt-8 {
+  margin-top: var(--space-8);
+}
+
+.py-12 {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+/* Width utilities */
+.w-full {
+  width: 100%;
+}
+
+/* Layout utilities */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+/* Table utilities */
+.border-collapse {
+  border-collapse: collapse;
+}
+
+/* Transition utilities */
+.transition-colors {
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 /* ===================================
