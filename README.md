@@ -1,102 +1,158 @@
-# 🩸 BEOS: Blood Emergency Operating System
+# Blood Emergency Platform (BEOS)
 
-> **"Be the Reason a Heart Keeps Beating."**
+A full-stack blood emergency management platform connecting donors, hospitals, and blood banks in real-time.
 
-![BEOS Banner](https://img.shields.io/badge/Status-Operational-green?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-2.0_Masterpiece-crimson?style=for-the-badge) ![Tech](https://img.shields.io/badge/Stack-MERN_Light-blue?style=for-the-badge)
+## 🩸 Features
 
-**BEOS** is not just an app; it's a **Digital First Responder Network**. It connects Hospitals, Blood Banks, and Donors in a real-time, high-stakes ecosystem designed to slash response times for critical blood requests.
+- **Real-time Updates**: Socket.IO for live notifications and alerts
+- **Emergency Requests**: Quick blood request submission with urgency levels
+- **Donor Management**: Track donors, availability, and blood types
+- **Blood Bank Inventory**: Manage blood stock with batch tracking
+- **Hospital Dashboard**: Request blood and track fulfillment
+- **Admin Panel**: System-wide statistics and user management
 
----
+## 🛠️ Technology Stack
 
-## 🌟 Mission Control (Key Features)
+### Frontend (TypeScript)
+- React 18 with TypeScript
+- Vite for build tooling
+- React Router for navigation
+- Framer Motion for animations
+- Leaflet for maps
+- Socket.IO Client for real-time updates
 
-### 🚨 For the Command Center (Admin & Hospitals)
-- **Live "Pulse" Map:** Real-time visualization of active emergencies and donor positions using Leaflet.js.
-- **Critical Broadcast System:** One-click SOS alerts that trigger immediate notifications to nearby matched donors.
-- **Inventory Heatmap:** Visual logistics grid showing stock levels (Healthy/Low/Critical) across the network.
+### Backend (Python)
+- FastAPI framework
+- SQLite with aiosqlite (async)
+- Python-SocketIO for WebSockets
+- JWT authentication with python-jose
+- Pydantic for data validation
 
-### 🦸 For the Heroes (Donors)
-- **"Guardian" Rank System:** Gamified progression from *Rookie* to *Guardian Angel* based on lives saved.
-- **Instant mobilization:** WebSocket-powered alerts that arrive faster than an ambulance dispatch.
-- **Privacy First:** Location data is only shared during active response missions.
+## 📁 Project Structure
 
-### 🚄 Implementation Details (The Secret Sauce)
-- **Glassmorphic UI:** Ultra-premium, dark-mode design with floating gradients to reduce eye strain during night shifts.
-- **Zero-Latency Updates:** Powered by `Socket.io` for millisecond-level data sync.
-- **Smart Routing:** Geospacial queries (simulated) to find the nearest source of rare blood types.
+```
+beos/
+├── frontend/                 # React TypeScript frontend
+│   ├── src/
+│   │   ├── components/      # Reusable UI components (.tsx)
+│   │   ├── pages/           # Page components (.tsx)
+│   │   ├── context/         # React contexts (.tsx)
+│   │   ├── services/        # API and Socket services (.ts)
+│   │   ├── types/           # TypeScript type definitions
+│   │   └── hooks/           # Custom React hooks (.ts)
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── backend_python/          # Python FastAPI backend
+│   ├── main.py              # FastAPI application entry
+│   ├── database/
+│   │   ├── db.py            # Database connection & migrations
+│   │   └── schema.sql       # SQLite schema
+│   ├── models/              # Data models
+│   ├── routes/              # API route handlers
+│   ├── middleware/          # Auth middleware
+│   ├── socket_handlers/     # Socket.IO handlers
+│   └── requirements.txt
+│
+└── backend/                 # (Archived) Original Node.js backend
+```
 
----
-
-## 🛠️ The Arsenal (Tech Stack)
-
-### Frontend (The Face)
-- **React (Vite)**: Blazing fast performance.
-- **Neon/Glass CSS**: Custom-built design system (No bulky frameworks like Bootstrap).
-- **React-Leaflet**: Tactical map overlays.
-- **Socket.io-Client**: The nervous system of the app.
-
-### Backend (The Brain)
-- **Node.js & Express**: Industrial-grade server framework.
-- **SQLite (Better-SQLite3)**: High-performance local SQL engine (Mission-ready for rapid deployment).
-- **JWT Auth**: Military-grade session security.
-- **Socket.io**: Real-time event orchestrator.
-
----
-
-## 🚀 Deployment Protocols (Setup)
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
-- A brave heart ❤️
+- Node.js 18+
+- Python 3.10+
+- npm or yarn
 
-### 1. Clone the Frequency
+### Backend Setup (Python)
+
 ```bash
-git clone https://github.com/ariwalayug/beos.git
-cd beos
+# Navigate to backend
+cd backend_python
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the server
+python main.py
+# or
+uvicorn main:socket_app --reload --port 5000
 ```
 
-### 2. Ignite the Engines (One-Shot Command)
-We've prepared a master launch script for Windows.
-```bash
-# Double click 'run.bat' 
-# OR execute:
-./run.bat
-```
+### Frontend Setup
 
-### 3. Manual Override (If you prefer control)
-
-**Backend uplink:**
 ```bash
-cd backend
-npm install
-npm run start
-# Server listens on port 5000
-```
-
-**Frontend uplink:**
-```bash
+# Navigate to frontend
 cd frontend
+
+# Install dependencies
 npm install
+
+# Run development server
 npm run dev
-# Interface launches on http://localhost:5173
 ```
 
----
+### Access the Application
 
-## 📡 API Transmission (Endpoints)
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+- API Docs: http://localhost:5000/docs
 
-| Channel | Method | Frequency (URL) | Payload |
-|:---|:---:|:---|:---|
-| **Identify** | `POST` | `/api/auth/login` | `{email, password}` |
-| **Recruit** | `POST` | `/api/auth/register` | `{name, role, blood_type...}` |
-| **SOS** | `POST` | `/api/requests` | `{blood_type, urgency, units}` |
-| **Radar** | `GET` | `/api/hospitals` | `?lat=xx&lng=yy` |
-| **Logistics** | `GET` | `/api/bloodbanks` | `?inventory=true` |
+## 📡 API Endpoints
 
----
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/dashboard` | GET | Dashboard statistics |
+| `/api/auth/register` | POST | User registration |
+| `/api/auth/login` | POST | User login |
+| `/api/auth/me` | GET | Current user |
+| `/api/donors` | CRUD | Donor management |
+| `/api/hospitals` | CRUD | Hospital management |
+| `/api/blood-banks` | CRUD | Blood bank management |
+| `/api/requests` | CRUD | Blood request management |
+| `/api/admin/*` | CRUD | Admin operations |
 
-## 🔮 Future Horizon
-Check `future_enhancements.md` for our classified roadmap involving **AI Prediction Models** and **Drone Delivery Networks**.
+## 👤 Default Admin Account
 
----
-*Built with ❤️ and 🩸 code by the BEOS Engineering Team.*
+- Email: `ariwalayug181@gmail.com`
+- Password: `ariwalayug@2008`
+
+## 🔧 Environment Variables
+
+### Backend (.env)
+```env
+DB_PATH=blood_emergency.db
+JWT_SECRET=your-secret-key
+PORT=5000
+```
+
+### Frontend (.env)
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+## 📦 Deployment
+
+### Vercel (Frontend)
+The frontend is configured for Vercel deployment with `vercel.json`.
+
+### Backend
+Deploy the Python backend using any ASGI-compatible hosting:
+- Railway
+- Render
+- DigitalOcean App Platform
+- AWS Lambda with Mangum
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
