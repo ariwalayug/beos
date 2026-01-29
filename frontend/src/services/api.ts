@@ -16,7 +16,7 @@ import {
     BloodType,
 } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL: string = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 interface FetchOptions extends RequestInit {
     headers?: Record<string, string>;
@@ -262,4 +262,66 @@ export default {
     getAdminStats,
     getAllUsers,
     deleteUser,
+
+    // Organ Services (Enterprise)
+    getOrgans,
+    getOrganById,
+    logOrgan,
+    updateOrganStatus,
+    getOrganMatches,
+    getUrgentOrgans,
+    getOrganStats,
+
+    // AI Services (Enterprise)
+    getDemandPrediction,
+    getExpiringBlood,
+    getTransferSuggestions,
+    getSmartMatches,
+    getAiInsights,
 };
+
+// Organ Services Implementation
+export const getOrgans = (params: Record<string, any> = {}): Promise<ApiResponse<any[]>> => {
+    const queryString = new URLSearchParams(params).toString();
+    return fetchAPI(`/api/organs${queryString ? `?${queryString}` : ''}`);
+};
+
+export const getOrganById = (id: number): Promise<ApiResponse<any>> =>
+    fetchAPI(`/api/organs/${id}`);
+
+export const logOrgan = (organ: any): Promise<ApiResponse<any>> =>
+    fetchAPI('/api/organs', {
+        method: 'POST',
+        body: JSON.stringify(organ),
+    });
+
+export const updateOrganStatus = (id: number, status: string, recipientId?: number): Promise<ApiResponse<any>> =>
+    fetchAPI(`/api/organs/${id}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status, recipient_id: recipientId }),
+    });
+
+export const getOrganMatches = (id: number): Promise<ApiResponse<any[]>> =>
+    fetchAPI(`/api/organs/${id}/matches`);
+
+export const getUrgentOrgans = (): Promise<ApiResponse<any[]>> =>
+    fetchAPI('/api/organs/urgent');
+
+export const getOrganStats = (): Promise<ApiResponse<any>> =>
+    fetchAPI('/api/organs/stats');
+
+// AI Services Implementation
+export const getDemandPrediction = (days: number = 7): Promise<ApiResponse<any>> =>
+    fetchAPI(`/api/ai/predict-demand?days=${days}`);
+
+export const getExpiringBlood = (days: number = 7): Promise<ApiResponse<any[]>> =>
+    fetchAPI(`/api/ai/expiring?days=${days}`);
+
+export const getTransferSuggestions = (): Promise<ApiResponse<any[]>> =>
+    fetchAPI('/api/ai/suggest-transfers');
+
+export const getSmartMatches = (requestId: number): Promise<ApiResponse<any[]>> =>
+    fetchAPI(`/api/ai/smart-match/${requestId}`);
+
+export const getAiInsights = (): Promise<ApiResponse<any>> =>
+    fetchAPI('/api/ai/insights');

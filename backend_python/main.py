@@ -11,7 +11,7 @@ import uvicorn
 from datetime import datetime
 
 from database.db import init_db, seed_data, seed_admin
-from routes import auth, admin, donors, hospitals, blood_banks, requests
+from routes import auth, admin, donors, hospitals, blood_banks, requests, organs, ai
 from socket_handlers.handler import setup_socket_handlers
 
 # Socket.IO setup
@@ -77,6 +77,8 @@ app.include_router(donors.router, prefix="/api/donors", tags=["Donors"])
 app.include_router(hospitals.router, prefix="/api/hospitals", tags=["Hospitals"])
 app.include_router(blood_banks.router, prefix="/api/blood-banks", tags=["Blood Banks"])
 app.include_router(requests.router, prefix="/api/requests", tags=["Blood Requests"])
+app.include_router(organs.router, prefix="/api/organs", tags=["Organs (Enterprise)"])
+app.include_router(ai.router, prefix="/api/ai", tags=["AI Services (Enterprise)"])
 
 
 @app.get("/")

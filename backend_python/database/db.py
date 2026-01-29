@@ -142,6 +142,38 @@ async def run_migrations(db):
     except Exception as e:
         print(f"Migration error (blood_requests columns): {e}")
 
+    # Migration: Create organs table (Enterprise Feature)
+    try:
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS organs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                organ_type TEXT NOT NULL,
+                donor_id INTEGER,
+                donor_age INTEGER,
+                blood_type TEXT NOT NULL,
+                hla_a TEXT, hla_b TEXT, hla_c TEXT,
+                hla_dr TEXT, hla_dq TEXT, hla_dp TEXT,
+                harvest_time DATETIME,
+                ischemia_deadline DATETIME,
+                status TEXT DEFAULT 'available',
+                hospital_id INTEGER,
+                recipient_id INTEGER,
+                latitude REAL,
+                longitude REAL,
+                transplant_time DATETIME,
+                notes TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (donor_id) REFERENCES donors(id),
+                FOREIGN KEY (hospital_id) REFERENCES hospitals(id)
+            )
+        """)
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_organs_status ON organs(status)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_organs_type ON organs(organ_type)")
+        await db.execute("CREATE INDEX IF NOT EXISTS idx_organs_deadline ON organs(ischemia_deadline)")
+        await db.commit()
+    except Exception as e:
+        print(f"Migration error (organs table): {e}")
+
 
 async def seed_data():
     """Seed initial data if tables are empty"""
