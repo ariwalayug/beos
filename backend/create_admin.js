@@ -2,8 +2,8 @@ import db from './database/db.js';
 import bcrypt from 'bcryptjs';
 
 const createAdmin = async () => {
-    const email = 'admin@beos.com'; // Fixed admin email
-    const password = 'adminpassword123'; // Initial password, should be changed
+    const email = 'ariwalayug181@gmail.com'; // Fixed admin email
+    const password = 'Yugariwala@2008'; // Initial password, should be changed
     const role = 'admin';
 
     console.log('Checking for existing admin...');
