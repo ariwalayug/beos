@@ -5,9 +5,9 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 const router = Router();
 
 // Get current hospital profile
-router.get('/me', verifyToken, (req, res) => {
+router.get('/me', verifyToken, async (req, res) => {
     try {
-        const hospital = Hospital.getByUserId(req.user.id);
+        const hospital = await Hospital.getByUserId(req.user.id);
         if (!hospital) {
             return res.status(404).json({ success: false, error: 'Hospital profile not found' });
         }
@@ -18,14 +18,14 @@ router.get('/me', verifyToken, (req, res) => {
 });
 
 // Get all hospitals
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const filters = {
             city: req.query.city,
             search: req.query.search
         };
 
-        const hospitals = Hospital.getAll(filters);
+        const hospitals = await Hospital.getAll(filters);
         res.json({ success: true, data: hospitals });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -33,9 +33,9 @@ router.get('/', (req, res) => {
 });
 
 // Get hospital statistics
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
     try {
-        const stats = Hospital.getStats();
+        const stats = await Hospital.getStats();
         res.json({ success: true, data: stats });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -43,9 +43,9 @@ router.get('/stats', (req, res) => {
 });
 
 // Get single hospital
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const hospital = Hospital.getById(req.params.id);
+        const hospital = await Hospital.getById(req.params.id);
         if (!hospital) {
             return res.status(404).json({ success: false, error: 'Hospital not found' });
         }
@@ -56,7 +56,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Create hospital
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, address, city, phone, email, latitude, longitude, emergency_contact } = req.body;
 
@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
             });
         }
 
-        const hospital = Hospital.create({ name, address, city, phone, email, latitude, longitude, emergency_contact });
+        const hospital = await Hospital.create({ name, address, city, phone, email, latitude, longitude, emergency_contact });
         res.status(201).json({ success: true, data: hospital });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -75,14 +75,14 @@ router.post('/', (req, res) => {
 });
 
 // Update hospital
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
-        const hospital = Hospital.getById(req.params.id);
+        const hospital = await Hospital.getById(req.params.id);
         if (!hospital) {
             return res.status(404).json({ success: false, error: 'Hospital not found' });
         }
 
-        const updated = Hospital.update(req.params.id, req.body);
+        const updated = await Hospital.update(req.params.id, req.body);
         res.json({ success: true, data: updated });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -90,14 +90,14 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete hospital
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        const hospital = Hospital.getById(req.params.id);
+        const hospital = await Hospital.getById(req.params.id);
         if (!hospital) {
             return res.status(404).json({ success: false, error: 'Hospital not found' });
         }
 
-        Hospital.delete(req.params.id);
+        await Hospital.delete(req.params.id);
         res.json({ success: true, message: 'Hospital deleted successfully' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

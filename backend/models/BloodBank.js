@@ -1,7 +1,7 @@
 import db from '../database/db.js';
 
 class BloodBank {
-    static getAll(filters = {}) {
+    static async getAll(filters = {}) {
         let query = 'SELECT * FROM blood_banks WHERE 1=1';
         const params = [];
 
@@ -17,41 +17,39 @@ class BloodBank {
 
         query += ' ORDER BY name ASC';
 
-        return db.prepare(query).all(...params);
+        return await db.query(query, params);
     }
 
-    static getById(id) {
-        const bank = db.prepare('SELECT * FROM blood_banks WHERE id = ?').get(id);
+    static async getById(id) {
+        const bank = await db.get('SELECT * FROM blood_banks WHERE id = ?', [id]);
         if (bank) {
-            bank.inventory = this.getInventory(id);
+            bank.inventory = await this.getInventory(id);
         }
         return bank;
     }
 
-    static getWithInventory() {
-        const banks = this.getAll();
-        return banks.map(bank => ({
+    static async getWithInventory() {
+        const banks = await this.getAll();
+        return await Promise.all(banks.map(async bank => ({
             ...bank,
-            inventory: this.getInventory(bank.id)
-        }));
+            inventory: await this.getInventory(bank.id)
+        })));
     }
 
-    static getInventory(bankId) {
-        return db.prepare(`
+    static async getInventory(bankId) {
+        return await db.query(`
             SELECT blood_type, units, updated_at 
             FROM blood_inventory 
             WHERE blood_bank_id = ?
             ORDER BY blood_type
-        `).all(bankId);
+        `, [bankId]);
     }
 
-    static create(bloodBank) {
-        const stmt = db.prepare(`
+    static async create(bloodBank) {
+        const result = await db.run(`
             INSERT INTO blood_banks (user_id, name, address, city, phone, email, latitude, longitude, operating_hours)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(
+        `, [
             bloodBank.user_id || null,
             bloodBank.name,
             bloodBank.address,
@@ -61,21 +59,22 @@ class BloodBank {
             bloodBank.latitude || null,
             bloodBank.longitude || null,
             bloodBank.operating_hours || null
-        );
+        ]);
 
         // Initialize inventory for all blood types
         const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-        const insertInventory = db.prepare(`
-            INSERT INTO blood_inventory (blood_bank_id, blood_type, units)
-            VALUES (?, ?, 0)
-        `);
 
-        bloodTypes.forEach(type => insertInventory.run(result.lastInsertRowid, type));
+        for (const type of bloodTypes) {
+            await db.run(`
+                INSERT INTO blood_inventory (blood_bank_id, blood_type, units)
+                VALUES (?, ?, 0)
+            `, [result.lastInsertRowid, type]);
+        }
 
         return { id: result.lastInsertRowid, ...bloodBank };
     }
 
-    static update(id, bloodBank) {
+    static async update(id, bloodBank) {
         const fields = [];
         const params = [];
 
@@ -88,75 +87,73 @@ class BloodBank {
         if (bloodBank.longitude !== undefined) { fields.push('longitude = ?'); params.push(bloodBank.longitude); }
         if (bloodBank.operating_hours !== undefined) { fields.push('operating_hours = ?'); params.push(bloodBank.operating_hours); }
 
-        if (fields.length === 0) return this.getById(id);
+        if (fields.length === 0) return await this.getById(id);
 
         params.push(id);
-        db.prepare(`UPDATE blood_banks SET ${fields.join(', ')} WHERE id = ?`).run(...params);
+        await db.run(`UPDATE blood_banks SET ${fields.join(', ')} WHERE id = ?`, params);
 
-        return this.getById(id);
+        return await this.getById(id);
     }
 
-    static updateInventory(bankId, bloodType, units) {
-        const stmt = db.prepare(`
+    static async updateInventory(bankId, bloodType, units) {
+        await db.run(`
             UPDATE blood_inventory 
             SET units = ?, updated_at = CURRENT_TIMESTAMP 
             WHERE blood_bank_id = ? AND blood_type = ?
-        `);
-
-        stmt.run(units, bankId, bloodType);
-        return this.getInventory(bankId);
+        `, [units, bankId, bloodType]);
+        return await this.getInventory(bankId);
     }
 
-    static delete(id) {
-        db.prepare('DELETE FROM blood_inventory WHERE blood_bank_id = ?').run(id);
-        return db.prepare('DELETE FROM blood_banks WHERE id = ?').run(id);
+    static async delete(id) {
+        await db.run('DELETE FROM blood_inventory WHERE blood_bank_id = ?', [id]);
+        return await db.run('DELETE FROM blood_banks WHERE id = ?', [id]);
     }
 
-    static getTotalInventory() {
-        return db.prepare(`
+    static async getTotalInventory() {
+        return await db.query(`
             SELECT blood_type, SUM(units) as total_units
             FROM blood_inventory
             GROUP BY blood_type
             ORDER BY blood_type
-        `).all();
+        `);
     }
 
-    static findByBloodType(bloodType, minUnits = 1) {
-        return db.prepare(`
+    static async findByBloodType(bloodType, minUnits = 1) {
+        return await db.query(`
             SELECT bb.*, bi.units
             FROM blood_banks bb
             JOIN blood_inventory bi ON bb.id = bi.blood_bank_id
             WHERE bi.blood_type = ? AND bi.units >= ?
             ORDER BY bi.units DESC
-        `).all(bloodType, minUnits);
+        `, [bloodType, minUnits]);
     }
 
-    static getByUserId(userId) {
-        return db.prepare('SELECT * FROM blood_banks WHERE user_id = ?').get(userId);
+    static async getByUserId(userId) {
+        return await db.get('SELECT * FROM blood_banks WHERE user_id = ?', [userId]);
     }
 
     // --- Batch Management System ---
 
-    static getBatches(bankId) {
-        return db.prepare(`
+    static async getBatches(bankId) {
+        return await db.query(`
             SELECT * FROM blood_batches 
             WHERE blood_bank_id = ? 
             ORDER BY expiry_date ASC
-        `).all(bankId);
+        `, [bankId]);
     }
 
-    static addBatch(bankId, { blood_type, units, expiry_date }) {
-        const result = db.prepare(`
+    static async addBatch(bankId, { blood_type, units, expiry_date }) {
+        const result = await db.run(`
             INSERT INTO blood_batches (blood_bank_id, blood_type, units, expiry_date)
             VALUES (?, ?, ?, ?)
-        `).run(bankId, blood_type, units, expiry_date);
+        `, [bankId, blood_type, units, expiry_date]);
 
-        this.syncInventory(bankId, blood_type);
+        await this.syncInventory(bankId, blood_type);
         return { id: result.lastInsertRowid, blood_bank_id: bankId, blood_type, units, expiry_date };
     }
 
-    static updateBatch(id, { units, expiry_date }) {
-        const batch = db.prepare('SELECT * FROM blood_batches WHERE id = ?').get(id);
+    static async updateBatch(id, { units, expiry_date }) {
+        const batch = await db.get('SELECT * FROM blood_batches WHERE id = ?', [id]);
         if (!batch) throw new Error('Batch not found');
 
         const fields = [];
@@ -167,40 +164,40 @@ class BloodBank {
 
         if (fields.length > 0) {
             params.push(id);
-            db.prepare(`UPDATE blood_batches SET ${fields.join(', ')} WHERE id = ?`).run(...params);
+            await db.run(`UPDATE blood_batches SET ${fields.join(', ')} WHERE id = ?`, params);
 
             // Sync inventory for this blood type
-            this.syncInventory(batch.blood_bank_id, batch.blood_type);
+            await this.syncInventory(batch.blood_bank_id, batch.blood_type);
         }
 
-        return db.prepare('SELECT * FROM blood_batches WHERE id = ?').get(id);
+        return await db.get('SELECT * FROM blood_batches WHERE id = ?', [id]);
     }
 
-    static deleteBatch(id) {
-        const batch = db.prepare('SELECT * FROM blood_batches WHERE id = ?').get(id);
+    static async deleteBatch(id) {
+        const batch = await db.get('SELECT * FROM blood_batches WHERE id = ?', [id]);
         if (!batch) return;
 
-        db.prepare('DELETE FROM blood_batches WHERE id = ?').run(id);
-        this.syncInventory(batch.blood_bank_id, batch.blood_type);
+        await db.run('DELETE FROM blood_batches WHERE id = ?', [id]);
+        await this.syncInventory(batch.blood_bank_id, batch.blood_type);
     }
 
-    static syncInventory(bankId, bloodType) {
+    static async syncInventory(bankId, bloodType) {
         // Calculate total units from batches
-        const result = db.prepare(`
+        const result = await db.get(`
             SELECT SUM(units) as total 
             FROM blood_batches 
             WHERE blood_bank_id = ? AND blood_type = ?
-        `).get(bankId, bloodType);
+        `, [bankId, bloodType]);
 
-        const totalUnits = result.total || 0;
+        const totalUnits = result?.total || 0;
 
         // Update main inventory table
-        db.prepare(`
+        await db.run(`
             INSERT INTO blood_inventory (blood_bank_id, blood_type, units, updated_at)
             VALUES (?, ?, ?, CURRENT_TIMESTAMP)
             ON CONFLICT(blood_bank_id, blood_type) 
             DO UPDATE SET units = excluded.units, updated_at = CURRENT_TIMESTAMP
-        `).run(bankId, bloodType, totalUnits);
+        `, [bankId, bloodType, totalUnits]);
     }
 }
 

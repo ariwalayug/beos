@@ -5,9 +5,9 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 const router = Router();
 
 // Get current donor profile
-router.get('/me', verifyToken, (req, res) => {
+router.get('/me', verifyToken, async (req, res) => {
     try {
-        const donor = Donor.getByUserId(req.user.id);
+        const donor = await Donor.getByUserId(req.user.id);
         if (!donor) {
             return res.status(404).json({ success: false, error: 'Donor profile not found' });
         }
@@ -18,7 +18,7 @@ router.get('/me', verifyToken, (req, res) => {
 });
 
 // Get all donors with optional filters
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const filters = {
             blood_type: req.query.blood_type,
@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
             available: req.query.available === 'true' ? true : req.query.available === 'false' ? false : undefined
         };
 
-        const donors = Donor.getAll(filters);
+        const donors = await Donor.getAll(filters);
         res.json({ success: true, data: donors });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -34,9 +34,9 @@ router.get('/', (req, res) => {
 });
 
 // Get donor statistics
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
     try {
-        const stats = Donor.getStats();
+        const stats = await Donor.getStats();
         res.json({ success: true, data: stats });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -44,9 +44,9 @@ router.get('/stats', (req, res) => {
 });
 
 // Get donors by blood type
-router.get('/blood-type/:bloodType', (req, res) => {
+router.get('/blood-type/:bloodType', async (req, res) => {
     try {
-        const donors = Donor.getByBloodType(req.params.bloodType);
+        const donors = await Donor.getByBloodType(req.params.bloodType);
         res.json({ success: true, data: donors });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -54,9 +54,9 @@ router.get('/blood-type/:bloodType', (req, res) => {
 });
 
 // Get single donor
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const donor = Donor.getById(req.params.id);
+        const donor = await Donor.getById(req.params.id);
         if (!donor) {
             return res.status(404).json({ success: false, error: 'Donor not found' });
         }
@@ -67,7 +67,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Create donor
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, blood_type, phone, email, city, address, available } = req.body;
 
@@ -78,7 +78,7 @@ router.post('/', (req, res) => {
             });
         }
 
-        const donor = Donor.create({ name, blood_type, phone, email, city, address, available });
+        const donor = await Donor.create({ name, blood_type, phone, email, city, address, available });
         res.status(201).json({ success: true, data: donor });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -86,14 +86,14 @@ router.post('/', (req, res) => {
 });
 
 // Update donor
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
-        const donor = Donor.getById(req.params.id);
+        const donor = await Donor.getById(req.params.id);
         if (!donor) {
             return res.status(404).json({ success: false, error: 'Donor not found' });
         }
 
-        const updated = Donor.update(req.params.id, req.body);
+        const updated = await Donor.update(req.params.id, req.body);
         res.json({ success: true, data: updated });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -101,14 +101,14 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete donor
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        const donor = Donor.getById(req.params.id);
+        const donor = await Donor.getById(req.params.id);
         if (!donor) {
             return res.status(404).json({ success: false, error: 'Donor not found' });
         }
 
-        Donor.delete(req.params.id);
+        await Donor.delete(req.params.id);
         res.json({ success: true, message: 'Donor deleted successfully' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

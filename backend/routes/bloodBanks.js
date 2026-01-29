@@ -5,9 +5,9 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 const router = Router();
 
 // Get current blood bank profile
-router.get('/me', verifyToken, (req, res) => {
+router.get('/me', verifyToken, async (req, res) => {
     try {
-        const bank = BloodBank.getByUserId(req.user.id);
+        const bank = await BloodBank.getByUserId(req.user.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood Bank profile not found' });
         }
@@ -18,13 +18,13 @@ router.get('/me', verifyToken, (req, res) => {
 });
 
 // Get batches for logged-in blood bank
-router.get('/inventory/batches', verifyToken, (req, res) => {
+router.get('/inventory/batches', verifyToken, async (req, res) => {
     try {
-        const bank = BloodBank.getByUserId(req.user.id);
+        const bank = await BloodBank.getByUserId(req.user.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood Bank profile not found' });
         }
-        const batches = BloodBank.getBatches(bank.id);
+        const batches = await BloodBank.getBatches(bank.id);
         res.json({ success: true, data: batches });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -32,9 +32,9 @@ router.get('/inventory/batches', verifyToken, (req, res) => {
 });
 
 // Add new batch
-router.post('/inventory/batches', verifyToken, (req, res) => {
+router.post('/inventory/batches', verifyToken, async (req, res) => {
     try {
-        const bank = BloodBank.getByUserId(req.user.id);
+        const bank = await BloodBank.getByUserId(req.user.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood Bank profile not found' });
         }
@@ -44,7 +44,7 @@ router.post('/inventory/batches', verifyToken, (req, res) => {
             return res.status(400).json({ success: false, error: 'Missing required fields' });
         }
 
-        const batch = BloodBank.addBatch(bank.id, { blood_type, units, expiry_date });
+        const batch = await BloodBank.addBatch(bank.id, { blood_type, units, expiry_date });
         res.status(201).json({ success: true, data: batch });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -52,10 +52,10 @@ router.post('/inventory/batches', verifyToken, (req, res) => {
 });
 
 // Update batch
-router.put('/inventory/batches/:id', verifyToken, (req, res) => {
+router.put('/inventory/batches/:id', verifyToken, async (req, res) => {
     try {
         // ideally add logic to verify batch belongs to bank (skipped for brevity/trust in valid usage)
-        const updated = BloodBank.updateBatch(req.params.id, req.body);
+        const updated = await BloodBank.updateBatch(req.params.id, req.body);
         res.json({ success: true, data: updated });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -63,9 +63,9 @@ router.put('/inventory/batches/:id', verifyToken, (req, res) => {
 });
 
 // Delete batch
-router.delete('/inventory/batches/:id', verifyToken, (req, res) => {
+router.delete('/inventory/batches/:id', verifyToken, async (req, res) => {
     try {
-        BloodBank.deleteBatch(req.params.id);
+        await BloodBank.deleteBatch(req.params.id);
         res.json({ success: true, message: 'Batch deleted' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -73,10 +73,10 @@ router.delete('/inventory/batches/:id', verifyToken, (req, res) => {
 });
 
 // Get all blood banks with inventory
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const withInventory = req.query.inventory === 'true';
-        const banks = withInventory ? BloodBank.getWithInventory() : BloodBank.getAll({
+        const banks = withInventory ? await BloodBank.getWithInventory() : await BloodBank.getAll({
             city: req.query.city,
             search: req.query.search
         });
@@ -87,9 +87,9 @@ router.get('/', (req, res) => {
 });
 
 // Get total blood inventory across all banks
-router.get('/inventory/total', (req, res) => {
+router.get('/inventory/total', async (req, res) => {
     try {
-        const inventory = BloodBank.getTotalInventory();
+        const inventory = await BloodBank.getTotalInventory();
         res.json({ success: true, data: inventory });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -97,10 +97,10 @@ router.get('/inventory/total', (req, res) => {
 });
 
 // Find blood banks with specific blood type available
-router.get('/search/:bloodType', (req, res) => {
+router.get('/search/:bloodType', async (req, res) => {
     try {
         const minUnits = parseInt(req.query.minUnits) || 1;
-        const banks = BloodBank.findByBloodType(req.params.bloodType, minUnits);
+        const banks = await BloodBank.findByBloodType(req.params.bloodType, minUnits);
         res.json({ success: true, data: banks });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -108,9 +108,9 @@ router.get('/search/:bloodType', (req, res) => {
 });
 
 // Get single blood bank with inventory
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const bank = BloodBank.getById(req.params.id);
+        const bank = await BloodBank.getById(req.params.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood bank not found' });
         }
@@ -121,7 +121,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Create blood bank
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { name, address, city, phone, email, latitude, longitude, operating_hours } = req.body;
 
@@ -132,7 +132,7 @@ router.post('/', (req, res) => {
             });
         }
 
-        const bank = BloodBank.create({ name, address, city, phone, email, latitude, longitude, operating_hours });
+        const bank = await BloodBank.create({ name, address, city, phone, email, latitude, longitude, operating_hours });
         res.status(201).json({ success: true, data: bank });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -140,14 +140,14 @@ router.post('/', (req, res) => {
 });
 
 // Update blood bank
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
-        const bank = BloodBank.getById(req.params.id);
+        const bank = await BloodBank.getById(req.params.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood bank not found' });
         }
 
-        const updated = BloodBank.update(req.params.id, req.body);
+        const updated = await BloodBank.update(req.params.id, req.body);
         res.json({ success: true, data: updated });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -155,7 +155,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Update inventory for a blood bank
-router.put('/:id/inventory', (req, res) => {
+router.put('/:id/inventory', async (req, res) => {
     try {
         const { blood_type, units } = req.body;
 
@@ -166,12 +166,12 @@ router.put('/:id/inventory', (req, res) => {
             });
         }
 
-        const bank = BloodBank.getById(req.params.id);
+        const bank = await BloodBank.getById(req.params.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood bank not found' });
         }
 
-        const inventory = BloodBank.updateInventory(req.params.id, blood_type, units);
+        const inventory = await BloodBank.updateInventory(req.params.id, blood_type, units);
         res.json({ success: true, data: inventory });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -179,14 +179,14 @@ router.put('/:id/inventory', (req, res) => {
 });
 
 // Delete blood bank
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        const bank = BloodBank.getById(req.params.id);
+        const bank = await BloodBank.getById(req.params.id);
         if (!bank) {
             return res.status(404).json({ success: false, error: 'Blood bank not found' });
         }
 
-        BloodBank.delete(req.params.id);
+        await BloodBank.delete(req.params.id);
         res.json({ success: true, message: 'Blood bank deleted successfully' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

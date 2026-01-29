@@ -28,11 +28,11 @@ router.post('/register', async (req, res) => {
         if (role === 'user') {
             // Default role is User, but for this platform usually means Potential Donor
             // Let's assume 'user' role maps to Donor profile
-            profile = Donor.create(profileWithUserId);
+            profile = await Donor.create(profileWithUserId);
         } else if (role === 'hospital') {
-            profile = Hospital.create(profileWithUserId);
+            profile = await Hospital.create(profileWithUserId);
         } else if (role === 'blood_bank') {
-            profile = BloodBank.create(profileWithUserId);
+            profile = await BloodBank.create(profileWithUserId);
         }
 
         const token = jwt.sign(
@@ -61,7 +61,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = User.findByEmail(email);
+        const user = await User.findByEmail(email);
 
         if (!user || !(await User.verifyPassword(user, password))) {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
@@ -88,8 +88,8 @@ router.post('/login', async (req, res) => {
 });
 
 // Get Current User
-router.get('/me', verifyToken, (req, res) => {
-    const user = User.findById(req.user.id);
+router.get('/me', verifyToken, async (req, res) => {
+    const user = await User.findById(req.user.id);
     if (!user) {
         return res.status(404).json({ success: false, error: 'User not found' });
     }

@@ -4,12 +4,12 @@ import Donor from '../models/Donor.js';
 
 export const getMyValues = async (req, res) => {
     try {
-        const donor = Donor.getByUserId(req.user.id);
+        const donor = await Donor.getByUserId(req.user.id);
         if (!donor) {
             return res.status(404).json({ success: false, error: 'Donor profile not found' });
         }
 
-        const history = BloodRequest.getHistory(donor.id);
+        const history = await BloodRequest.getHistory(donor.id);
         res.json({ success: true, data: history });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -25,7 +25,7 @@ export const getAllRequests = async (req, res) => {
             hospital_id: req.query.hospital_id
         };
 
-        const requests = BloodRequest.getAll(filters);
+        const requests = await BloodRequest.getAll(filters);
         res.json({ success: true, data: requests });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -34,7 +34,7 @@ export const getAllRequests = async (req, res) => {
 
 export const getStats = async (req, res) => {
     try {
-        const stats = BloodRequest.getStats();
+        const stats = await BloodRequest.getStats();
         res.json({ success: true, data: stats });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -43,7 +43,7 @@ export const getStats = async (req, res) => {
 
 export const getPending = async (req, res) => {
     try {
-        const requests = BloodRequest.getPending();
+        const requests = await BloodRequest.getPending();
         res.json({ success: true, data: requests });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -52,7 +52,7 @@ export const getPending = async (req, res) => {
 
 export const getCritical = async (req, res) => {
     try {
-        const requests = BloodRequest.getCritical();
+        const requests = await BloodRequest.getCritical();
         res.json({ success: true, data: requests });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -61,7 +61,7 @@ export const getCritical = async (req, res) => {
 
 export const getById = async (req, res) => {
     try {
-        const request = BloodRequest.getById(req.params.id);
+        const request = await BloodRequest.getById(req.params.id);
         if (!request) {
             return res.status(404).json({ success: false, error: 'Request not found' });
         }
@@ -89,7 +89,7 @@ export const createRequest = async (req, res) => {
             });
         }
 
-        const request = BloodRequest.create({
+        const request = await BloodRequest.create({
             hospital_id, patient_name, age, gender, hemoglobin, platelets,
             blood_type, units, component_type, urgency, is_critical,
             diagnosis, past_reaction, allergies, doctor_name,
@@ -106,9 +106,8 @@ export const createRequest = async (req, res) => {
 
         // Send Notifications (Async)
         if (request.urgency === 'critical') {
-            NotificationService.broadcastCritical(request);
+            await NotificationService.broadcastCritical(request);
         } else {
-            // For normal requests, maybe just a silent push to relevant donors (omitted for brevity)
             console.log(`[INFO] Created normal request #${request.id}`);
         }
 
@@ -121,9 +120,9 @@ export const createRequest = async (req, res) => {
 export const updateRequest = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body; // BloodRequest.update model handles field filtering
+        const updates = req.body;
 
-        const request = BloodRequest.update(id, updates);
+        const request = await BloodRequest.update(id, updates);
 
         if (req.io) {
             req.io.emit('request-updated', request);
@@ -138,17 +137,14 @@ export const updateRequest = async (req, res) => {
 export const fulfillRequest = async (req, res) => {
     try {
         const { id } = req.params;
-        const donor_id = req.user.role === 'donor' ? req.body.donor_id : null; // Actually usually derived from auth user
+        let finalDonorId = req.user.role === 'donor' ? req.body.donor_id : null;
 
-        // Logic to get donor ID from user if needed, assuming req.body has it or we query it
-        // For strict correctness we should query the donor profile of the logged in user
-        let finalDonorId = donor_id;
         if (req.user.role === 'donor') {
-            const donor = Donor.getByUserId(req.user.id);
+            const donor = await Donor.getByUserId(req.user.id);
             if (donor) finalDonorId = donor.id;
         }
 
-        const request = BloodRequest.fulfill(id, finalDonorId);
+        const request = await BloodRequest.fulfill(id, finalDonorId);
 
         if (req.io) {
             req.io.emit('request-fulfilled', request);
@@ -163,7 +159,7 @@ export const fulfillRequest = async (req, res) => {
 
 export const deleteRequest = async (req, res) => {
     try {
-        BloodRequest.delete(req.params.id);
+        await BloodRequest.delete(req.params.id);
         res.json({ success: true, message: 'Request deleted successfully' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -172,16 +168,13 @@ export const deleteRequest = async (req, res) => {
 
 export const getMatches = async (req, res) => {
     try {
-        const request = BloodRequest.getById(req.params.id);
+        const request = await BloodRequest.getById(req.params.id);
         if (!request) {
             return res.status(404).json({ success: false, error: 'Request not found' });
         }
 
-        const matches = Donor.findMatches({
-            blood_type: request.blood_type,
-            latitude: request.latitude, // Assuming request/hospital has lat/long
-            longitude: request.longitude
-        });
+        // Use getByBloodType since findMatches is not implemented yet
+        const matches = await Donor.getByBloodType(request.blood_type);
 
         res.json({ success: true, data: matches });
     } catch (error) {
@@ -191,8 +184,7 @@ export const getMatches = async (req, res) => {
 
 export const cancelRequest = async (req, res) => {
     try {
-        // Logic for cancellation if needed, or mapping to update status
-        const request = BloodRequest.update(req.params.id, { status: 'cancelled' });
+        const request = await BloodRequest.update(req.params.id, { status: 'cancelled' });
         if (req.io) req.io.emit('request-updated', request);
         res.json({ success: true, data: request });
     } catch (error) {

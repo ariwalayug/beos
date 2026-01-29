@@ -1,7 +1,7 @@
 import db from '../database/db.js';
 
 class BloodRequest {
-    static getAll(filters = {}) {
+    static async getAll(filters = {}) {
         let query = `
             SELECT br.*, h.name as hospital_name, h.city as hospital_city
             FROM blood_requests br
@@ -40,44 +40,44 @@ class BloodRequest {
             br.created_at DESC
         `;
 
-        return db.prepare(query).all(...params);
+        return await db.query(query, params);
     }
 
-    static getById(id) {
-        return db.prepare(`
+    static async getById(id) {
+        return await db.get(`
             SELECT br.*, h.name as hospital_name, h.city as hospital_city, h.phone as hospital_phone
             FROM blood_requests br
             LEFT JOIN hospitals h ON br.hospital_id = h.id
             WHERE br.id = ?
-        `).get(id);
+        `, [id]);
     }
 
-    static getPending() {
-        return this.getAll({ status: 'pending' });
+    static async getPending() {
+        return await this.getAll({ status: 'pending' });
     }
 
-    static getCritical() {
-        return db.prepare(`
+    static async getCritical() {
+        return await db.query(`
             SELECT br.*, h.name as hospital_name, h.city as hospital_city
             FROM blood_requests br
             LEFT JOIN hospitals h ON br.hospital_id = h.id
             WHERE br.status = 'pending' AND br.urgency = 'critical'
             ORDER BY br.created_at ASC
-        `).all();
+        `);
     }
 
-    static getHistory(donorId) {
-        return db.prepare(`
+    static async getHistory(donorId) {
+        return await db.query(`
             SELECT br.*, h.name as hospital_name, h.city as hospital_city
             FROM blood_requests br
             LEFT JOIN hospitals h ON br.hospital_id = h.id
             WHERE br.donor_id = ? AND br.status = 'fulfilled'
             ORDER BY br.fulfilled_at DESC
-        `).all(donorId);
+        `, [donorId]);
     }
 
-    static create(request) {
-        const stmt = db.prepare(`
+    static async create(request) {
+        const result = await db.run(`
             INSERT INTO blood_requests (
                 hospital_id, patient_name, age, gender, hemoglobin, platelets, 
                 blood_type, units, component_type, urgency, is_critical, 
@@ -85,9 +85,7 @@ class BloodRequest {
                 status, contact_phone, notes
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(
+        `, [
             request.hospital_id || null,
             request.patient_name || null,
             request.age || null,
@@ -106,12 +104,12 @@ class BloodRequest {
             request.status || 'pending',
             request.contact_phone || null,
             request.notes || null
-        );
+        ]);
 
-        return this.getById(result.lastInsertRowid);
+        return await this.getById(result.lastInsertRowid);
     }
 
-    static update(id, request) {
+    static async update(id, request) {
         const fields = [];
         const params = [];
 
@@ -141,38 +139,38 @@ class BloodRequest {
         if (request.is_critical !== undefined) { fields.push('is_critical = ?'); params.push(request.is_critical ? 1 : 0); }
         if (request.donor_id !== undefined) { fields.push('donor_id = ?'); params.push(request.donor_id); }
 
-        if (fields.length === 0) return this.getById(id);
+        if (fields.length === 0) return await this.getById(id);
 
         params.push(id);
-        db.prepare(`UPDATE blood_requests SET ${fields.join(', ')} WHERE id = ?`).run(...params);
+        await db.run(`UPDATE blood_requests SET ${fields.join(', ')} WHERE id = ?`, params);
 
-        return this.getById(id);
+        return await this.getById(id);
     }
 
-    static fulfill(id) {
-        return this.update(id, { status: 'fulfilled' });
+    static async fulfill(id) {
+        return await this.update(id, { status: 'fulfilled' });
     }
 
-    static cancel(id) {
-        return this.update(id, { status: 'cancelled' });
+    static async cancel(id) {
+        return await this.update(id, { status: 'cancelled' });
     }
 
-    static delete(id) {
-        return db.prepare('DELETE FROM blood_requests WHERE id = ?').run(id);
+    static async delete(id) {
+        return await db.run('DELETE FROM blood_requests WHERE id = ?', [id]);
     }
 
-    static getStats() {
-        const total = db.prepare('SELECT COUNT(*) as count FROM blood_requests').get();
-        const pending = db.prepare("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'pending'").get();
-        const fulfilled = db.prepare("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'fulfilled'").get();
-        const critical = db.prepare("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'pending' AND urgency = 'critical'").get();
+    static async getStats() {
+        const total = await db.get('SELECT COUNT(*) as count FROM blood_requests');
+        const pending = await db.get("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'pending'");
+        const fulfilled = await db.get("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'fulfilled'");
+        const critical = await db.get("SELECT COUNT(*) as count FROM blood_requests WHERE status = 'pending' AND urgency = 'critical'");
 
-        const byBloodType = db.prepare(`
+        const byBloodType = await db.query(`
             SELECT blood_type, COUNT(*) as count
             FROM blood_requests
             WHERE status = 'pending'
             GROUP BY blood_type
-        `).all();
+        `);
 
         return {
             total: total.count,

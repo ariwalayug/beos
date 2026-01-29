@@ -1,7 +1,7 @@
 import db from '../database/db.js';
 
 class Hospital {
-    static getAll(filters = {}) {
+    static async getAll(filters = {}) {
         let query = 'SELECT * FROM hospitals WHERE 1=1';
         const params = [];
 
@@ -17,24 +17,22 @@ class Hospital {
 
         query += ' ORDER BY name ASC';
 
-        return db.prepare(query).all(...params);
+        return await db.query(query, params);
     }
 
-    static getById(id) {
-        return db.prepare('SELECT * FROM hospitals WHERE id = ?').get(id);
+    static async getById(id) {
+        return await db.get('SELECT * FROM hospitals WHERE id = ?', [id]);
     }
 
-    static getByUserId(userId) {
-        return db.prepare('SELECT * FROM hospitals WHERE user_id = ?').get(userId);
+    static async getByUserId(userId) {
+        return await db.get('SELECT * FROM hospitals WHERE user_id = ?', [userId]);
     }
 
-    static create(hospital) {
-        const stmt = db.prepare(`
+    static async create(hospital) {
+        const result = await db.run(`
             INSERT INTO hospitals (user_id, name, address, city, phone, email, latitude, longitude, emergency_contact)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(
+        `, [
             hospital.user_id || null,
             hospital.name,
             hospital.address,
@@ -44,12 +42,12 @@ class Hospital {
             hospital.latitude || null,
             hospital.longitude || null,
             hospital.emergency_contact || null
-        );
+        ]);
 
         return { id: result.lastInsertRowid, ...hospital };
     }
 
-    static update(id, hospital) {
+    static async update(id, hospital) {
         const fields = [];
         const params = [];
 
@@ -62,26 +60,26 @@ class Hospital {
         if (hospital.longitude !== undefined) { fields.push('longitude = ?'); params.push(hospital.longitude); }
         if (hospital.emergency_contact !== undefined) { fields.push('emergency_contact = ?'); params.push(hospital.emergency_contact); }
 
-        if (fields.length === 0) return this.getById(id);
+        if (fields.length === 0) return await this.getById(id);
 
         params.push(id);
-        db.prepare(`UPDATE hospitals SET ${fields.join(', ')} WHERE id = ?`).run(...params);
+        await db.run(`UPDATE hospitals SET ${fields.join(', ')} WHERE id = ?`, params);
 
-        return this.getById(id);
+        return await this.getById(id);
     }
 
-    static delete(id) {
-        return db.prepare('DELETE FROM hospitals WHERE id = ?').run(id);
+    static async delete(id) {
+        return await db.run('DELETE FROM hospitals WHERE id = ?', [id]);
     }
 
-    static getStats() {
-        const total = db.prepare('SELECT COUNT(*) as count FROM hospitals').get();
-        const byCity = db.prepare(`
+    static async getStats() {
+        const total = await db.get('SELECT COUNT(*) as count FROM hospitals');
+        const byCity = await db.query(`
             SELECT city, COUNT(*) as count 
             FROM hospitals 
             GROUP BY city
             ORDER BY count DESC
-        `).all();
+        `);
 
         return {
             total: total.count,

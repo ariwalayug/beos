@@ -1,7 +1,7 @@
 import db from '../database/db.js';
 
 class Donor {
-    static getAll(filters = {}) {
+    static async getAll(filters = {}) {
         let query = 'SELECT * FROM donors WHERE 1=1';
         const params = [];
 
@@ -22,24 +22,22 @@ class Donor {
 
         query += ' ORDER BY created_at DESC';
 
-        return db.prepare(query).all(...params);
+        return await db.query(query, params);
     }
 
-    static getById(id) {
-        return db.prepare('SELECT * FROM donors WHERE id = ?').get(id);
+    static async getById(id) {
+        return await db.get('SELECT * FROM donors WHERE id = ?', [id]);
     }
 
-    static getByUserId(userId) {
-        return db.prepare('SELECT * FROM donors WHERE user_id = ?').get(userId);
+    static async getByUserId(userId) {
+        return await db.get('SELECT * FROM donors WHERE user_id = ?', [userId]);
     }
 
-    static create(donor) {
-        const stmt = db.prepare(`
+    static async create(donor) {
+        const result = await db.run(`
             INSERT INTO donors (user_id, name, blood_type, phone, email, city, address, available, last_donation)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `);
-
-        const result = stmt.run(
+        `, [
             donor.user_id || null,
             donor.name,
             donor.blood_type,
@@ -49,12 +47,12 @@ class Donor {
             donor.address || null,
             donor.available !== undefined ? (donor.available ? 1 : 0) : 1,
             donor.last_donation || null
-        );
+        ]);
 
         return { id: result.lastInsertRowid, ...donor };
     }
 
-    static update(id, donor) {
+    static async update(id, donor) {
         const fields = [];
         const params = [];
 
@@ -67,31 +65,31 @@ class Donor {
         if (donor.available !== undefined) { fields.push('available = ?'); params.push(donor.available ? 1 : 0); }
         if (donor.last_donation !== undefined) { fields.push('last_donation = ?'); params.push(donor.last_donation); }
 
-        if (fields.length === 0) return this.getById(id);
+        if (fields.length === 0) return await this.getById(id);
 
         params.push(id);
-        db.prepare(`UPDATE donors SET ${fields.join(', ')} WHERE id = ?`).run(...params);
+        await db.run(`UPDATE donors SET ${fields.join(', ')} WHERE id = ?`, params);
 
-        return this.getById(id);
+        return await this.getById(id);
     }
 
-    static delete(id) {
-        return db.prepare('DELETE FROM donors WHERE id = ?').run(id);
+    static async delete(id) {
+        return await db.run('DELETE FROM donors WHERE id = ?', [id]);
     }
 
-    static getByBloodType(bloodType) {
-        return db.prepare('SELECT * FROM donors WHERE blood_type = ? AND available = 1').all(bloodType);
+    static async getByBloodType(bloodType) {
+        return await db.query('SELECT * FROM donors WHERE blood_type = ? AND available = 1', [bloodType]);
     }
 
-    static getStats() {
-        const total = db.prepare('SELECT COUNT(*) as count FROM donors').get();
-        const available = db.prepare('SELECT COUNT(*) as count FROM donors WHERE available = 1').get();
-        const byType = db.prepare(`
+    static async getStats() {
+        const total = await db.get('SELECT COUNT(*) as count FROM donors');
+        const available = await db.get('SELECT COUNT(*) as count FROM donors WHERE available = 1');
+        const byType = await db.query(`
             SELECT blood_type, COUNT(*) as count 
             FROM donors 
             WHERE available = 1 
             GROUP BY blood_type
-        `).all();
+        `);
 
         return {
             total: total.count,

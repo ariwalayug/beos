@@ -8,12 +8,15 @@ const router = express.Router();
 router.use(verifyToken, authorizeRoles('admin'));
 
 // GET /stats - System-wide statistics
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
     try {
-        const users = db.prepare('SELECT role, COUNT(*) as count FROM users GROUP BY role').all();
-        const requests = db.prepare('SELECT urgency, count(*) as count FROM blood_requests GROUP BY urgency').all();
-        const totalDonations = db.prepare('SELECT COUNT(*) as count FROM donations').get().count;
-        const totalUsers = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
+        const users = await db.query('SELECT role, COUNT(*) as count FROM users GROUP BY role');
+        const requests = await db.query('SELECT urgency, count(*) as count FROM blood_requests GROUP BY urgency');
+        const totalDonationsResult = await db.get('SELECT COUNT(*) as count FROM donations');
+        const totalUsersResult = await db.get('SELECT COUNT(*) as count FROM users');
+
+        const totalDonations = totalDonationsResult?.count || 0;
+        const totalUsers = totalUsersResult?.count || 0;
 
         // Process users for cleaner output
         const userStats = {
@@ -44,7 +47,7 @@ router.get('/stats', (req, res) => {
 });
 
 // GET /users - List all users with details
-router.get('/users', (req, res) => {
+router.get('/users', async (req, res) => {
     try {
         // Query to get user details joined with specific tables if needed, 
         // but for now simple listing with role is enough.
@@ -65,7 +68,7 @@ router.get('/users', (req, res) => {
             ORDER BY u.created_at DESC
         `;
 
-        const users = db.prepare(query).all();
+        const users = await db.query(query);
         res.json({ success: true, data: users });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -73,7 +76,7 @@ router.get('/users', (req, res) => {
 });
 
 // DELETE /users/:id - Delete a user
-router.delete('/users/:id', (req, res) => {
+router.delete('/users/:id', async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -82,7 +85,7 @@ router.delete('/users/:id', (req, res) => {
             return res.status(400).json({ success: false, error: 'Cannot delete your own admin account.' });
         }
 
-        db.prepare('DELETE FROM users WHERE id = ?').run(id);
+        await db.run('DELETE FROM users WHERE id = ?', [id]);
         // Cascade deletes should handle profile tables if Foreign Keys are set up correctly with ON DELETE CASCADE
         // If not, we might leave orphans, but SQLite foreign key support needs to be enabled.
         // Assuming minimal setup, we just delete the user for now.
