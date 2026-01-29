@@ -33,6 +33,13 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // If not on the final step, treat Enter key as "Continue"
+        if (step < 3) {
+            nextStep();
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             setError("Passwords don't match");
             return;
