@@ -144,32 +144,49 @@ function FloatingAlert({ alert, onAccept, onDecline, onDismiss }) {
     );
 }
 
-function FloatingAlerts({ onAccept, onDecline }) {
-    const [alerts, setAlerts] = useState([]);
-    const { socket, isConnected } = useSocket();
+interface FloatingAlertsProps {
+    onAccept?: (alert: unknown) => void;
+    onDecline?: (alert: unknown) => void;
+}
+
+interface Alert {
+    id: number | string;
+    blood_type: string;
+    units: number;
+    urgency: string;
+    patient_name: string;
+    location: string;
+    hospital_name?: string;
+    createdAt: Date;
+}
+
+function FloatingAlerts({ onAccept, onDecline }: FloatingAlertsProps) {
+    const [alerts, setAlerts] = useState<Alert[]>([]);
+    const { isConnected, subscribe } = useSocket();
 
     // Listen for real-time emergency alerts
     useEffect(() => {
-        if (!socket || !isConnected) return;
+        if (!isConnected) return;
 
-        const handleNewRequest = (request) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const handleNewRequest = (request: any) => {
             // Only show alerts for matching blood types or critical requests
             if (request.urgency === 'critical') {
                 addAlert(request);
             }
         };
 
-        socket.on('new_request', handleNewRequest);
-        socket.on('emergency_broadcast', handleNewRequest);
+        const unsubscribeNew = subscribe('new_request', handleNewRequest);
+        const unsubscribeBroadcast = subscribe('emergency_broadcast', handleNewRequest);
 
         return () => {
-            socket.off('new_request', handleNewRequest);
-            socket.off('emergency_broadcast', handleNewRequest);
+            unsubscribeNew();
+            unsubscribeBroadcast();
         };
-    }, [socket, isConnected]);
+    }, [isConnected, subscribe]);
 
-    const addAlert = (request) => {
-        const alert = {
+    const addAlert = (request: any) => {
+        const alert: Alert = {
             id: request.id || Date.now(),
             blood_type: request.blood_type,
             units: request.units,
@@ -203,7 +220,7 @@ function FloatingAlerts({ onAccept, onDecline }) {
 
     // Demo: Add test alert after 5 seconds for development
     useEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.MODE === 'development') {
             const timeout = setTimeout(() => {
                 // Uncomment to test alerts
                 // addAlert({

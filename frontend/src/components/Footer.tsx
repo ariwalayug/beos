@@ -24,6 +24,8 @@ function Footer() {
                             <li><Link to="/hospitals">Partner Hospitals</Link></li>
                             <li><Link to="/blood-banks">Blood Inventory</Link></li>
                             <li><Link to="/emergency">Live Emergencies</Link></li>
+                            <li><Link to="/privacy">Privacy Policy</Link></li>
+                            <li><Link to="/terms">Terms of Service</Link></li>
                         </ul>
                     </div>
 

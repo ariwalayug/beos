@@ -29,6 +29,8 @@ const AdminDonors = lazy(() => import('./pages/AdminDonors'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const ForHospitals = lazy(() => import('./pages/ForHospitals'));
 const Pricing = lazy(() => import('./pages/Pricing'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 
 function App() {
     const location = useLocation();
@@ -69,6 +71,8 @@ function App() {
                                             <Route path="/admin/donors" element={<ProtectedRoute roles={['admin']}><AdminDonors /></ProtectedRoute>} />
                                             <Route path="/for-hospitals" element={<ForHospitals />} />
                                             <Route path="/pricing" element={<Pricing />} />
+                                            <Route path="/privacy" element={<PrivacyPolicy />} />
+                                            <Route path="/terms" element={<TermsOfService />} />
                                             <Route path="*" element={<NotFound />} />
                                         </Routes>
                                     </AnimatePresence>

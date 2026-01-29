@@ -3,7 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useEffect } from 'react';
 
-function ProtectedRoute({ children, roles = [] }) {
+interface ProtectedRouteProps {
+    children: JSX.Element;
+    roles?: string[];
+}
+
+function ProtectedRoute({ children, roles = [] }: ProtectedRouteProps) {
     const { user, isAuthenticated, loading } = useAuth();
     const location = useLocation();
     const { showToast } = useToast();
