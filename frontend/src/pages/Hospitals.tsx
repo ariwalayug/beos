@@ -182,12 +182,20 @@ function Hospitals() {
                                     </div>
 
                                     <div className="card-actions">
-                                        <a href={`tel:${hospital.contact_phone}`} className="btn btn-secondary btn-sm">
-                                            <Phone size={16} /> Call
-                                        </a>
-                                        <a href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.latitude},${hospital.longitude}`} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
-                                            <Map size={16} /> Map
-                                        </a>
+                                        {hospital.contact_phone && (
+                                            <a href={`tel:${hospital.contact_phone}`} className="btn btn-secondary btn-sm">
+                                                <Phone size={16} /> Call
+                                            </a>
+                                        )}
+                                        {hospital.latitude && hospital.longitude ? (
+                                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.latitude},${hospital.longitude}`} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
+                                                <Map size={16} /> Map
+                                            </a>
+                                        ) : hospital.address && (
+                                            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hospital.name + ', ' + hospital.city)}`} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
+                                                <Map size={16} /> Map
+                                            </a>
+                                        )}
                                     </div>
                                 </motion.div>
                             ))}

@@ -27,6 +27,8 @@ const BloodBankDashboard = lazy(() => import('./pages/BloodBankDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AdminDonors = lazy(() => import('./pages/AdminDonors'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const ForHospitals = lazy(() => import('./pages/ForHospitals'));
+const Pricing = lazy(() => import('./pages/Pricing'));
 
 function App() {
     const location = useLocation();
@@ -65,6 +67,8 @@ function App() {
                                             <Route path="/blood-bank-dashboard" element={<ProtectedRoute roles={['blood_bank']}><BloodBankDashboard /></ProtectedRoute>} />
                                             <Route path="/admin-dashboard" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
                                             <Route path="/admin/donors" element={<ProtectedRoute roles={['admin']}><AdminDonors /></ProtectedRoute>} />
+                                            <Route path="/for-hospitals" element={<ForHospitals />} />
+                                            <Route path="/pricing" element={<Pricing />} />
                                             <Route path="*" element={<NotFound />} />
                                         </Routes>
                                     </AnimatePresence>
