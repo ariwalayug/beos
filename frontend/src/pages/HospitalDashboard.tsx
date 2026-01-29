@@ -15,7 +15,7 @@ import './HospitalDashboard.css';
 
 function HospitalDashboard() {
     const { showToast } = useToast();
-    const socket = useSocket();
+    const { socket } = useSocket();
     const [profile, setProfile] = useState(null);
     const [activeTab, setActiveTab] = useState('command');
     const [requests, setRequests] = useState([]);

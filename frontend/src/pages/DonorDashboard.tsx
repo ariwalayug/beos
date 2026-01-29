@@ -16,7 +16,7 @@ import './DonorDashboard.css';
 
 function DonorDashboard() {
     const { showToast } = useToast();
-    const socket = useSocket();
+    const { socket } = useSocket();
     const [activeTab, setActiveTab] = useState('mission');
     const [profile, setProfile] = useState(null);
     const [requests, setRequests] = useState([]);

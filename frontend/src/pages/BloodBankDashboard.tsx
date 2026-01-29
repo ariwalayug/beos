@@ -14,7 +14,7 @@ import './BloodBankDashboard.css';
 
 function BloodBankDashboard() {
     const { showToast } = useToast();
-    const socket = useSocket();
+    const { socket } = useSocket();
     const [profile, setProfile] = useState(null);
     const [batches, setBatches] = useState([]);
     const [donors, setDonors] = useState([]);
