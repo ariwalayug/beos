@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from typing import Optional
 from models.blood_request import BloodRequest
 from models.donor import Donor
+from services.fraud_detection import FraudDetectionService
 from middleware.auth import verify_token, optional_verify_token
 
 router = APIRouter()
@@ -233,6 +234,21 @@ async def fulfill_request(
             donor = await Donor.get_by_user_id(current_user["id"])
             if donor:
                 donor_id = donor["id"]
+                
+                # Bio-Safety AI Check
+                # In production, we would get real-time coordinates from the mobile app
+                # For demo, we simulate a check with static coordinates
+                is_risky, reason = await FraudDetectionService.check_fraud_risk(
+                    donor_id, 
+                    28.6139, 77.2090, # Mock Delhi coordinates
+                    None
+                )
+                
+                if is_risky:
+                    raise HTTPException(
+                        status_code=403, 
+                        detail={"success": False, "error": f"Security Block: {reason}"}
+                    )
         
         updated = await BloodRequest.fulfill(request_id, donor_id)
         
@@ -243,6 +259,8 @@ async def fulfill_request(
             await sio.emit('request-updated', updated)
         
         return {"success": True, "data": updated}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail={"success": False, "error": str(e)})
 
