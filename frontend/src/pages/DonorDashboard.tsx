@@ -430,25 +430,25 @@ function DonorDashboard() {
                     )}
                 </div>
             </div>
-        </div>
 
-            {/* Command Center Components */ }
-    {
-        profile && (
-            <>
-                <QuickDonateButton
-                    userBloodType={profile.blood_type}
-                    userName={profile.name}
-                    onDonate={async (data) => {
-                        // Find matching request or create general availability
-                        showToast(`Mission accepted! ETA: ${data.eta}`, 'success');
-                        // In a real app, this would match to a specific request ID
-                    }}
-                />
-                <VoiceAlertSystem />
-            </>
-        )
-    }
+
+            {/* Command Center Components */}
+            {
+                profile && (
+                    <>
+                        <QuickDonateButton
+                            userBloodType={profile.blood_type}
+                            userName={profile.name}
+                            onDonate={async (data) => {
+                                // Find matching request or create general availability
+                                showToast(`Mission accepted! ETA: ${data.eta}`, 'success');
+                                // In a real app, this would match to a specific request ID
+                            }}
+                        />
+                        <VoiceAlertSystem />
+                    </>
+                )
+            }
         </div >
     );
 }

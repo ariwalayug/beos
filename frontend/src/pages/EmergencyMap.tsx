@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import MapView from '../components/MapView';
+import LazyMap from '../components/lazy/LazyMap';
 import { getDonors, getHospitals, getBloodBanks, getRequests } from '../services/api';
 import './EmergencyMap.css';
 
@@ -161,7 +161,7 @@ function EmergencyMap() {
                 </div>
             ) : (
                 <div className="glass-card p-2 relative">
-                    <MapView
+                    <LazyMap
                         markers={filteredMarkers}
                         showHeatmap={showHeatmap}
                         userLocation={userLocation}
