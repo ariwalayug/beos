@@ -9,6 +9,7 @@ import {
 } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
+import { useData } from '../hooks/useData';
 import { ProfileEditor, RequestCard } from '../components/DashboardComponents';
 import { EmergencyMapView, MissionControlHeader } from '../components/EmergencyMapView';
 import { QuickDonateButton } from '../components/QuickDonateButton';
@@ -20,16 +21,13 @@ function DonorDashboard() {
     const { showToast } = useToast();
     const { socket } = useSocket();
     const [activeTab, setActiveTab] = useState('mission');
-    const [profile, setProfile] = useState(null);
+    // profile comes from useData
     const [requests, setRequests] = useState([]);
     const [history, setHistory] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // loading derived below
     const [actionLoading, setActionLoading] = useState(false);
 
-    useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
+    // Restored Socket Logic
     useEffect(() => {
         if (!socket) return;
 
@@ -55,35 +53,38 @@ function DonorDashboard() {
         };
     }, [socket, showToast]);
 
-    const fetchDashboardData = async () => {
-        try {
-            setLoading(true);
-            const profileRes = await getMyDonorProfile();
-            setProfile(profileRes.data);
+    const { data: profile, loading: profileLoading, mutate: mutateProfile } = useData('donor_profile', getMyDonorProfile);
+    const { data: requestsData, loading: requestsLoading, mutate: mutateRequests } = useData('donor_requests', () => getRequests({ status: 'pending' }));
+    const { data: historyData, loading: historyLoading, mutate: mutateHistory } = useData('donor_history', getMyDonationHistory);
 
-            // Fetch requests and filter by donor's city matching hospital city
-            const requestsRes = await getRequests({ status: 'pending' });
+
+
+    useEffect(() => {
+        if (requestsData) {
             // Client-side filtering for "Nearby" (same city)
-            const nearby = requestsRes.data.filter(r =>
-                r.hospital_city?.toLowerCase() === profileRes.data.city?.toLowerCase()
-            );
-            setRequests(nearby);
-
-            const historyRes = await getMyDonationHistory();
-            setHistory(historyRes.data);
-        } catch (error) {
-            console.error(error);
-            showToast('Failed to load dashboard data. ' + error.message, 'error');
-        } finally {
-            setLoading(false);
+            // Note: ideally backend does this, but keeping existing logic for now
+            if (profile) {
+                const nearby = requestsData.filter(r =>
+                    r.hospital_city?.toLowerCase() === profile.city?.toLowerCase()
+                );
+                setRequests(nearby);
+            } else {
+                setRequests(requestsData);
+            }
         }
-    };
+    }, [requestsData, profile]);
+
+    useEffect(() => {
+        if (historyData) setHistory(historyData);
+    }, [historyData]);
+
+    const loading = profileLoading || (requestsLoading && !requests.length) || (historyLoading && !history.length);
 
     const handleUpdateProfile = async (data) => {
         try {
             setActionLoading(true);
             const res = await updateDonor(profile.id, data);
-            setProfile(res.data);
+            mutateProfile(res.data);
             showToast('Profile updated successfully!', 'success');
         } catch (error) {
             showToast('Failed to update profile: ' + error.message, 'error');
@@ -95,12 +96,12 @@ function DonorDashboard() {
     const handleToggleAvailability = async (newStatus) => {
         try {
             // Optimistic update
-            setProfile(prev => ({ ...prev, available: newStatus }));
+            mutateProfile({ ...profile, available: newStatus });
 
             await updateDonor(profile.id, { available: newStatus });
             showToast(`You are now ${newStatus ? 'READY FOR MISSION' : 'Off Duty'}`, 'success');
         } catch (error) {
-            setProfile(prev => ({ ...prev, available: !newStatus })); // Revert
+            mutateProfile(prev => ({ ...prev, available: !newStatus })); // Revert
             showToast('Failed to update availability', 'error');
         }
     };
@@ -112,7 +113,8 @@ function DonorDashboard() {
             await fulfillRequest(requestId);
             showToast('Thank you! The hospital has been notified. You are a hero! 🦸', 'success');
             // Refresh data
-            fetchDashboardData();
+            mutateRequests();
+            mutateHistory();
         } catch (error) {
             showToast('Failed to fulfill request: ' + error.message, 'error');
         }

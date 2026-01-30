@@ -9,6 +9,7 @@ import {
 } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
+import { useData } from '../hooks/useData';
 import { RequestForm, ActiveRequestsList, MatchedDonors, BloodInventoryGrid } from '../components/HospitalComponents';
 import { LiveRequestTracker, MassCasualtyTrigger, HospitalStatsGrid } from '../components/LiveRequestTracker';
 import { VoiceAlertSystem } from '../components/VoiceAlertSystem';
@@ -24,7 +25,7 @@ function HospitalDashboard() {
     const [profile, setProfile] = useState(null);
     const [activeTab, setActiveTab] = useState('command');
     const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // loading state derived below
     const [actionLoading, setActionLoading] = useState(false);
     const [crisisMode, setCrisisMode] = useState(false);
 
@@ -32,9 +33,28 @@ function HospitalDashboard() {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [matchedDonors, setMatchedDonors] = useState([]);
 
+    // 1. Fetch Profile
+    const { data: profileData, loading: profileLoading } = useData('hospital_profile', getMyHospitalProfile);
+
+    // 2. Fetch Requests (Dependent on profile)
+    const { data: requestsData, loading: requestsLoading, mutate: mutateRequests } = useData(
+        profileData ? `hospital_requests_${profileData.id}` : null,
+        () => getRequests({
+            hospital_id: profileData?.id,
+            status: 'pending'
+        })
+    );
+
     useEffect(() => {
-        fetchDashboardData();
-    }, []);
+        if (profileData) setProfile(profileData);
+    }, [profileData]);
+
+    useEffect(() => {
+        if (requestsData) setRequests(requestsData);
+    }, [requestsData]);
+
+    // Combined loading state for initial load
+    const loading = profileLoading || (requestsLoading && !requests.length);
 
     // Real-time updates via WebSocket
     useEffect(() => {
@@ -48,33 +68,18 @@ function HospitalDashboard() {
 
         socket.on('request-fulfilled', (data) => {
             showToast(`🎉 Request #${data.request_id} has been fulfilled!`, 'success');
-            fetchDashboardData();
+            mutateRequests(); // Refresh data to be sure
         });
 
         return () => {
             socket.off('request-update');
             socket.off('request-fulfilled');
         };
-    }, [socket, showToast]);
+    }, [socket, showToast, mutateRequests]);
 
     const fetchDashboardData = async () => {
-        try {
-            setLoading(true);
-            const profileRes = await getMyHospitalProfile();
-            setProfile(profileRes.data);
-
-            const requestsRes = await getRequests({
-                hospital_id: profileRes.data.id,
-                status: 'pending'
-            });
-            setRequests(requestsRes.data);
-
-        } catch (error) {
-            console.error(error);
-            showToast('Failed to load dashboard data: ' + error.message, 'error');
-        } finally {
-            setLoading(false);
-        }
+        // Legacy function kept for manual refreshes if needed, but mapped to mutations
+        await mutateRequests();
     };
 
     const handleCreateRequest = async (formData) => {
@@ -131,7 +136,7 @@ function HospitalDashboard() {
         try {
             setSelectedRequest(request);
             setActiveTab('donors');
-            setLoading(true);
+            setActionLoading(true);
 
             // Find donors with same blood type and city
             const res = await getDonors({
@@ -144,7 +149,7 @@ function HospitalDashboard() {
         } catch (error) {
             showToast('Failed to find donors.', 'error');
         } finally {
-            setLoading(false);
+            setActionLoading(false);
         }
     };
 

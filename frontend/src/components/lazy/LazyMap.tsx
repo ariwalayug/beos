@@ -2,8 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Loader2 } from 'lucide-react';
 
 // Lazy load the heavy map component
-// @ts-expect-error MapView might not have default export type definition yet
-const MapView = lazy(() => import('../MapView'));
+const MapView = lazy(() => import('../MapboxMap'));
 
 interface LazyMapProps {
     markers?: any[];

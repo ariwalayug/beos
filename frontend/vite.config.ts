@@ -9,7 +9,7 @@ export default defineConfig({
             output: {
                 manualChunks: {
                     vendor: ['react', 'react-dom', 'react-router-dom'],
-                    maps: ['leaflet', 'react-leaflet'],
+                    maps: ['mapbox-gl', 'react-map-gl/mapbox'],
                     ui: ['framer-motion', 'lucide-react', 'clsx', 'tailwind-merge'],
                 },
             },
