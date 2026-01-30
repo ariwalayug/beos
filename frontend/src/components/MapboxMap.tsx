@@ -126,12 +126,29 @@ const MapboxMap = ({
         }
     };
 
-    if (!MAPBOX_TOKEN) {
+    const [mapError, setMapError] = useState<string | null>(null);
+
+    // Robust Token Check
+    const hasValidToken = MAPBOX_TOKEN && MAPBOX_TOKEN !== 'undefined' && MAPBOX_TOKEN.startsWith('pk.');
+
+    useEffect(() => {
+        if (!hasValidToken) {
+            console.warn("Mapbox Token is missing or invalid. Map will fall back to placeholder.");
+        }
+    }, [hasValidToken]);
+
+    if (!hasValidToken || mapError) {
         return (
-            <div className="h-[500px] flex items-center justify-center bg-gray-900 border border-gray-800 rounded-lg">
-                <div className="text-center p-6">
-                    <p className="text-red-500 font-bold mb-2">Mapbox Token Missing</p>
-                    <p className="text-gray-400 text-sm">Please add VITE_MAPBOX_ACCESS_TOKEN to your .env file.</p>
+            <div className="h-[500px] w-full flex items-center justify-center bg-zinc-900/50 rounded-xl border border-zinc-800 relative overflow-hidden group">
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-700 via-transparent to-transparent"></div>
+                <div className="text-center p-6 z-10">
+                    <div className="bg-zinc-800/50 p-4 rounded-full inline-block mb-3 backdrop-blur-sm group-hover:bg-zinc-800 transition-colors">
+                        <span className="text-2xl grayscale opacity-70">🗺️</span>
+                    </div>
+                    <h3 className="text-zinc-300 font-medium mb-1">Map Temporarily Unavailable</h3>
+                    <p className="text-zinc-500 text-sm max-w-xs mx-auto">
+                        {mapError ? "Connection to map service interrupted." : "Visualization disabled. Data is still accessible below."}
+                    </p>
                 </div>
             </div>
         );
@@ -143,6 +160,10 @@ const MapboxMap = ({
                 ref={mapRef}
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
+                onError={(e) => {
+                    console.error("Mapbox Runtime Error:", e);
+                    setMapError(e.error?.message || "Failed to load map");
+                }}
                 style={{ width: '100%', height: '100%' }}
                 mapStyle="mapbox://styles/mapbox/dark-v11"
                 mapboxAccessToken={MAPBOX_TOKEN}
