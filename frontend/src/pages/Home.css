@@ -165,11 +165,29 @@
 }
 
 .btn-request-blood,
-.btn-donate-now {
+.btn-donate-now,
+.btn-enterprise-cta {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
+}
+
+.btn-enterprise-cta {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.btn-enterprise-cta:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
 }
 
 /* ================================

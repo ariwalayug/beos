@@ -1,0 +1,321 @@
+/* ForGovernment Page Styles */
+.for-government-page {
+    background: #0a0a0a;
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.gov-hero {
+    position: relative;
+    padding: 8rem 0 6rem;
+    text-align: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 60%);
+}
+
+.gov-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 9999px;
+    color: #a855f7;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.gov-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.gov-hero .text-gradient {
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gov-hero .hero-subtitle {
+    font-size: 1.25rem;
+    color: #a1a1aa;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+}
+
+.gov-hero .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Stats Banner */
+.for-government-page .stats-banner {
+    padding: 3rem 0;
+    background: rgba(168, 85, 247, 0.05);
+    border-top: 1px solid rgba(168, 85, 247, 0.2);
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.for-government-page .stats-grid {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+.for-government-page .stat-item {
+    text-align: center;
+}
+
+.for-government-page .stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    display: block;
+}
+
+.for-government-page .stat-label {
+    font-size: 0.875rem;
+    color: #71717a;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Features Section */
+.for-government-page .features-section {
+    padding: 6rem 0;
+}
+
+.for-government-page .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.for-government-page .section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.for-government-page .section-header p {
+    color: #71717a;
+    font-size: 1.125rem;
+}
+
+.for-government-page .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.for-government-page .feature-card {
+    background: rgba(24, 24, 27, 0.8);
+    border: 1px solid rgba(63, 63, 70, 0.5);
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.for-government-page .feature-card:hover {
+    border-color: rgba(168, 85, 247, 0.5);
+    transform: translateY(-4px);
+}
+
+.for-government-page .feature-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.for-government-page .feature-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.for-government-page .feature-card p {
+    font-size: 0.9rem;
+    color: #a1a1aa;
+    line-height: 1.6;
+}
+
+/* Deployment Section */
+.deployment-section {
+    padding: 6rem 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(39, 39, 42, 0.3) 100%);
+}
+
+.deployment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.deployment-card {
+    background: rgba(24, 24, 27, 0.6);
+    border: 1px solid rgba(63, 63, 70, 0.4);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.deployment-card:hover {
+    background: rgba(39, 39, 42, 0.6);
+    border-color: rgba(168, 85, 247, 0.5);
+}
+
+.deployment-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.deployment-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.deployment-card p {
+    font-size: 0.9rem;
+    color: #a1a1aa;
+}
+
+/* Benefits Section */
+.benefits-section {
+    padding: 6rem 0;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+.benefits-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    color: #d4d4d8;
+}
+
+.benefits-list li svg {
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.visual-card {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    text-align: center;
+}
+
+.visual-card svg {
+    margin-bottom: 1.5rem;
+}
+
+.visual-card h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.visual-card p {
+    color: #a1a1aa;
+}
+
+/* CTA Section */
+.for-government-page .cta-section {
+    padding: 6rem 0;
+}
+
+.for-government-page .cta-card {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 2rem;
+    padding: 4rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.for-government-page .cta-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.for-government-page .cta-card p {
+    color: #a1a1aa;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+}
+
+.for-government-page .cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Button overrides for government theme */
+.for-government-page .btn-primary {
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+}
+
+.for-government-page .btn-primary:hover {
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+}

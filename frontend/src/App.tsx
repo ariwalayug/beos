@@ -31,6 +31,8 @@ const ForHospitals = lazy(() => import('./pages/ForHospitals'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const Enterprise = lazy(() => import('./pages/Enterprise'));
+const ForGovernment = lazy(() => import('./pages/ForGovernment'));
 
 function App() {
     const location = useLocation();
@@ -73,6 +75,8 @@ function App() {
                                             <Route path="/pricing" element={<Pricing />} />
                                             <Route path="/privacy" element={<PrivacyPolicy />} />
                                             <Route path="/terms" element={<TermsOfService />} />
+                                            <Route path="/enterprise" element={<Enterprise />} />
+                                            <Route path="/for-government" element={<ForGovernment />} />
                                             <Route path="*" element={<NotFound />} />
                                         </Routes>
                                     </AnimatePresence>

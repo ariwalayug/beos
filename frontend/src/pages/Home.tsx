@@ -287,8 +287,8 @@ function Home() {
 
                         {/* Subtitle */}
                         <p className="hero-subtitle-new">
-                            Real-time blood donation platform connecting hospitals, donors, and blood banks
-                            during medical emergencies. Every second counts.
+                            The operating system for life-critical care. Connecting hospitals, donors,
+                            and blood banks in real-time during medical emergencies.
                         </p>
 
                         {/* CTA Buttons */}
@@ -305,6 +305,10 @@ function Home() {
                             <Link to="/register" className="btn-donate-now touch-target">
                                 <Heart size={20} />
                                 Donate Now
+                            </Link>
+                            <Link to="/enterprise" className="btn-enterprise-cta touch-target">
+                                <Building2 size={20} />
+                                For Enterprise
                             </Link>
                         </motion.div>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Droplet, Map, Activity, LogOut, User, Menu } from 'lucide-react';
+import { Droplet, Map, Activity, LogOut, User, Menu, Building2, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import MobileMenu from './MobileMenu';
 import './Header.css';
@@ -10,7 +10,9 @@ function Header() {
     const location = useLocation();
     const { isAuthenticated, logout, user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const isActive = (path) => location.pathname === path;
+    const [isEnterpriseOpen, setIsEnterpriseOpen] = useState(false);
+    const isActive = (path: string) => location.pathname === path;
+    const isEnterprisePath = ['/enterprise', '/for-hospitals', '/for-government', '/pricing'].includes(location.pathname);
 
     return (
         <>
@@ -43,6 +45,26 @@ function Header() {
                         )}
                         <Link to="/hospitals" className={`nav-link ${isActive('/hospitals') ? 'active' : ''}`}>Hospitals</Link>
                         <Link to="/blood-banks" className={`nav-link ${isActive('/blood-banks') ? 'active' : ''}`}>Inventory</Link>
+
+                        {/* Enterprise Dropdown */}
+                        <div
+                            className="nav-dropdown"
+                            onMouseEnter={() => setIsEnterpriseOpen(true)}
+                            onMouseLeave={() => setIsEnterpriseOpen(false)}
+                        >
+                            <button className={`nav-link nav-dropdown-trigger ${isEnterprisePath ? 'active' : ''}`}>
+                                <Building2 size={16} /> Enterprise <ChevronDown size={14} />
+                            </button>
+                            {isEnterpriseOpen && (
+                                <div className="nav-dropdown-menu">
+                                    <Link to="/enterprise" className="dropdown-item">Overview</Link>
+                                    <Link to="/for-hospitals" className="dropdown-item">For Hospitals</Link>
+                                    <Link to="/for-government" className="dropdown-item">For Government</Link>
+                                    <Link to="/pricing" className="dropdown-item">Pricing</Link>
+                                </div>
+                            )}
+                        </div>
+
                         <Link to="/map" className={`nav-link ${isActive('/map') ? 'active' : ''}`}>
                             <Map size={16} /> Live Map
                         </Link>
