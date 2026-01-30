@@ -21,11 +21,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
+                    // Timeout is handled in api.ts, so we just catch the error here
                     const response = await api.getMe();
                     if (response.data) {
                         setUser(response.data);
                     }
-                } catch {
+                } catch (error) {
+                    console.warn("Auth check failed or timed out:", error);
+                    // Treat as guest if network fails, don't block app
                     localStorage.removeItem('token');
                     setUser(null);
                 }

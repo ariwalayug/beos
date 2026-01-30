@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import SkeletonDashboard from '../components/skeletons/SkeletonDashboard';
 import { getDashboard } from '../services/api';
 import { useSocket } from '../hooks/useSocket';
 import {
@@ -27,7 +28,11 @@ import DigitalArteryBackground from '../components/animations/DigitalArteryBackg
 import './Home.css';
 
 // Animated Counter with smooth transitions
-function AnimatedNumber({ value, duration = 2 }) {
+interface AnimatedNumberProps {
+    value: number;
+    duration?: number;
+}
+function AnimatedNumber({ value, duration = 2 }: AnimatedNumberProps) {
     const count = useMotionValue(0);
     const rounded = useTransform(count, latest => Math.round(latest));
     const [displayValue, setDisplayValue] = useState(0);
@@ -66,7 +71,12 @@ const MapPulseBackground = () => (
 );
 
 // Live Stats Counter Component
-function LiveStatsCounter({ activeRequests, donorsOnline, livesSaved }) {
+interface LiveStatsCounterProps {
+    activeRequests: number;
+    donorsOnline: number;
+    livesSaved: number;
+}
+function LiveStatsCounter({ activeRequests, donorsOnline, livesSaved }: LiveStatsCounterProps) {
     return (
         <div className="live-stats-banner">
             <div className="live-indicator">
@@ -117,7 +127,12 @@ function TrustBadges() {
 }
 
 // Blood Supply Gauge
-function BloodGauge({ type, current, max = 20 }) {
+interface BloodGaugeProps {
+    type: string;
+    current: number;
+    max?: number;
+}
+function BloodGauge({ type, current, max = 20 }: BloodGaugeProps) {
     const percentage = max > 0 ? Math.min((current / max) * 100, 100) : 0;
     const circumference = 2 * Math.PI * 40;
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
@@ -167,7 +182,13 @@ function BloodGauge({ type, current, max = 20 }) {
 }
 
 // Impact Stats Card with Hover Effect
-function ImpactCard({ icon: Icon, value, label, delay }) {
+interface ImpactCardProps {
+    icon: React.ElementType;
+    value: number;
+    label: string;
+    delay: number;
+}
+function ImpactCard({ icon: Icon, value, label, delay }: ImpactCardProps) {
     return (
         <motion.div
             className="impact-card relative overflow-hidden group"
@@ -190,18 +211,36 @@ function ImpactCard({ icon: Icon, value, label, delay }) {
     );
 }
 
+import { DashboardStats } from '../types';
+
 function Home() {
-    const [dashboard, setDashboard] = useState(null);
+    const [dashboard, setDashboard] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
     const { isConnected } = useSocket();
+
+    // Load cached dashboard if available
+    useEffect(() => {
+        const cached = localStorage.getItem('dashboard_cache');
+        if (cached) {
+            try {
+                setDashboard(JSON.parse(cached));
+                setLoading(false); // Show cached immediately
+            } catch (e) {
+                console.error("Cache parse error", e);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
                 const response = await getDashboard();
-                setDashboard(response.data);
+                setDashboard(response.data || null);
+                localStorage.setItem('dashboard_cache', JSON.stringify(response.data));
             } catch (err) {
-                console.error(err);
+                console.error("Failed to fetch dashboard:", err);
+                // If we have no data at all (not even cached), keep loading false to show structure (or empty state)
+                // but if we *do* have cached data, we just keep showing it.
             } finally {
                 setLoading(false);
             }
@@ -209,19 +248,8 @@ function Home() {
         fetchDashboard();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="loading-screen">
-                <motion.div
-                    className="loading-heart"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                >
-                    <Heart className="text-primary" size={48} fill="currentColor" />
-                </motion.div>
-                <p className="loading-message">Connecting to life-saving network...</p>
-            </div>
-        );
+    if (loading && !dashboard) {
+        return <SkeletonDashboard />;
     }
 
     const bloodTypes = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
@@ -232,7 +260,7 @@ function Home() {
     return (
         <PageTransition className="home-professional overflow-hidden">
             {/* Critical Banner */}
-            {dashboard?.criticalRequests?.length > 0 && (
+            {dashboard?.criticalRequests && dashboard.criticalRequests.length > 0 && (
                 <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}

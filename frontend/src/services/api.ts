@@ -20,14 +20,22 @@ const API_URL: string = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 interface FetchOptions extends RequestInit {
     headers?: Record<string, string>;
+    timeout?: number;
 }
 
+const DEFAULT_TIMEOUT = 10000; // 10 seconds
+
 async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
+    const { timeout = DEFAULT_TIMEOUT, ...fetchOptions } = options;
     const url = `${API_URL}${endpoint}`;
     const token = localStorage.getItem('token');
 
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
     const config: FetchOptions = {
-        ...options,
+        ...fetchOptions,
+        signal: controller.signal,
         headers: {
             'Content-Type': 'application/json',
             ...(token && { Authorization: `Bearer ${token}` }),
@@ -35,14 +43,26 @@ async function fetchAPI<T>(endpoint: string, options: FetchOptions = {}): Promis
         },
     };
 
-    const response = await fetch(url, config);
-    const data = await response.json();
+    try {
+        const response = await fetch(url, config);
+        clearTimeout(id);
 
-    if (!response.ok) {
-        throw new Error(data.error || 'API request failed');
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'API request failed');
+        }
+
+        return data;
+    } catch (error) {
+        clearTimeout(id);
+        if (error instanceof Error) {
+            if (error.name === 'AbortError') {
+                throw new Error(`Request timed out after ${timeout}ms`);
+            }
+        }
+        throw error;
     }
-
-    return data;
 }
 
 // Dashboard
