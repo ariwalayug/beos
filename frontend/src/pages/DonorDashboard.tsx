@@ -11,6 +11,8 @@ import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
 import { ProfileEditor, RequestCard } from '../components/DashboardComponents';
 import { EmergencyMapView, MissionControlHeader } from '../components/EmergencyMapView';
+import { QuickDonateButton } from '../components/QuickDonateButton';
+import { VoiceAlertSystem } from '../components/VoiceAlertSystem';
 import { Heart, Users, Droplet, Trophy, Award, Star, Clock, Calendar, Shield } from 'lucide-react';
 import './DonorDashboard.css';
 
@@ -429,6 +431,25 @@ function DonorDashboard() {
                 </div>
             </div>
         </div>
+
+            {/* Command Center Components */ }
+    {
+        profile && (
+            <>
+                <QuickDonateButton
+                    userBloodType={profile.blood_type}
+                    userName={profile.name}
+                    onDonate={async (data) => {
+                        // Find matching request or create general availability
+                        showToast(`Mission accepted! ETA: ${data.eta}`, 'success');
+                        // In a real app, this would match to a specific request ID
+                    }}
+                />
+                <VoiceAlertSystem />
+            </>
+        )
+    }
+        </div >
     );
 }
 

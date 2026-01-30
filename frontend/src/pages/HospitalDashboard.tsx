@@ -11,6 +11,11 @@ import { useToast } from '../context/ToastContext';
 import { useSocket } from '../context/SocketContext';
 import { RequestForm, ActiveRequestsList, MatchedDonors, BloodInventoryGrid } from '../components/HospitalComponents';
 import { LiveRequestTracker, MassCasualtyTrigger, HospitalStatsGrid } from '../components/LiveRequestTracker';
+import { VoiceAlertSystem } from '../components/VoiceAlertSystem';
+import { BloodShortageHeatmap } from '../components/BloodShortageHeatmap';
+import { AIPredictionChart } from '../components/AIPredictionChart';
+import { UrgencyBadge } from '../components/UrgencyBadge';
+import '../styles/CommandCenter.css';
 import './HospitalDashboard.css';
 
 function HospitalDashboard() {
@@ -193,6 +198,7 @@ function HospitalDashboard() {
                         <h1>🏥 {profile.name}</h1>
                         <p className="text-gray-400">{profile.city} • Emergency Command Center</p>
                     </div>
+                    <VoiceAlertSystem onAlertPlayed={(alert) => console.log('Alert:', alert)} />
                 </header>
 
                 {/* Crisis Trigger - Always Visible */}
@@ -202,8 +208,7 @@ function HospitalDashboard() {
                     loading={actionLoading}
                 />
 
-                {/* Stats Grid */}
-                <HospitalStatsGrid requests={requests} profile={profile} />
+                {/* Stats Grid moved to Command Center tab */}
 
                 <div className="dashboard-tabs">
                     <button
@@ -240,10 +245,33 @@ function HospitalDashboard() {
 
                 <div className="dashboard-content animate-fade-in">
                     {activeTab === 'command' && (
-                        <LiveRequestTracker
-                            requests={requests}
-                            onRequestClick={handleFindDonors}
-                        />
+                        <div className="cc-grid">
+                            <div className="cc-grid-full">
+                                <HospitalStatsGrid requests={requests} profile={profile} />
+                            </div>
+
+                            <div className="cc-grid-2 cc-grid-full">
+                                <LiveRequestTracker
+                                    requests={requests}
+                                    onRequestClick={handleFindDonors}
+                                />
+                                <div className="space-y-6">
+                                    <BloodShortageHeatmap
+                                        inventory={[
+                                            { blood_type: 'A+', units: 45 },
+                                            { blood_type: 'A-', units: 12 },
+                                            { blood_type: 'B+', units: 55 },
+                                            { blood_type: 'B-', units: 8 },
+                                            { blood_type: 'AB+', units: 30 },
+                                            { blood_type: 'AB-', units: 4 },
+                                            { blood_type: 'O+', units: 60 },
+                                            { blood_type: 'O-', units: 2 } // Critical
+                                        ]}
+                                    />
+                                    <AIPredictionChart />
+                                </div>
+                            </div>
+                        </div>
                     )}
 
                     {activeTab === 'create' && (
