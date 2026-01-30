@@ -127,6 +127,7 @@ const MapboxMap = ({
     };
 
     const [mapError, setMapError] = useState<string | null>(null);
+    const [isMapLoaded, setIsMapLoaded] = useState(false);
 
     // Robust Token Check
     const hasValidToken = MAPBOX_TOKEN && MAPBOX_TOKEN !== 'undefined' && MAPBOX_TOKEN.startsWith('pk.');
@@ -137,6 +138,11 @@ const MapboxMap = ({
         }
     }, [hasValidToken]);
 
+    const handleRetry = () => {
+        setMapError(null);
+        setIsMapLoaded(false);
+    };
+
     if (!hasValidToken || mapError) {
         return (
             <div className="h-[500px] w-full flex items-center justify-center bg-zinc-900/50 rounded-xl border border-zinc-800 relative overflow-hidden group">
@@ -146,9 +152,17 @@ const MapboxMap = ({
                         <span className="text-2xl grayscale opacity-70">🗺️</span>
                     </div>
                     <h3 className="text-zinc-300 font-medium mb-1">Map Temporarily Unavailable</h3>
-                    <p className="text-zinc-500 text-sm max-w-xs mx-auto">
+                    <p className="text-zinc-500 text-sm max-w-xs mx-auto mb-4">
                         {mapError ? "Connection to map service interrupted." : "Visualization disabled. Data is still accessible below."}
                     </p>
+                    {mapError && (
+                        <button
+                            onClick={handleRetry}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center gap-2 mx-auto"
+                        >
+                            <span className="text-xs">↻</span> Retry Connection
+                        </button>
+                    )}
                 </div>
             </div>
         );
@@ -160,9 +174,13 @@ const MapboxMap = ({
                 ref={mapRef}
                 {...viewState}
                 onMove={evt => setViewState(evt.viewState)}
+                onLoad={() => setIsMapLoaded(true)}
                 onError={(e) => {
                     console.error("Mapbox Runtime Error:", e);
-                    setMapError(e.error?.message || "Failed to load map");
+                    // Only treat as fatal if it hasn't loaded yet or is a critical error
+                    if (!isMapLoaded) {
+                        setMapError(e.error?.message || "Failed to load map");
+                    }
                 }}
                 style={{ width: '100%', height: '100%' }}
                 mapStyle="mapbox://styles/mapbox/dark-v11"
